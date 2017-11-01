@@ -48,6 +48,15 @@ AppAsset::register($this);
   <div class="page">
     <div class="page-header">
       <h1 class="page-title"><?= Html::encode($this->title) ?></h1>
+      <?=Breadcrumbs::widget([
+        'homeLink' => [
+          'label' => '<i class="icon wb-home"></i>Inicio',
+          'url' => Yii::$app->homeUrl,
+          'encode' => false// Requested feature
+        ],
+        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+        'options'=>['class'=>'breadcrumb breadcrumb-arrow']
+      ]);?>
     </div>
       <div class="page-content">
         

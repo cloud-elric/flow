@@ -32,6 +32,6 @@ body{
     zoom: 1;
 }
 
-.site-menubar-unfold .site-footer {
-    margin-left: 0px;
+.panel-title hr{
+    margin-bottom: 0;
 }

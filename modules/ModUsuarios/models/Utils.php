@@ -5,6 +5,26 @@ namespace app\modules\ModUsuarios\models;
 use Yii;
 
 class Utils {
+
+	/**
+	 * Cambia el formato de la fecha
+	 * 
+	 * @param unknown $string        	
+	 */
+	public static function changeFormatDate($string) {
+		$date = date_create ($string );
+		return date_format ( $date, "d-M-Y" );
+	}
+	
+	/**
+	 * Cambia el formato de la fecha del input al adecuado para la base de datos
+	 * @param unknown $string
+	 */
+	public static function changeFormatDateInput($string){
+		$date = date_create ($string );
+		$date->add(new \DateInterval('PT1H'));
+		return date_format ( $date, "Y-m-d H:i:s" );
+	}
 	
 	/**
 	 * Obtenemos la fecha actual para almacenarla
