@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 use Yii;
@@ -24,18 +23,18 @@ class CitasController extends Controller
     public function behaviors()
     {
         return [
-             'access' => [
-                 'class' => AccessControlExtend::className(),
-                 'only' => ['index', 'create', 'update', 'delete'],
-                 'rules' => [
-                     [
-                         'actions' => ['create', 'index', 'update'],
-                         'allow' => true,
-                         'roles' => ['call-center'],
-                     ],
-                   
-                 ],
-             ],
+            'access' => [
+                'class' => AccessControlExtend::className(),
+                'only' => ['index', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['create', 'index', 'update'],
+                        'allow' => true,
+                        'roles' => ['call-center'],
+                    ],
+
+                ],
+            ],
             // 'verbs' => [
             //     'class' => VerbFilter::className(),
             //     'actions' => [
@@ -67,7 +66,7 @@ class CitasController extends Controller
      */
     public function actionView($token)
     {
-        $model = EntCitas::find()->where(['txt_token'=>$token])->one();
+        $model = EntCitas::find()->where(['txt_token' => $token])->one();
         return $this->render('view', [
             'model' => $model,
         ]);
@@ -92,27 +91,27 @@ class CitasController extends Controller
 
         $horarios = $area->entHorariosAreas;
         $model->txt_token = Utils::generateToken("cit_");
-        
+
         if ($model->load(Yii::$app->request->post())) {
 
             $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
             $horario = EntHorariosAreas::findOne($model->fch_hora_cita);
             $model->fch_hora_cita = $horario->horario;
-            if($model->save()){
+            if ($model->save()) {
                 return $this->redirect(['view', 'id' => $model->id_cita]);
             }
 
             $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
             $model->fch_hora_cita = $horario->id_horario_area;
-            
-        } 
+
+        }
 
         return $this->render('create', [
             'model' => $model,
             'area' => $area,
-            'horarios'=>$horarios
+            'horarios' => $horarios
         ]);
-        
+
     }
 
     /**
@@ -123,11 +122,13 @@ class CitasController extends Controller
      */
     public function actionUpdate($id)
     {
+        $statusAutorizar = 2;
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id_cita]);
-        } else {
+        }
+        else {
             return $this->render('update', [
                 'model' => $model,
             ]);
@@ -156,10 +157,49 @@ class CitasController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = EntCitas::findOne($id)) !== null) {
+        if ( ($model = EntCitas::findOne($id)) !== null) {
             return $model;
-        } else {
+        }
+        else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    public function actionAutorizar($token = null)
+    {
+        $statusAutorizar = 3;
+        $cita = $this->findModel(['txt_token' => $token]);
+
+        $cita->id_status = $statusAutorizar;
+        if ($cita->save()) {
+
+        }
+    }
+
+    public function actionRechazar()
+    {
+        $statusRechazar = 4;
+        $cita = $this->findModel(['txt_token' => $token]);
+
+        $cita->id_status = $statusAutorizar;
+        if ($cita->save()) {
+
+            return $this->render('view', [
+                'model' => $cita,
+            ]);
+        }
+    }
+
+    public function actionCancelar()
+    {
+        $statusCancelar = 5;
+        $cita = $this->findModel(['txt_token' => $token]);
+
+        $cita->id_status = $statusAutorizar;
+        if ($cita->save()) {
+            return $this->render('view', [
+                'model' => $cita,
+            ]);
         }
     }
 }

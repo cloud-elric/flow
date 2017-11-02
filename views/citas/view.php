@@ -11,6 +11,11 @@ $this->title = "Revisión de cita";
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'url' => ['index'], 'encode' => false];
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-mobile"></i> '.$this->title, 'encode' => false];
 
+$this->registerJsFile(
+    '@web/webAssets/js/ver-cita.js',
+    ['depends' => [\app\assets\AppAsset::className()]]
+);
+
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
 $status = $model->idStatus;
@@ -26,10 +31,10 @@ $status = $model->idStatus;
                     <?php
                     if(\Yii::$app->user->can('supervisor-call-center')){
                     ?>
-                    <a class="btn btn-success" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                    <a class="btn btn-success js-autorizar-cita" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
                         <i class="icon fa-check"></i> Autorizar
                     </a>
-                    <a class="btn btn-primary" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                    <a class="btn btn-primary" href="<?=Url::base()?>/citas/update?txt_token=<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
                     </a>
                     <a class="btn btn-warning" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
