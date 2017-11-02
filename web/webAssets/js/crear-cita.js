@@ -21,7 +21,25 @@ $(document).ready(function(){
         }
 
     });
+
+    $("#entcitas-id_estado").on("change", function(){
+        var id = $(this).val();
+
+        if(id){
+            buscarArea(id);
+        }
+    });
 });
+
+function buscarArea(id){
+    $.ajax({
+        url: baseUrl+"estados/get-area?id="+id,
+        success:function(resp){
+           
+        }
+
+    });
+}
 
 function buscarSim(id){
     $.ajax({

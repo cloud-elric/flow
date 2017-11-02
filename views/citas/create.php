@@ -8,6 +8,7 @@ use kartik\select2\Select2;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
+use app\models\CatEstados;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -150,18 +151,29 @@ $this->registerJsFile(
         </div>
 
         <div class="row">
+            <div class="col-md-4">
+                <?= $form->field($model, 'id_estado')
+                        ->widget(Select2::classname(), [
+                            'data' => ArrayHelper::map(CatEstados::find("b_habilitado=1")->all(), 'id_estado', 'txt_nombre'),
+                            'language' => 'es',
+                            'options' => ['placeholder' => 'Seleccionar estado'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]);?>
+            </div>
             <div class="col-md-8">
                 <?= $form->field($model, 'txt_calle_numero')->textInput(['maxlength' => true]) ?>
             </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_colonia')->textInput(['maxlength' => true]) ?>
-            </div>
+           
         </div>
 
         <div class="row">
+            
             <div class="col-md-4">
-
+                <?= $form->field($model, 'txt_colonia')->textInput(['maxlength' => true]) ?>
             </div>
+            
             <div class="col-md-4">
                 <?= $form->field($model, 'txt_codigo_postal')->textInput(['maxlength' => true]) ?>
             </div>
@@ -212,7 +224,7 @@ $this->registerJsFile(
                 <?php
                echo  $form->field($model, 'fch_hora_cita')
                     ->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
+                    'data' => [],
                     'language' => 'es',
                     'options' => ['placeholder' => 'Seleccionar horario'],
                     'pluginOptions' => [

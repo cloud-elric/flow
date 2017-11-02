@@ -66,7 +66,7 @@ class EntCitas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_tipo_tramite', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 'txt_token', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita'], 'required'],
+            [['id_tipo_tramite', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 'txt_token', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita', 'id_estado'], 'required'],
             [['id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status'], 'integer'],
             [['fch_cita'], 'safe'],
             [['num_dias_servicio', 'fch_hora_cita'], 'string', 'max' => 50],
@@ -124,7 +124,8 @@ class EntCitas extends \yii\db\ActiveRecord
             'fch_hora_cita' => 'Hora de la cita',
             'txt_iccid'=>'ICCID',
             'txt_imei'=>'IMEI',
-            'id_status'=>'Estatus de la cita'
+            'id_status'=>'Estatus de la cita',
+            'id_estado'=>'Estado de la republica'
         ];
     }
 

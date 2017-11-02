@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 use app\components\CustomLinkSorter;
 use yii\widgets\Pjax;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\ModUsuarios\models\EntUsuariosSearch */
@@ -20,7 +21,16 @@ $this->registerJsFile(
     '@web/webAssets/js/citas.js',
     ['depends' => [\app\assets\AppAsset::className()]]
 );
-?><?php Pjax::begin(['id' => 'citas', 'timeout'=>'0']) ?>
+?>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <a href="<?=Url::base()?>/citas/create" class="btn btn-success">
+            Crear cita
+        </a>    
+    </div>
+</div>
+<br>
+<?php Pjax::begin(['id' => 'citas', 'timeout'=>'0']) ?>
 <div class="panel-group" id="exampleAccordionDefault" aria-multiselectable="true" role="tablist">
     <div class="panel">
         <div class="panel-heading" id="exampleHeadingDefaultOne" role="tab">
