@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\EntCitas;
+use app\modules\ModUsuarios\models\Utils;
 
 /**
  * EntCitasSearch represents the model behind the search form about `app\models\EntCitas`.
@@ -18,8 +19,8 @@ class EntCitasSearch extends EntCitas
     public function rules()
     {
         return [
-            [['id_cita', 'id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'num_dias_servicio'], 'integer'],
-            [['txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_telefono', 'txt_clave_sim_card', 'txt_descripcion_sim', 'txt_serie_sim_card', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
+            [['id_cita', 'id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status'], 'integer'],
+            [['num_dias_servicio', 'txt_token_envio', 'txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_clave_sim_card', 'txt_descripcion_sim', 'txt_serie_sim_card', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
         ];
     }
 
@@ -51,6 +52,12 @@ class EntCitasSearch extends EntCitas
 
         $this->load($params);
 
+        if($this->fch_cita){
+            
+            $this->fch_cita = Utils::changeFormatDateInputShort($this->fch_cita);
+            
+        }
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -66,14 +73,17 @@ class EntCitasSearch extends EntCitas
             'id_area' => $this->id_area,
             'id_tipo_entrega' => $this->id_tipo_entrega,
             'id_usuario' => $this->id_usuario,
-            'num_dias_servicio' => $this->num_dias_servicio,
-            'fch_cita' => $this->fch_cita,
+            'id_status' => $this->id_status,
         ]);
 
-        $query->andFilterWhere(['like', 'txt_token', $this->txt_token])
+        $query->andFilterWhere(['like', 'num_dias_servicio', $this->num_dias_servicio])
+            ->andFilterWhere(['like', 'txt_token_envio', $this->txt_token_envio])
+            ->andFilterWhere(['like', 'txt_token', $this->txt_token])
             ->andFilterWhere(['like', 'txt_clave_sap_equipo', $this->txt_clave_sap_equipo])
             ->andFilterWhere(['like', 'txt_descripcion_equipo', $this->txt_descripcion_equipo])
             ->andFilterWhere(['like', 'txt_serie_equipo', $this->txt_serie_equipo])
+            ->andFilterWhere(['like', 'txt_iccid', $this->txt_iccid])
+            ->andFilterWhere(['like', 'txt_imei', $this->txt_imei])
             ->andFilterWhere(['like', 'txt_telefono', $this->txt_telefono])
             ->andFilterWhere(['like', 'txt_clave_sim_card', $this->txt_clave_sim_card])
             ->andFilterWhere(['like', 'txt_descripcion_sim', $this->txt_descripcion_sim])
@@ -88,7 +98,8 @@ class EntCitasSearch extends EntCitas
             ->andFilterWhere(['like', 'txt_municipio', $this->txt_municipio])
             ->andFilterWhere(['like', 'txt_entre_calles', $this->txt_entre_calles])
             ->andFilterWhere(['like', 'txt_observaciones_punto_referencia', $this->txt_observaciones_punto_referencia])
-            ->andFilterWhere(['like', 'fch_hora_cita', $this->fch_hora_cita]);
+            ->andFilterWhere(['like', 'fch_hora_cita', $this->fch_hora_cita])
+            ->andFilterWhere(['like', 'fch_cita', $this->fch_cita]);
 
         return $dataProvider;
     }
