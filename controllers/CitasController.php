@@ -68,8 +68,13 @@ class CitasController extends Controller
     public function actionView($token)
     {
         $model = EntCitas::find()->where(['txt_token'=>$token])->one();
+        $area = CatAreas::find()->one();
+        $horarios = $area->entHorariosAreas;        
+
         return $this->render('view', [
             'model' => $model,
+            'area' => $area,
+            'horarios'=>$horarios
         ]);
     }
 
