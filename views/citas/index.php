@@ -1,59 +1,88 @@
 <?php
-
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\widgets\ListView;
+use app\components\CustomLinkSorter;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\EntCitasSearch */
+/* @var $searchModel app\modules\ModUsuarios\models\EntUsuariosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Ent Citas';
-$this->params['breadcrumbs'][] = $this->title;
-?>
-<div class="ent-citas-index">
+$this->title = 'Citas';
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Agregar cita', 'encode' => false];
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+$this->registerCssFile(
+    '@web/webAssets/css/citas.css',
+    ['depends' => [\app\assets\AppAsset::className()]]
+);
 
-    <p>
-        <?= Html::a('Create Ent Citas', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id_cita',
-            'id_tipo_tramite',
-            'id_equipo',
-            'id_sim_card',
-            'id_area',
-            // 'id_tipo_entrega',
-            // 'id_usuario',
-            // 'num_dias_servicio',
-            // 'txt_token',
-            // 'txt_clave_sap_equipo',
-            // 'txt_descripcion_equipo',
-            // 'txt_serie_equipo',
-            // 'txt_telefono',
-            // 'txt_clave_sim_card',
-            // 'txt_descripcion_sim',
-            // 'txt_serie_sim_card',
-            // 'txt_nombre_completo_cliente',
-            // 'txt_numero_referencia',
-            // 'txt_numero_referencia_2',
-            // 'txt_numero_referencia_3',
-            // 'txt_calle_numero',
-            // 'txt_colonia',
-            // 'txt_codigo_postal',
-            // 'txt_municipio',
-            // 'txt_entre_calles',
-            // 'txt_observaciones_punto_referencia',
-            // 'fch_cita',
-            // 'fch_hora_cita',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+$this->registerJsFile(
+    '@web/webAssets/js/citas.js',
+    ['depends' => [\app\assets\AppAsset::className()]]
+);
+?><?php Pjax::begin(['id' => 'citas', 'timeout'=>'0']) ?>
+<div class="panel-group" id="exampleAccordionDefault" aria-multiselectable="true" role="tablist">
+    <div class="panel">
+        <div class="panel-heading" id="exampleHeadingDefaultOne" role="tab">
+            <a class="panel-title <?=Yii::$app->request->get('isOpen')?'':'collapsed' ?> js-collapse" data-toggle="collapse" href="#exampleCollapseDefaultOne" data-parent="#exampleAccordionDefault" aria-expanded="<?=Yii::$app->request->get('isOpen')?'true':'false' ?>" aria-controls="exampleCollapseDefaultOne">
+                Buscar cita
+            </a>
+        </div>
+        <div class="panel-collapse collapse <?=Yii::$app->request->get('isOpen')?'in':'' ?>" id="exampleCollapseDefaultOne" aria-labelledby="exampleHeadingDefaultOne" role="tabpanel" aria-expanded="<?=Yii::$app->request->get('isOpen')?'true':'false' ?>">
+            <div class="panel-body">
+                <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+ <!-- Panel -->
+ <div class="panel" id="panel">
+ 
+    <div class="js-ms-loading text-center">
+            <h3>Cargando información</h3>
+    </div>
+    <div class="panel-body">
+        <div class="nav-tabs-horizontal">
+    
+            <div class="tab-content">
+                <div class="tab-pane animation-fade active" id="all_contacts" role="tabpanel">
+                   
+
+                    <?php
+                    echo ListView::widget([
+                    
+                        'dataProvider' => $dataProvider,
+                        'itemView' => '_item-cita',
+                        'layout' => "<ul class='list-group'>{items}</ul>\n{summary}\n{pager}",
+                        'itemOptions'=>[
+                            'tag'=>'li',
+                            'class'=>'list-group-item'
+                        ],
+                        'summaryOptions'=>[
+                            'class'=>'pull-left'
+                        ],
+                        'pager'=>[
+                            'options'=>[
+                                'class'=>'pagination pull-right'
+                            ]
+                        ]
+                        
+                    ]);
+                    ?>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+   
+
+    
+</div>    
+<!-- End Panel -->
+
+
+<?php Pjax::end() ?>
+
+   
