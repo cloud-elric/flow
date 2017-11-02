@@ -126,9 +126,9 @@ class CitasController extends Controller
      * @param string $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($token)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel(['txt_token' => $token]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id_cita]);
@@ -165,6 +165,44 @@ class CitasController extends Controller
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    public function actionAutorizar($token = null)
+    {
+        $statusAutorizar = 3;
+        $cita = $this->findModel(['txt_token' => $token]);
+
+        $cita->id_status = $statusAutorizar;
+        //if ($cita->save()) {
+
+        //}
+    }
+
+    public function actionRechazar()
+    {
+        $statusRechazar = 4;
+        $cita = $this->findModel(['txt_token' => $token]);
+
+        $cita->id_status = $statusAutorizar;
+        if ($cita->save()) {
+
+            return $this->render('view', [
+                'model' => $cita,
+            ]);
+        }
+    }
+
+    public function actionCancelar()
+    {
+        $statusCancelar = 5;
+        $cita = $this->findModel(['txt_token' => $token]);
+
+        $cita->id_status = $statusAutorizar;
+        if ($cita->save()) {
+            return $this->render('view', [
+                'model' => $cita,
+            ]);
         }
     }
 }

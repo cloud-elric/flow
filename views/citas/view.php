@@ -47,16 +47,16 @@ $this->registerJsFile(
                     <?php
                     if(\Yii::$app->user->can('supervisor-call-center')){
                     ?>
-                    <a id="js-btn-actualizar" class="btn btn-success" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                    <a id="js-btn-autorizar" class="btn btn-success" href="#" data-url="autorizar?txt_token=<?=$model->txt_token?>"> 
                         <i class="icon fa-check"></i> Autorizar
                     </a>
                     <a class="btn btn-primary" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
                     </a>
-                    <a class="btn btn-warning" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                    <a id="js-btn-rechazar" class="btn btn-warning" href="#" data-url="rechazar?txt_token=<?=$model->txt_token?>"> 
                         <i class="icon fa-times"></i> Rechazar
                     </a>
-                    <a class="btn btn-danger" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                    <a id="js-btn-cancelar" class="btn btn-danger" href="#" data-url="cancelar?txt_token=<?=$model->txt_token?>"> 
                         <i class="icon fa-trash"></i> Cancelar
                     </a>
                     <?php
