@@ -1,6 +1,11 @@
 <?php
 use \yii\helpers\Url;
+use app\modules\ModUsuarios\models\EntUsuarios;
 $usuario = Yii::$app->user->identity;
+
+if(!$usuario){
+  $usuario = new EntUsuarios();
+}
 ?>
 <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
     <div class="navbar-header">
@@ -14,14 +19,10 @@ $usuario = Yii::$app->user->identity;
         <i class="icon wb-more-horizontal" aria-hidden="true"></i>
       </button>
       <div class="navbar-brand navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
-        <img class="navbar-brand-logo" src="../../assets/images/logo.png" title="<?=Yii::$app->name?>">
+        <img class="navbar-brand-logo" src="<?=Url::base()."/webAssets/images/logo.png"?>" title="<?=Yii::$app->name?>">
         <span class="navbar-brand-text"> <?=Yii::$app->name?></span>
       </div>
-      <button type="button" class="navbar-toggle collapsed" data-target="#site-navbar-search"
-      data-toggle="collapse">
-        <span class="sr-only">Toggle Search</span>
-        <i class="icon wb-search" aria-hidden="true"></i>
-      </button>
+      
     </div>
     <div class="navbar-container container-fluid">
       <!-- Navbar Collapse -->
