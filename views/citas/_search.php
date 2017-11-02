@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\CatStatusCitas;
+use yii\helpers\ArrayHelper;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitasSearch */
@@ -11,25 +14,57 @@ use yii\widgets\ActiveForm;
 <div class="ent-citas-search">
 
     <?php $form = ActiveForm::begin([
+        'id'=>'form-search',
         'action' => ['index'],
         'method' => 'get',
+        'options' => ['data-pjax' => true,'class'=>'page-search-form' ]
     ]); ?>
 
-    <?= $form->field($model, 'id_cita') ?>
+    <div class="row">
+        <div class="col-md-4">
+             <?= $form->field($model, 'id_status')
+                                ->widget(Select2::classname(), [
+                                    'data' => ArrayHelper::map(CatStatusCitas::find("b_habilitado=1")->all(), 'id_statu_cita', 'txt_nombre'),
+                                    'language' => 'es',
+                                    'options' => ['placeholder' => 'Seleccionar estatus'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true
+                                    ],
+                                ]);
+                ?> 
+        </div>
 
-    <?= $form->field($model, 'id_tipo_tramite') ?>
+        <div class="col-md-4">
+            <?php  echo $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']); ?>
+        </div>
 
-    <?= $form->field($model, 'id_equipo') ?>
+        <div class="col-md-4">
+            <?php  echo $form->field($model, 'fch_cita')->widget(\yii\jui\DatePicker::classname(), [
+                    'language' => 'es',
+                    'options'=>['class'=>'form-control'],
+                    'dateFormat' => 'dd-MM-yyyy', ]) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'id_sim_card') ?>
 
-    <?= $form->field($model, 'id_area') ?>
+    <?php // $form->field($model, 'id_cita') ?>
+
+    <?php // $form->field($model, 'id_tipo_tramite') ?>
+
+    <?php // $form->field($model, 'id_equipo') ?>
+
+    <?php // $form->field($model, 'id_sim_card') ?>
+
+    <?php // $form->field($model, 'id_area') ?>
 
     <?php // echo $form->field($model, 'id_tipo_entrega') ?>
 
     <?php // echo $form->field($model, 'id_usuario') ?>
+    
 
     <?php // echo $form->field($model, 'num_dias_servicio') ?>
+
+    <?php // echo $form->field($model, 'txt_token_envio') ?>
 
     <?php // echo $form->field($model, 'txt_token') ?>
 
@@ -39,7 +74,10 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'txt_serie_equipo') ?>
 
-    <?php // echo $form->field($model, 'txt_telefono') ?>
+    <?php // echo $form->field($model, 'txt_iccid') ?>
+
+    <?php // echo $form->field($model, 'txt_imei') ?>
+
 
     <?php // echo $form->field($model, 'txt_clave_sim_card') ?>
 
@@ -67,13 +105,13 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'txt_observaciones_punto_referencia') ?>
 
-    <?php // echo $form->field($model, 'fch_cita') ?>
+    
 
     <?php // echo $form->field($model, 'fch_hora_cita') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+    <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary js-search-button', 'name'=>'isOpen', 'value'=>Yii::$app->request->get('isOpen')?'1':'0']) ?>
+    <?= Html::button('Limpiar', ['class' => 'btn btn-default js-limpiar-campos']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -58,8 +58,10 @@ $this->registerJsFile(
                 <?php
                 require(__DIR__ . '/../components/scriptSelect2.php');
                 $url = Url::to(['equipos/buscar-equipo']);
+                //$equipo = empty($model->id_equipo) ? '' : CatEquipos::findOne($model->id_equipo)->txt_nombre;
                 // render your widget
                 echo $form->field($model, 'id_equipo')->widget(Select2::classname(), [
+                    //'initValueText' => $cityDesc,
                     'options' => ['placeholder' => 'Seleccionar equipo'],
                     'pluginOptions' => [
                         'allowClear' => true,

@@ -2,17 +2,56 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
 
-$this->title = $model->id_cita;
-$this->params['breadcrumbs'][] = ['label' => 'Ent Citas', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = "Revisión de cita";
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'url' => ['index'], 'encode' => false];
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-mobile"></i> '.$this->title, 'encode' => false];
+
+$tramite = $model->idTipoTramite;
+$equipo = $model->idEquipo;
+$status = $model->idStatus;
+
 ?>
+
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">
+            <h4>
+                Estatus de cita: <?=$status->txt_nombre?>
+                <div class="pull-right">
+                    <?php
+                    if(\Yii::$app->user->can('supervisor-call-center')){
+                    ?>
+                    <a class="btn btn-success" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                        <i class="icon fa-check"></i> Autorizar
+                    </a>
+                    <a class="btn btn-primary" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                        <i class="icon fa-refresh"></i> Actualizar
+                    </a>
+                    <a class="btn btn-warning" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                        <i class="icon fa-times"></i> Rechazar
+                    </a>
+                    <a class="btn btn-danger" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                        <i class="icon fa-trash"></i> Cancelar
+                    </a>
+                    <?php
+                    }
+                    ?>
+                </div>
+            </h4>
+        </div>
+    </div>
+    <div class="panel-body">
+        
+    </div>
+</div>
+
 <div class="ent-citas-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id_cita], ['class' => 'btn btn-primary']) ?>

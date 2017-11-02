@@ -15,6 +15,11 @@ class Utils {
 		$date = date_create ($string );
 		return date_format ( $date, "d-M-Y" );
 	}
+
+	public static function changeFormatDateInputShort($string) {
+		$date = date_create ($string );
+		return date_format ( $date, "Y-m-d" );
+	}
 	
 	/**
 	 * Cambia el formato de la fecha del input al adecuado para la base de datos
@@ -22,7 +27,7 @@ class Utils {
 	 */
 	public static function changeFormatDateInput($string){
 		$date = date_create ($string );
-		$date->add(new \DateInterval('PT1H'));
+		//$date->add(new \DateInterval('PT1H'));
 		return date_format ( $date, "Y-m-d H:i:s" );
 	}
 	

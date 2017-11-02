@@ -65,10 +65,11 @@ class CitasController extends Controller
      * @param string $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($token)
     {
+        $model = EntCitas::find()->where(['txt_token'=>$token])->one();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
