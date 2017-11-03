@@ -39,7 +39,6 @@ use app\modules\ModUsuarios\models\EntUsuarios;
  * @property string $txt_observaciones_punto_referencia
  * @property string $fch_cita
  * @property string $fch_hora_cita
- * @property string $txt_token_envio
  *
  * @property CatAreas $idArea
  * @property CatEquipos $idEquipo
@@ -69,6 +68,7 @@ class EntCitas extends \yii\db\ActiveRecord
             [['id_tipo_tramite', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 'txt_token', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita'], 'required'],
             [['id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status'], 'integer'],
             [['fch_cita'], 'safe'],
+            [['txt_motivo_cancelacion'], 'required', 'on'=>'cancelacion'],
             [['num_dias_servicio', 'fch_hora_cita'], 'string', 'max' => 50],
             [['txt_token'], 'string', 'max' => 60],
             [['txt_clave_sap_equipo', 'txt_clave_sim_card', 'txt_nombre_completo_cliente'], 'string', 'max' => 200],
@@ -124,7 +124,8 @@ class EntCitas extends \yii\db\ActiveRecord
             'fch_hora_cita' => 'Hora de la cita',
             'txt_iccid'=>'ICCID',
             'txt_imei'=>'IMEI',
-            'id_status'=>'Estatus de la cita'
+            'id_status'=>'Estatus de la cita',
+            'txt_motivo_cancelacion'=>'Motivo de rechazo'
         ];
     }
 
@@ -182,6 +183,14 @@ class EntCitas extends \yii\db\ActiveRecord
     public function getIdUsuario()
     {
         return $this->hasOne(EntUsuarios::className(), ['id_usuario' => 'id_usuario']);
+    }
+
+     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdEnvio()
+    {
+        return $this->hasOne(EntEnvios::className(), ['id_envio' => 'id_envio']);
     }
 
     /**
