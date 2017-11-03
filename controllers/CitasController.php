@@ -12,6 +12,8 @@ use app\models\CatAreas;
 use app\modules\ModUsuarios\models\Utils;
 use app\components\AccessControlExtend;
 use app\models\EntHorariosAreas;
+use app\models\EntEnvios;
+use \yii\web\Response;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -170,39 +172,64 @@ class CitasController extends Controller
 
     public function actionAutorizar($token = null)
     {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         $statusAutorizar = 3;
         $cita = $this->findModel(['txt_token' => $token]);
 
-        $cita->id_status = $statusAutorizar;
-        //if ($cita->save()) {
+        if(!$cita->id_envio){
+            $envio = new EntEnvios();
+            $envio->txt_token = Utils::generateToken("env_");
+            
+            if ($envio->save()) {
 
-        //}
+                $cita->id_status = $statusAutorizar;
+                $cita->id_envio = $envio->id_envio;
+                $cita->txt_motivo_cancelacion = '';
+                
+
+                if($cita->save()){
+                 return ['status'=>'ok', 'envio'=>$envio->txt_token];
+                }
+            }
+
+        }
+
+        return ['status'=>'error'];
     }
 
-    public function actionRechazar()
+    public function actionRechazar($token=null)
     {
         $statusRechazar = 4;
         $cita = $this->findModel(['txt_token' => $token]);
-
-        $cita->id_status = $statusAutorizar;
-        if ($cita->save()) {
-
-            return $this->render('view', [
-                'model' => $cita,
-            ]);
+        
+        if($cita && $cita->load(Yii::$app->request->post())){
+            $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
+            $cita->id_status = $statusRechazar;
+            if ($cita->save()) {
+    
+                return $this->redirect( ['view',
+                    'token' => $token,
+                ]);
+            }
         }
+       
     }
 
     public function actionCancelar()
     {
         $statusCancelar = 5;
         $cita = $this->findModel(['txt_token' => $token]);
-
-        $cita->id_status = $statusAutorizar;
-        if ($cita->save()) {
-            return $this->render('view', [
-                'model' => $cita,
-            ]);
+        
+        if($cita && $cita->load(Yii::$app->request->post())){
+            $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
+            $cita->id_status = $statusRechazar;
+            if ($cita->save()) {
+    
+                return $this->redirect( ['view',
+                    'token' => $token,
+                ]);
+            }
         }
+       
     }
 }

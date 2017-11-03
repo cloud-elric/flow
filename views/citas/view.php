@@ -9,7 +9,7 @@ use kartik\select2\Select2;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
-
+use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
 
@@ -23,17 +23,13 @@ $status = $model->idStatus;
 $simCard = $model->idSimCard;
 
 $this->registerCssFile(
-    '@web/webassets/plugins/select2/select2.css',
+    '@web/webAssets/plugins/select2/select2.css',
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
 
-$this->registerJsFile(
-    '@web/webassets/js/crear-cita.js',
-    ['depends' => [kartik\select2\Select2Asset::className()]]
-);
 
 $this->registerJsFile(
-    '@web/webassets/js/cita.js',
+    '@web/webAssets/js/ver-cita.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
 ?>
@@ -42,21 +38,21 @@ $this->registerJsFile(
     <div class="panel-heading">
         <div class="panel-title">
             <h4>
-                Estatus de cita: <?=$status->txt_nombre?>
+                Estatus de cita: <span class="js-status-cita"><?=$status->txt_nombre?></span>
                 <div class="pull-right">
                     <?php
                     if(\Yii::$app->user->can('supervisor-call-center')){
                     ?>
-                    <a id="js-btn-autorizar" class="btn btn-success" href="#" data-url="autorizar?txt_token=<?=$model->txt_token?>"> 
+                    <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-check"></i> Autorizar
                     </a>
-                    <a class="btn btn-primary" href="<?=Url::base()?>/citas/aprobar?txt_token=<?=$model->txt_token?>"> 
+                    <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
                     </a>
-                    <a id="js-btn-rechazar" class="btn btn-warning" href="#" data-url="rechazar?txt_token=<?=$model->txt_token?>"> 
+                    <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-times"></i> Rechazar
                     </a>
-                    <a id="js-btn-cancelar" class="btn btn-danger" href="#" data-url="cancelar?txt_token=<?=$model->txt_token?>"> 
+                    <a id="js-btn-cancelar" class="btn btn-danger" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-trash"></i> Cancelar
                     </a>
                     <?php
@@ -64,6 +60,15 @@ $this->registerJsFile(
                     ?>
                 </div>
             </h4>
+            <?php
+            if($model->txt_motivo_cancelacion){
+            ?>
+            <h6 class="js-motivo-cancelacion">Motivo de cancelación/rechazo   <br>         
+                <?=$model->txt_motivo_cancelacion?>
+            </h6>
+            <?php
+            }
+            ?>
         </div>
     </div>
 </div>
@@ -92,6 +97,16 @@ $this->registerJsFile(
                         ],
                     ]);
                 ?>                
+            </div>
+            <div class="col-md-4">
+                <h6 class="token-envio">
+                <?php
+                if($model->id_envio){
+                    echo $model->idEnvio->txt_token;
+                }
+                ?>
+                    </h6>
+                
             </div>
         </div>
         <div class="row">
@@ -268,3 +283,45 @@ $this->registerJsFile(
 
     <?php ActiveForm::end(); ?>
 </div>
+<?php 
+Modal::begin([
+    'header'=>'<h4>Motivo de rechazo</h4>',
+    'id'=>'cita-rechazo-modal',
+    
+    //'size'=>'modal-lg',
+]);
+$model->scenario = 'cancelacion';
+    $form = ActiveForm::begin([
+        'id'=>'cita-rechazo-form',
+        'action'=>'rechazar?token='.$model->txt_token
+        ]);
+
+    echo $form->field($model, 'txt_motivo_cancelacion')->textArea(['required'=>'required'])->label("Motivo de rechazo");
+
+    echo Html::submitButton('Rechazar', ['class' => 'btn btn-warning']);
+
+ActiveForm::end();
+Modal::end();
+?>
+
+
+<?php 
+Modal::begin([
+    'header'=>'<h4>Motivo de cancelación</h4>',
+    'id'=>'cita-cancelacion-modal',
+    
+    //'size'=>'modal-lg',
+]);
+$model->scenario = 'cancelacion';
+    $form = ActiveForm::begin([
+        'id'=>'cita-rechazo-form',
+        'action'=>'rechazar?token='.$model->txt_token
+        ]);
+
+    echo $form->field($model, 'txt_motivo_cancelacion')->textArea(['required'=>'required'])->label("Motivo de cancelación");
+
+    echo Html::submitButton('Cancelar cita', ['class' => 'btn btn-warning']);
+
+ActiveForm::end();
+Modal::end();
+?>
