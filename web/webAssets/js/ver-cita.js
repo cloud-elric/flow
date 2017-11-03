@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    $(".js-autorizar-cita").on("click", function(){
+    $("#js-btn-autorizar").on("click", function(e){
+      e.preventDefault();
         var token = $(this).data("token");
 
         swal({
@@ -10,15 +11,28 @@ $(document).ready(function(){
                 cancel: true,
                 confirmar: {
                   text: "Autorizar",
-                  value: "catch2",
-
+                  value: token,
+                  closeModal: false,
                 },
               },
             dangerMode: true,
           })
           .then((value) => {
-
-            return fetch(baseUrl+"citas/autorizar");
+            if(value){
+              return fetch(baseUrl+"citas/autorizar?token="+value);
+            }
+          }).then(results => {
+            if (results){
+                return results.json();
+            }
+          })
+          .then(json => {
+              if(json){
+                  $(".js-status-cita").html("Autorizada");
+                  $(".js-motivo-cancelacion").remove();
+                  $(".token-envio").html(json.envio);
+                  swal("Autorizada", "Cita ha sido autorizada. Clave de envio"+json.envio, "success");
+              } 
           }).catch(err => {
             if (err) {
               swal("Oh noes!", "The AJAX request failed!", "error");
@@ -28,4 +42,23 @@ $(document).ready(function(){
             }
           });
     });
+
+    $("#js-btn-rechazar").on("click", function(e){
+        e.preventDefault();
+        var token = $(this).data("token");
+        
+        $("#cita-rechazo-modal").modal("show")
+          
+    });
+
+    $("#js-btn-cancelar").on("click", function(e){
+        e.preventDefault();
+        var token = $(this).data("token");
+        
+        $("#cita-cancelacion-modal").modal("show")
+          
+    });
+    
+
+
 });

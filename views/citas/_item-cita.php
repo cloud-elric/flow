@@ -44,6 +44,9 @@ switch ($model->id_status) {
             <?=$equipo->txt_nombre?>
         </p>
         <p>
+            Clave de envio: <?=$model->id_envio?$cita->idEnvio->txt_token:'Sin clave'?>
+        </p>
+        <p>
             <?=$equipo->txt_descripcion?>
         </p>
     </div>

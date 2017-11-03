@@ -16,21 +16,21 @@ class SiteController extends Controller
     /**
      * @inheritdoc
      */
-    // public function behaviors()
-    // {
-        // return [
-        //     'access' => [
-        //         'class' => AccessControlExtend::className(),
-        //         'only' => ['logout', 'about'],
-        //         'rules' => [
-        //             [
-        //                 'actions' => ['logout'],
-        //                 'allow' => true,
-        //                 'roles' => ['admin'],
-        //             ],
+     public function behaviors()
+     {
+         return [
+            'access' => [
+                 'class' => AccessControl::className(),
+                 'only' => ['index'],
+                 'rules' => [
+                     [
+                         'actions' => ['index'],
+                         'allow' => true,
+                         'roles' => ['@'],
+                     ],
                    
-        //         ],
-        //     ],
+                 ],
+                ]];
             // 'verbs' => [
             //     'class' => VerbFilter::className(),
             //     'actions' => [
@@ -38,7 +38,7 @@ class SiteController extends Controller
             //     ],
             // ],
         //];
-    //}
+    }
 
     /**
      * @inheritdoc

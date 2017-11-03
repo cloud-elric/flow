@@ -20,7 +20,7 @@ class EntCitasSearch extends EntCitas
     {
         return [
             [['id_cita', 'id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status'], 'integer'],
-            [['num_dias_servicio', 'txt_token_envio', 'txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_clave_sim_card', 'txt_descripcion_sim', 'txt_serie_sim_card', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
+            [['num_dias_servicio', 'txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_clave_sim_card', 'txt_descripcion_sim', 'txt_serie_sim_card', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
         ];
     }
 
@@ -77,7 +77,6 @@ class EntCitasSearch extends EntCitas
         ]);
 
         $query->andFilterWhere(['like', 'num_dias_servicio', $this->num_dias_servicio])
-            ->andFilterWhere(['like', 'txt_token_envio', $this->txt_token_envio])
             ->andFilterWhere(['like', 'txt_token', $this->txt_token])
             ->andFilterWhere(['like', 'txt_clave_sap_equipo', $this->txt_clave_sap_equipo])
             ->andFilterWhere(['like', 'txt_descripcion_equipo', $this->txt_descripcion_equipo])
