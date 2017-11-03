@@ -106,7 +106,7 @@ class CitasController extends Controller
             $horario = EntHorariosAreas::findOne($model->fch_hora_cita);
             $model->fch_hora_cita = $horario->horario;
             if($model->save()){
-                return $this->redirect(['view', 'id' => $model->id_cita]);
+                return $this->redirect(['view', 'token' => $model->id_cita]);
             }
 
             $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
