@@ -17,12 +17,12 @@ $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Ci
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Agregar cita', 'encode' => false];
 
 $this->registerCssFile(
-    '@web/webassets/plugins/select2/select2.css',
+    '@web/webAssets/plugins/select2/select2.css',
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
 
 $this->registerJsFile(
-    '@web/webassets/js/crear-cita.js',
+    '@web/webAssets/js/crear-cita.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
 ?>
