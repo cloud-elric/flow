@@ -74,7 +74,7 @@ $this->registerJsFile(
 </div>
 
 <div class="panel">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['action' =>['update?token=' . $model->txt_token]]); ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite
@@ -274,10 +274,6 @@ $this->registerJsFile(
                 ]);
                 ?>
             </div>
-        </div>
-
-        <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? 'Crear cita' : 'Actualizar cita', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
     </div>
 
