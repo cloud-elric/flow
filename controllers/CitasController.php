@@ -12,6 +12,8 @@ use app\models\CatAreas;
 use app\modules\ModUsuarios\models\Utils;
 use app\components\AccessControlExtend;
 use app\models\EntHorariosAreas;
+use app\models\EntEnvios;
+use \yii\web\Response;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -68,8 +70,13 @@ class CitasController extends Controller
     public function actionView($token)
     {
         $model = EntCitas::find()->where(['txt_token'=>$token])->one();
+        $area = CatAreas::find()->one();
+        $horarios = $area->entHorariosAreas;        
+
         return $this->render('view', [
             'model' => $model,
+            'area' => $area,
+            'horarios'=>$horarios
         ]);
     }
 
@@ -99,7 +106,7 @@ class CitasController extends Controller
             $horario = EntHorariosAreas::findOne($model->fch_hora_cita);
             $model->fch_hora_cita = $horario->horario;
             if($model->save()){
-                return $this->redirect(['view', 'id' => $model->id_cita]);
+                return $this->redirect(['view', 'token' => $model->txt_token]);
             }
 
             $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
@@ -121,15 +128,17 @@ class CitasController extends Controller
      * @param string $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($token)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel(['txt_token' => $token]);
+        $area = CatAreas::find()->one();
+        $horarios = $area->entHorariosAreas;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id_cita]);
-        } else {
-            return $this->render('update', [
+            return $this->render('view', [
                 'model' => $model,
+                'area' => $area,
+                'horarios'=>$horarios
             ]);
         }
     }
@@ -161,5 +170,68 @@ class CitasController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionAutorizar($token = null)
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $statusAutorizar = 3;
+        $cita = $this->findModel(['txt_token' => $token]);
+
+        if(!$cita->id_envio){
+            $envio = new EntEnvios();
+            $envio->txt_token = Utils::generateToken("env_");
+            
+            if ($envio->save()) {
+
+                $cita->id_status = $statusAutorizar;
+                $cita->id_envio = $envio->id_envio;
+                $cita->txt_motivo_cancelacion = '';
+                
+
+                if($cita->save()){
+                 return ['status'=>'ok', 'envio'=>$envio->txt_token];
+                }
+            }
+
+        }
+
+        return ['status'=>'error'];
+    }
+
+    public function actionRechazar($token=null)
+    {
+        $statusRechazar = 4;
+        $cita = $this->findModel(['txt_token' => $token]);
+        
+        if($cita && $cita->load(Yii::$app->request->post())){
+            $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
+            $cita->id_status = $statusRechazar;
+            if ($cita->save()) {
+    
+                return $this->redirect( ['view',
+                    'token' => $token,
+                ]);
+            }
+        }
+       
+    }
+
+    public function actionCancelar()
+    {
+        $statusCancelar = 5;
+        $cita = $this->findModel(['txt_token' => $token]);
+        
+        if($cita && $cita->load(Yii::$app->request->post())){
+            $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
+            $cita->id_status = $statusRechazar;
+            if ($cita->save()) {
+    
+                return $this->redirect( ['view',
+                    'token' => $token,
+                ]);
+            }
+        }
+       
     }
 }

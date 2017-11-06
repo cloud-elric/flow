@@ -12,12 +12,12 @@ $this->title = 'Citas';
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Agregar cita', 'encode' => false];
 
 $this->registerCssFile(
-    '@web/webAssets/css/users.css',
+    '@web/webAssets/css/citas.css',
     ['depends' => [\app\assets\AppAsset::className()]]
 );
 
 $this->registerJsFile(
-    '@web/webAssets/js/usuarios.js',
+    '@web/webAssets/js/citas.js',
     ['depends' => [\app\assets\AppAsset::className()]]
 );
 ?><?php Pjax::begin(['id' => 'citas', 'timeout'=>'0']) ?>
