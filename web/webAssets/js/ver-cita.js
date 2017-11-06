@@ -43,6 +43,29 @@ $(document).ready(function(){
           });
     });
 
+    $("#js-btn-update").on("click", function(e){
+        e.preventDefault();
+        var token = $(this).data("token");
+
+        swal({
+          title: "Estas seguro?",
+          text: "Estas actualizando este documento!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            swal("Actualizado! Se a actualizado este documento.", {
+              icon: "success",
+            });
+            $('#w0').submit();
+          } else {
+            swal("Este documento no tiene cambios!");
+          }
+        });
+    });
+
     $("#js-btn-rechazar").on("click", function(e){
         e.preventDefault();
         var token = $(this).data("token");
@@ -59,6 +82,81 @@ $(document).ready(function(){
           
     });
     
+    
+    $("#entcitas-id_equipo").on("change", function(){
+      var id = $(this).val();
 
+      if(id){
+          buscarEquipo(id);
+      }else{
+          limpiarCamposEquipo();
+      }
+
+  });
+
+  $("#entcitas-id_sim_card").on("change", function(){
+      var id = $(this).val();
+
+      if(id){
+          buscarSim(id);
+      }else{
+          limipiarCamposSim();
+      }
+
+  });
 
 });
+
+function buscarSim(id){
+  $.ajax({
+      url: baseUrl+"sims-cards/get-sim?id="+id,
+      success:function(resp){
+          var descripcion = '';
+          if(resp.txt_descripcion){
+              descripcion = resp.txt_descripcion;
+          }
+
+          $("#descripcion_sim").val(descripcion);
+
+          var claveSap = '';
+          if(resp.txt_clave_sim_card){
+              claveSap = resp.txt_clave_sim_card;
+          }
+
+          $("#clave_sap_sim").val(claveSap);
+      }
+
+  });
+}
+
+function limipiarCamposSim(){
+  $("#descripcion_sim").val('');
+  $("#clave_sap_sim").val('');
+}
+
+function limpiarCamposEquipo(){
+  $("#descripcion_equipo").val('');
+  $("#clave_sap").val('');
+}
+
+function buscarEquipo(id){
+  $.ajax({
+      url: baseUrl+"equipos/get-equipo?id="+id,
+      success:function(resp){
+          var descripcion = '';
+          if(resp.txt_descripcion){
+              descripcion = resp.txt_descripcion;
+          }
+
+          $("#descripcion_equipo").val(descripcion);
+
+          var claveSap = '';
+          if(resp.txt_clave_sap){
+              claveSap = resp.txt_clave_sap;
+          }
+
+          $("#clave_sap").val(claveSap);
+      }
+
+  });
+}
