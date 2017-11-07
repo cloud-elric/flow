@@ -169,7 +169,7 @@ $this->registerJsFile(
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'minimumInputLength' => 1,
+                            'minimumInputLength' => 3,
                             'ajax' => [
                                 'url' => $url,
                                 'dataType' => 'json',
@@ -214,13 +214,15 @@ $this->registerJsFile(
             <div class="col-md-4">
                 <?=Html::label("Área", "txt_area")?>
                 <?=Html::textInput("txt_area", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_area' ])?>
+                <?= $form->field($model, 'id_area')->hiddenInput()->label(false) ?>
             </div>
             <div class="col-md-4">
-                <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, "disabled"=>"disabled"]) ?>
+                <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, 'class' => 'form-control', 'disabled' => true]) ?>
             </div>
             <div class="col-md-4">
                 <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
                 <?=Html::textInput("txt_tipo_entrega", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
+                <?= $form->field($model, 'id_tipo_entrega')->hiddenInput()->label(false) ?>
             </div>
         </div>
         <div class="row">

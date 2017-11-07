@@ -91,17 +91,16 @@ class CitasController extends Controller
         $area = CatAreas::find()->one();
         $usuario = Yii::$app->user->identity;
 
-        $model->id_area = $area->id_area;
-        $model->num_dias_servicio = '';
-        $model->id_tipo_entrega = $area->id_tipo_entrega;
+        //$model->id_area = $area->id_area;
+        //$model->num_dias_servicio = '';
+        //$model->id_tipo_entrega = $area->id_tipo_entrega;
         $model->id_usuario = $usuario->id_usuario;
         $model->id_status = 1;
 
         $horarios = $area->entHorariosAreas;
         $model->txt_token = Utils::generateToken("cit_");
         
-        if ($model->load(Yii::$app->request->post())) {
-
+        if ($model->load(Yii::$app->request->post())){
             $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
             $horario = EntHorariosAreas::findOne($model->fch_hora_cita);
             $model->fch_hora_cita = $horario->horario;

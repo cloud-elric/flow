@@ -56,6 +56,12 @@ function buscarSim(id){
     });
 }
 
+$("#w0").submit(function(){
+    $("#entcitas-num_dias_servicio").prop('disabled', false);
+    //console.log("cambio propiedad de input");
+    //return;
+});
+
 function limipiarCamposSim(){
     $("#descripcion_sim").val('');
     $("#clave_sap_sim").val('');
@@ -103,6 +109,9 @@ function buscarEstado(id){
             $("#txt_area").val(area);
             $("#entcitas-num_dias_servicio").val(resp.txt_dias_servicio);
             $("#txt_tipo_entrega").val(entrega);
+
+            $("#entcitas-id_area").val(resp.id_area);
+            $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
         },
         error: function(){
             $("#txt_area").val('');
