@@ -92,7 +92,7 @@ class CitasController extends Controller
         $usuario = Yii::$app->user->identity;
 
         $model->id_area = $area->id_area;
-        $model->num_dias_servicio = $area->txt_dias_servicio;
+        $model->num_dias_servicio = '';
         $model->id_tipo_entrega = $area->id_tipo_entrega;
         $model->id_usuario = $usuario->id_usuario;
         $model->id_status = 1;

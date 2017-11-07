@@ -160,7 +160,30 @@ $this->registerJsFile(
 
         <div class="row">
             <div class="col-md-4">
-
+                <?php
+                    require(__DIR__ . '/../components/scriptSelect2.php');
+                    $url = Url::to(['estados/buscar-estado']);
+                    // render your widget
+                    echo $form->field($model, 'id_estado')->widget(Select2::classname(), [
+                        'initValueText' => empty($model->id_estado) ? '' : $estado->txt_nombre,
+                        'options' => ['placeholder' => 'Seleccionar equipo'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'minimumInputLength' => 1,
+                            'ajax' => [
+                                'url' => $url,
+                                'dataType' => 'json',
+                                'delay' => 250,
+                                'data' => new JsExpression('function(params) { return {q:params.term, page: params.page}; }'),
+                                'processResults' => new JsExpression($resultsJs),
+                                'cache' => true
+                            ],
+                            'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                        ],
+                    ]);
+                ?>
             </div>
             <div class="col-md-4">
                 <?= $form->field($model, 'txt_codigo_postal')->textInput(['maxlength' => true]) ?>
@@ -190,14 +213,14 @@ $this->registerJsFile(
         <div class="row">
             <div class="col-md-4">
                 <?=Html::label("Área", "txt_area")?>
-                <?=Html::textInput("txt_area", $area->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_area' ])?>
+                <?=Html::textInput("txt_area", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_area' ])?>
             </div>
             <div class="col-md-4">
                 <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, "disabled"=>"disabled"]) ?>
             </div>
             <div class="col-md-4">
                 <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
-                <?=Html::textInput("txt_tipo_entrega", $area->idTipoEntrega->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
+                <?=Html::textInput("txt_tipo_entrega", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
             </div>
         </div>
         <div class="row">

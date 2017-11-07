@@ -21,6 +21,17 @@ $(document).ready(function(){
         }
 
     });
+
+    $("#entcitas-id_estado").on("change", function(){
+        var id = $(this).val();
+
+        if(id){
+            buscarEstado(id);
+        }else{
+            limpiarCamposEstado();
+        }
+  
+    });
 });
 
 function buscarSim(id){
@@ -75,4 +86,32 @@ function buscarEquipo(id){
         }
 
     });
+}
+
+function buscarEstado(id){
+    $.ajax({
+        url: baseUrl+"estados/get-estado?id="+id,
+        success:function(resp){
+            var area = '';
+            var entrega = '';
+            if(resp.txt_nombre){
+                area = resp.txt_nombre;
+            }
+            if(resp.id_tipo_entrega){
+                entrega = 'Terrestre';
+            }
+            $("#txt_area").val(area);
+            $("#entcitas-num_dias_servicio").val(resp.txt_dias_servicio);
+            $("#txt_tipo_entrega").val(entrega);
+        },
+        error: function(){
+            $("#txt_area").val('');
+            $("#entcitas-num_dias_servicio").val('');
+            $("#txt_tipo_entrega").val('');           
+        }
+    });
+}
+
+function limpiarCamposEstado(){
+    $("#txt_area").val('');
 }
