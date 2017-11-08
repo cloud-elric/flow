@@ -76,7 +76,7 @@ class CatEstadosSearch extends CatEstados
     }
 
     public function searchEstados($params, $page=0){
-        $query = CatEstados::find();
+        $query = CatEstados::find()->where(['b_habilitado'=>1]);
 
         // add conditions that should always apply here
 
