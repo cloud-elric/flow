@@ -139,7 +139,7 @@ class CitasController extends Controller
                 'area' => $area,
                 'horarios'=>$horarios
             ]);
-        }
+        }           
     }
 
     /**
