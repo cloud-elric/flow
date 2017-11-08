@@ -114,13 +114,14 @@ $this->registerJsFile(
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
                     $url = Url::to(['equipos/buscar-equipo']);
+                    $valEquipo = empty($model->id_equipo) ? '' : $equipo->txt_nombre;
                     // render your widget
                     echo $form->field($model, 'id_equipo')->widget(Select2::classname(), [
-                        'initValueText' => empty($model->id_equipo) ? '' : $equipo->txt_nombre,
+                        'initValueText' => $valEquipo,
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'minimumInputLength' => 1,
+                            'minimumInputLength' => 4,
                             'ajax' => [
                                 'url' => $url,
                                 'dataType' => 'json',
@@ -131,7 +132,14 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) { 
+                                if(equipo.txt_nombre){
+                                    return equipo.txt_nombre; 
+                                }else{
+                                    return "'.$valEquipo.'"
+                                }
+                                
+                            }'),
                         ],
                     ]);
                 ?>                
@@ -150,13 +158,14 @@ $this->registerJsFile(
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
                     $url = Url::to(['sims-cards/buscar-sim']);
+                    $valSim = empty($model->id_sim_card) ? '' : $simCard->txt_nombre;
                     // render your widget
                     echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
-                        'initValueText' => empty($model->id_sim_card) ? '' : $simCard->txt_nombre,                    
+                        'initValueText' => $valSim,                    
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'minimumInputLength' => 1,
+                            'minimumInputLength' => 4,
                             'ajax' => [
                                 'url' => $url,
                                 'dataType' => 'json',
@@ -167,7 +176,13 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (sim) { 
+                                if(sim.txt_nombre){
+                                    return sim.txt_nombre; 
+                                }else{
+                                    return "'.$valSim.'"
+                                }
+                            }'),
                         ],
                     ]);
                 ?>  
