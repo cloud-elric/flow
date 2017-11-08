@@ -39,7 +39,7 @@ use \yii\helpers\Url;
             ?>
 
             <?php 
-            if(\Yii::$app->user->can('call-center')){
+            if(\Yii::$app->user->can(Yii::$app->params ['roles'] ['ejecutivoTelcel'])){
             ?>
             <li class="site-menu-category">Call center</li>
             <li class="site-menu-item has-sub">
@@ -61,7 +61,31 @@ use \yii\helpers\Url;
                     </a>
                     </li>
                 </ul>
-            </li> 
+            </li>  
+            <?php
+            }
+            
+            if(\Yii::$app->user->can(Yii::$app->params ['roles'] ['supervisorTelcel'])){?>
+            <li class="site-menu-item has-sub">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-users" aria-hidden="true"></i>
+                    <span class="site-menu-title">Usuarios</span>
+                    <span class="site-menu-arrow"></span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item">
+                    <a class="animsition-link" href="<?=Url::base()?>/usuarios/usuarios-call-center">
+                        <span class="site-menu-title">Listado de usuarios</span>
+                    </a>
+                    </li>
+                    
+                    <li class="site-menu-item">
+                    <a class="animsition-link" href="<?=Url::base()?>/usuarios/create-usuario-call-center">
+                        <span class="site-menu-title">Agregar nuevo usuario</span>
+                    </a>
+                    </li>
+                </ul>
+            </li>
             <?php
             }
             ?>
