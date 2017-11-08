@@ -33,7 +33,7 @@ class CitasController extends Controller
                      [
                          'actions' => ['create', 'index', 'update'],
                          'allow' => true,
-                         'roles' => ['call-center'],
+                         'roles' => [\Yii::$app->params ['roles'] ['ejecutivoTelcel']],
                      ],
                    
                  ],
