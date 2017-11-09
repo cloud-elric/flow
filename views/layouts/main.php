@@ -57,7 +57,10 @@ AppAsset::register($this);
         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         'options'=>['class'=>'breadcrumb breadcrumb-arrow']
       ]);?>
-      <div class="page-header-actions">
+      <div class="page-header-actions hidden-xs">
+        <?=isset($this->params['btnAcciones'])?$this->params['btnAcciones']:'';?>
+      </div>
+      <div class="col-md-12 text-center padding-top-10 visible-xs">
         <?=isset($this->params['btnAcciones'])?$this->params['btnAcciones']:'';?>
       </div>
     </div>
