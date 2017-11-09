@@ -125,7 +125,8 @@ class EntCitas extends \yii\db\ActiveRecord
             'txt_iccid'=>'ICCID',
             'txt_imei'=>'IMEI',
             'id_status'=>'Estatus de la cita',
-            'txt_motivo_cancelacion'=>'Motivo de rechazo'
+            'txt_motivo_cancelacion'=>'Motivo de rechazo',
+            'id_estado'=>'Estado de la república'
         ];
     }
 

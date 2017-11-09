@@ -8,6 +8,7 @@ use kartik\select2\Select2;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
+use kartik\depdrop\DepDrop;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -235,15 +236,38 @@ $this->registerJsFile(
             </div>
             <div class="col-md-4">
                 <?php
-               echo  $form->field($model, 'fch_hora_cita')
-                    ->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
-                    'language' => 'es',
-                    'options' => ['placeholder' => 'Seleccionar horario'],
-                    'pluginOptions' => [
-                        'allowClear' => true
+            //    echo  $form->field($model, 'fch_hora_cita')
+            //         ->widget(Select2::classname(), [
+            //         'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
+            //         'language' => 'es',
+            //         'options' => ['placeholder' => 'Seleccionar horario'],
+            //         'pluginOptions' => [
+            //             'allowClear' => true
+            //         ],
+            //     ]);
+
+            echo $form->field($model, 'fch_hora_cita')->widget(DepDrop::classname(), [
+                
+                'options' => ['placeholder' => 'Seleccionar ...'],
+                'type' => DepDrop::TYPE_SELECT2,
+                'select2Options'=>[
+                    'pluginOptions'=>[
+                        
+                        'allowClear'=>true,
+                        'escapeMarkup' => new JsExpression('function (markup) { 
+                            
+                            return markup; }'),
+                        'templateResult' => new JsExpression('formatRepo'),
                     ],
-                ]);
+                    ],
+                'pluginOptions'=>[
+                    'depends'=>['entcitas-id_area'],
+                    'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area']),
+                    'loadingText' => 'Cargando horarios ...',
+                   
+                ]
+                
+            ]);
                 ?>
             </div>
         </div>
