@@ -102,8 +102,8 @@ class CitasController extends Controller
         
         if ($model->load(Yii::$app->request->post())){
             $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
-            $horario = EntHorariosAreas::findOne($model->fch_hora_cita);
-            $model->fch_hora_cita = $horario->horario;
+            
+            //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
                 return $this->redirect(['view', 'token' => $model->txt_token]);
             }

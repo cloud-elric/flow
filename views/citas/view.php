@@ -228,7 +228,6 @@ $this->registerJsFile(
                 <?= $form->field($model, 'txt_colonia')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-4">
                 <?php
