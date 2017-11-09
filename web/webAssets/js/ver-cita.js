@@ -47,7 +47,27 @@ $(document).ready(function(){
         e.preventDefault();
         var token = $(this).data("token");
 
+
         swal({
+            title: "Estas seguro?",
+            text: "Estas actualizando este documento!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, actualizarlo!'
+          }).then(function () {
+            swal(
+              'Actualizado!',
+              'Se a actualizado este documento.',
+              'success'
+            )
+            $("#entcitas-num_dias_servicio").prop('disabled', false);
+            $('#w0').submit();
+          })
+
+
+        /*swal({
           title: "Estas seguro?",
           text: "Estas actualizando este documento!",
           icon: "warning",
@@ -63,7 +83,7 @@ $(document).ready(function(){
           } else {
             swal("Este documento no tiene cambios!");
           }
-        });
+        });*/
     });
 
     $("#js-btn-rechazar").on("click", function(e){
@@ -104,6 +124,17 @@ $(document).ready(function(){
       }
 
   });
+
+  $("#entcitas-id_estado").on("change", function(){
+    var id = $(this).val();
+
+    if(id){
+        buscarEstado(id);
+    }else{
+        limpiarCamposEstado();
+    }
+
+});
 
 });
 
@@ -159,4 +190,37 @@ function buscarEquipo(id){
       }
 
   });
+}
+
+function buscarEstado(id){
+    $.ajax({
+        url: baseUrl+"estados/get-estado?id="+id,
+        success:function(resp){
+            var area = '';
+            var entrega = '';
+            if(resp.txt_nombre){
+                area = resp.txt_nombre;
+            }
+            if(resp.id_tipo_entrega == 1){
+                entrega = 'Terrestre';
+            }else{
+                entrega = 'Aerea';
+            }
+            $("#txt_area").val(area);
+            $("#entcitas-num_dias_servicio").val(resp.txt_dias_servicio);
+            $("#txt_tipo_entrega").val(entrega);
+
+            $("#entcitas-id_area").val(resp.id_area);
+            $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
+        },
+        error: function(){
+            $("#txt_area").val('');
+            $("#entcitas-num_dias_servicio").val('');
+            $("#txt_tipo_entrega").val('');           
+        }
+    });
+}
+
+function limpiarCamposEstado(){
+    $("#txt_area").val('');
 }

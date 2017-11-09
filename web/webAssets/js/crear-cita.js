@@ -103,8 +103,10 @@ function buscarEstado(id){
             if(resp.txt_nombre){
                 area = resp.txt_nombre;
             }
-            if(resp.id_tipo_entrega){
+            if(resp.id_tipo_entrega == 1){
                 entrega = 'Terrestre';
+            }else{
+                entrega = 'Aerea';
             }
             $("#txt_area").val(area);
             $("#entcitas-num_dias_servicio").val(resp.txt_dias_servicio);
