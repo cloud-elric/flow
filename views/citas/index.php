@@ -3,12 +3,14 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 use app\components\CustomLinkSorter;
 use yii\widgets\Pjax;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\ModUsuarios\models\EntUsuariosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Citas';
+Yii::$app->view->params['btnAcciones'] = '<a class="btn btn-success" href="'.Url::base().'/citas/create"><i class="icon wb-plus"></i>Agregar</a>';
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'encode' => false];
 
 $this->registerCssFile(
@@ -20,7 +22,10 @@ $this->registerJsFile(
     '@web/webAssets/js/citas.js',
     ['depends' => [\app\assets\AppAsset::className()]]
 );
-?><?php Pjax::begin(['id' => 'citas', 'timeout'=>'0', 'linkSelector'=>'']) ?>
+?>
+
+
+<?php Pjax::begin(['id' => 'citas', 'timeout'=>'0', 'linkSelector'=>'']) ?>
 <div class="panel-group" id="exampleAccordionDefault" aria-multiselectable="true" role="tablist">
     <div class="panel">
         <div class="panel-heading" id="exampleHeadingDefaultOne" role="tab">

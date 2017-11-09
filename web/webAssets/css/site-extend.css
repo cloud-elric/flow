@@ -110,3 +110,7 @@ video{
     right: 0;
     left: 0;
 }
+
+.contenedor-acciones{
+    padding:10px;
+}
