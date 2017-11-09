@@ -10,6 +10,8 @@ use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
 use yii\bootstrap\Modal;
+use kartik\depdrop\DepDrop;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
 
@@ -249,7 +251,13 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) { 
+                                if(equipo.txt_nombre){
+                                    return equipo.txt_nombre; 
+                                }else{
+                                    return "'.$estado->txt_nombre.'"
+                                } 
+                            }'),
                         ],
                     ]);
                 ?>
@@ -283,6 +291,7 @@ $this->registerJsFile(
             <div class="col-md-4">
                 <?=Html::label("Área", "txt_area")?>
                 <?=Html::textInput("txt_area", $area->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_area' ])?>
+                <?= $form->field($model, 'id_area')->hiddenInput(['value' => $area->id_area])->label(false) ?>
             </div>
             <div class="col-md-4">
                 <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, "disabled"=>true]) ?>
@@ -302,14 +311,24 @@ $this->registerJsFile(
             </div>
             <div class="col-md-4">
                 <?php
-               echo  $form->field($model, 'fch_hora_cita')
-                    ->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
-                    'language' => 'es',
-                    'options' => ['placeholder' => 'Seleccionar horario'],
-                    'pluginOptions' => [
-                        'allowClear' => true
+                echo $form->field($model, 'fch_hora_cita')->widget(DepDrop::classname(), [
+                    'options' => ['placeholder' => 'Seleccionar ...'],
+                    'type' => DepDrop::TYPE_SELECT2,
+                    'select2Options'=>[
+                        'pluginOptions'=>[
+                            
+                            'allowClear'=>true,
+                            'escapeMarkup' => new JsExpression('function (markup) { 
+                                return markup; }'
+                            ),
+                            'templateResult' => new JsExpression('formatRepo'),
+                        ],
                     ],
+                    'pluginOptions'=>[
+                        'depends'=>['entcitas-id_area'],
+                        'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area?fecha='.$model->fch_hora_cita]),
+                        'loadingText' => 'Cargando horarios ...',  
+                    ]
                 ]);
                 ?>
             </div>

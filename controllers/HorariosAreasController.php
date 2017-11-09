@@ -124,7 +124,7 @@ class HorariosAreasController extends Controller
         }
     }
 
-    public function actionGetHorariosDisponibilidadByArea(){
+    public function actionGetHorariosDisponibilidadByArea($fecha = null){
 
         $out = [];
         if (isset($_POST['depdrop_parents'])) {
@@ -139,7 +139,7 @@ class HorariosAreasController extends Controller
                         'name' => $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'],
                         'cantidad'=>$disponibilidad['num_disponibles']];
                     if ($i == 0) {
-                        $selected = $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'];
+                        $selected = $fecha;
                     }
                 }
                 // Shows how you can preselect a value
