@@ -64,26 +64,7 @@ $(document).ready(function(){
             )
             $("#entcitas-num_dias_servicio").prop('disabled', false);
             $('#w0').submit();
-          })
-
-
-        /*swal({
-          title: "Estas seguro?",
-          text: "Estas actualizando este documento!",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
         })
-        .then((willDelete) => {
-          if (willDelete) {
-            swal("Actualizado! Se a actualizado este documento.", {
-              icon: "success",
-            });
-            $('#w0').submit();
-          } else {
-            swal("Este documento no tiene cambios!");
-          }
-        });*/
     });
 
     $("#js-btn-rechazar").on("click", function(e){
@@ -99,7 +80,6 @@ $(document).ready(function(){
         var token = $(this).data("token");
         
         $("#cita-cancelacion-modal").modal("show")
-          
     });
     
     
@@ -111,31 +91,33 @@ $(document).ready(function(){
       }else{
           limpiarCamposEquipo();
       }
+    });
 
-  });
+    $("#entcitas-id_sim_card").on("change", function(){
+        var id = $(this).val();
 
-  $("#entcitas-id_sim_card").on("change", function(){
-      var id = $(this).val();
+        if(id){
+            buscarSim(id);
+        }else{
+            limipiarCamposSim();
+        }
 
-      if(id){
-          buscarSim(id);
-      }else{
-          limipiarCamposSim();
-      }
+    });
 
-  });
+    $("#entcitas-id_estado").on("change", function(){
+        var id = $(this).val();
 
-  $("#entcitas-id_estado").on("change", function(){
-    var id = $(this).val();
+        if(id){
+            buscarEstado(id);
+        }else{
+            limpiarCamposEstado();
+        }
 
-    if(id){
-        buscarEstado(id);
-    }else{
-        limpiarCamposEstado();
-    }
-
+    });
 });
 
+$(window).on('load', function() {
+    $("#entcitas-id_area").trigger("change");
 });
 
 function buscarSim(id){
@@ -212,6 +194,7 @@ function buscarEstado(id){
 
             $("#entcitas-id_area").val(resp.id_area);
             $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
+            $("#entcitas-id_area").trigger("change");            
         },
         error: function(){
             $("#txt_area").val('');
