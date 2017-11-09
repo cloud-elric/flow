@@ -33,7 +33,7 @@ AppAsset::register($this);
       </script>
     <?php $this->head() ?>
 </head>
-<body class="site-menubar-unfold">
+<body class="site-navbar-small">
   <div class="animsition-loading"></div>
   <div class="animsition">
   <?php $this->beginBody() ?>
@@ -41,8 +41,8 @@ AppAsset::register($this);
   <!-- Navbar -->
   <?= $this->render("nav-bar") ?>
 
-  <!-- Side menu -->
-  <?= $this->render("side-menu") ?>
+  <!-- Top bar menu -->
+  <?= $this->render("top-bar-menu") ?>
 
   <!-- Page -->
   <div class="page">
@@ -57,11 +57,13 @@ AppAsset::register($this);
         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         'options'=>['class'=>'breadcrumb breadcrumb-arrow']
       ]);?>
-    </div>
-      <div class="page-content">
-        
-        <?= $content ?>
+      <div class="page-header-actions">
+        <?=isset($this->params['btnAcciones'])?$this->params['btnAcciones']:'';?>
       </div>
+    </div>
+    <div class="page-content">
+        <?= $content ?>
+    </div>
   </div>
   <!-- End Page -->
 

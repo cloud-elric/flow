@@ -102,7 +102,7 @@ class EntCitas extends \yii\db\ActiveRecord
     {
         return [
             'id_cita' => 'Id Cita',
-            'id_tipo_tramite' => 'Id Tipo Tramite',
+            'id_tipo_tramite' => 'Tipo de tramite',
             'id_equipo' => 'Id Equipo',
             'id_sim_card' => 'Id Sim Card',
             'id_area' => 'Id Area',

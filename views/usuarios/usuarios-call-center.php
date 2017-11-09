@@ -3,12 +3,14 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 use app\components\CustomLinkSorter;
 use yii\widgets\Pjax;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\ModUsuarios\models\EntUsuariosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Usuarios call center';
-$this->params['breadcrumbs'][] = $this->title;
+Yii::$app->view->params['btnAcciones'] = '<a class="btn btn-success" href="'.Url::base().'/usuarios/create-usuario-call-center"><i class="icon wb-user-add"></i>Agregar</a>';
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-users"></i>'.$this->title, 'encode' => false];
 
 $this->registerCssFile(
     '@web/webAssets/css/usuarios-call-center.css',

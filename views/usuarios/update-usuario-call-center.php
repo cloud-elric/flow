@@ -10,7 +10,8 @@ use yii\helpers\ArrayHelper;
 /* @var $model app\models\EntUsuarios */
 
 $this->title = 'Editar usuario:'.$model->nombreCompleto;
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-users"></i>Usuarios call center', 'url' => ['usuarios-call-center'], 'encode' => false];
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-edit"></i>'.$this->title, 'encode' => false];
 $this->registerCssFile(
   '@web/webAssets/css/signUp.css',
   ['depends' => [\yii\web\JqueryAsset::className()]]
@@ -74,7 +75,7 @@ $this->registerJsFile(
                 </div>    
 
                 <div class="form-group text-center">
-                    <?= Html::submitButton($model->isNewRecord ? 'Agregar usuario' : 'Actualizar información', ['class' => "btn btn-success"]) ?>
+                    <?= Html::submitButton($model->isNewRecord ? 'Agregar usuario' : '<i class="icon wb-edit"></i> Actualizar información', ['class' => "btn btn-success"]) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
