@@ -249,7 +249,13 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) { 
+                                if(equipo.txt_nombre){
+                                    return equipo.txt_nombre; 
+                                }else{
+                                    return "'.$estado->txt_nombre.'"
+                                } 
+                            }'),
                         ],
                     ]);
                 ?>
@@ -302,6 +308,7 @@ $this->registerJsFile(
             </div>
             <div class="col-md-4">
                 <?php
+                $horarios = $area->entHorariosAreas;                        
                echo  $form->field($model, 'fch_hora_cita')
                     ->widget(Select2::classname(), [
                     'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
