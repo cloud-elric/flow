@@ -12,6 +12,7 @@ use Yii;
  * @property string $txt_hora_inicial
  * @property string $txt_hora_final
  *
+ * @property EntDisponibilidadEnvio[] $entDisponibilidadEnvios
  * @property CatAreas $idArea
  */
 class EntHorariosAreas extends \yii\db\ActiveRecord
@@ -53,12 +54,20 @@ class EntHorariosAreas extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getEntDisponibilidadEnvios()
+    {
+        return $this->hasMany(EntDisponibilidadEnvio::className(), ['id_horarios_areas' => 'id_horario_area']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getIdArea()
     {
         return $this->hasOne(CatAreas::className(), ['id_area' => 'id_area']);
     }
 
-    public function getHorario(){
-        return $this->txt_hora_inicial." - ".$this->txt_hora_final;
+    public function getHorario(){ 
+        return $this->txt_hora_inicial." - ".$this->txt_hora_final; 
     }
 }

@@ -114,6 +114,7 @@ function buscarEstado(id){
 
             $("#entcitas-id_area").val(resp.id_area);
             $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
+            $("#entcitas-id_area").trigger("change");
         },
         error: function(){
             $("#txt_area").val('');
