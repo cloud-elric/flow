@@ -131,13 +131,11 @@ class CitasController extends Controller
     {
         $model = $this->findModel(['txt_token' => $token]);
         $area = CatAreas::find()->one();
-        $horarios = $area->entHorariosAreas;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->render('view', [
                 'model' => $model,
-                'area' => $area,
-                'horarios'=>$horarios
+                'area' => $area
             ]);
         }           
     }
