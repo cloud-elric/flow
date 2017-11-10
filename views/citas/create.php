@@ -242,7 +242,6 @@ $this->registerJsFile(
                         'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
                         'beforeShowDay' => false             
                     ],
-                    
                 ])
                 ?>
             </div>
