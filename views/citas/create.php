@@ -228,10 +228,22 @@ $this->registerJsFile(
         </div>
         <div class="row">
             <div class="col-md-4">
+                <?php
+                    $hoy = date("d-m-Y");
+                    $tresDias = date("d-m-Y", strtotime($hoy . '+4 day'));
+                ?>
                 <?= $form->field($model, 'fch_cita')->widget(\yii\jui\DatePicker::classname(), [
                     'language' => 'es',
                     'options'=>['class'=>'form-control'],
-                    'dateFormat' => 'dd-MM-yyyy', ])
+                    'dateFormat' => 'dd-MM-yyyy',
+                    'clientOptions' => [
+                        'minDate' => $tresDias, //date("d-m-Y")
+                        'dayNamesShort' => ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
+                        'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                        'beforeShowDay' => false             
+                    ],
+                    
+                ])
                 ?>
             </div>
             <div class="col-md-4">
