@@ -91,20 +91,19 @@ class CitasController extends Controller
         $area = CatAreas::find()->one();
         $usuario = Yii::$app->user->identity;
 
-        $model->id_area = $area->id_area;
-        $model->num_dias_servicio = $area->txt_dias_servicio;
-        $model->id_tipo_entrega = $area->id_tipo_entrega;
+        //$model->id_area = $area->id_area;
+        //$model->num_dias_servicio = '';
+        //$model->id_tipo_entrega = $area->id_tipo_entrega;
         $model->id_usuario = $usuario->id_usuario;
         $model->id_status = 1;
 
         $horarios = $area->entHorariosAreas;
         $model->txt_token = Utils::generateToken("cit_");
         
-        if ($model->load(Yii::$app->request->post())) {
-
+        if ($model->load(Yii::$app->request->post())){
             $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
-            $horario = EntHorariosAreas::findOne($model->fch_hora_cita);
-            $model->fch_hora_cita = $horario->horario;
+            
+            //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
                 return $this->redirect(['view', 'token' => $model->txt_token]);
             }
@@ -131,14 +130,14 @@ class CitasController extends Controller
     public function actionUpdate($token)
     {
         $model = $this->findModel(['txt_token' => $token]);
+        $area = CatAreas::find()->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id_cita]);
-        } else {
-            return $this->render('update', [
+            return $this->render('view', [
                 'model' => $model,
+                'area' => $area
             ]);
-        }
+        }           
     }
 
     /**
@@ -192,6 +191,8 @@ class CitasController extends Controller
                 }
             }
 
+        }else{
+            return ['status'=>'tiene envio'];
         }
 
         return ['status'=>'error'];

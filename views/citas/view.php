@@ -10,6 +10,8 @@ use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
 use yii\bootstrap\Modal;
+use kartik\depdrop\DepDrop;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
 
@@ -21,6 +23,7 @@ $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
 $status = $model->idStatus;
 $simCard = $model->idSimCard;
+$estado = $model->idEstado;
 
 $this->registerCssFile(
     '@web/webAssets/plugins/select2/select2.css',
@@ -74,7 +77,7 @@ $this->registerJsFile(
 </div>
 
 <div class="panel">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['action' =>['update?token=' . $model->txt_token]]); ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite
@@ -114,13 +117,14 @@ $this->registerJsFile(
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
                     $url = Url::to(['equipos/buscar-equipo']);
+                    $valEquipo = empty($model->id_equipo) ? '' : $equipo->txt_nombre;
                     // render your widget
                     echo $form->field($model, 'id_equipo')->widget(Select2::classname(), [
-                        'initValueText' => empty($model->id_equipo) ? '' : $equipo->txt_nombre,
+                        'initValueText' => $valEquipo,
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'minimumInputLength' => 1,
+                            'minimumInputLength' => 4,
                             'ajax' => [
                                 'url' => $url,
                                 'dataType' => 'json',
@@ -131,7 +135,14 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) { 
+                                if(equipo.txt_nombre){
+                                    return equipo.txt_nombre; 
+                                }else{
+                                    return "'.$valEquipo.'"
+                                }
+                                
+                            }'),
                         ],
                     ]);
                 ?>                
@@ -150,13 +161,14 @@ $this->registerJsFile(
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
                     $url = Url::to(['sims-cards/buscar-sim']);
+                    $valSim = empty($model->id_sim_card) ? '' : $simCard->txt_nombre;
                     // render your widget
                     echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
-                        'initValueText' => empty($model->id_sim_card) ? '' : $simCard->txt_nombre,                    
+                        'initValueText' => $valSim,                    
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'minimumInputLength' => 1,
+                            'minimumInputLength' => 4,
                             'ajax' => [
                                 'url' => $url,
                                 'dataType' => 'json',
@@ -167,7 +179,13 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (sim) { 
+                                if(sim.txt_nombre){
+                                    return sim.txt_nombre; 
+                                }else{
+                                    return "'.$valSim.'"
+                                }
+                            }'),
                         ],
                     ]);
                 ?>  
@@ -210,10 +228,38 @@ $this->registerJsFile(
                 <?= $form->field($model, 'txt_colonia')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-4">
-
+                <?php
+                    require(__DIR__ . '/../components/scriptSelect2.php');
+                    $url = Url::to(['estados/buscar-estado']);
+                    // render your widget
+                    echo $form->field($model, 'id_estado')->widget(Select2::classname(), [
+                        'initValueText' => empty($model->id_estado) ? '' : $estado->txt_nombre,
+                        'options' => ['placeholder' => 'Seleccionar equipo'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'minimumInputLength' => 3,
+                            'ajax' => [
+                                'url' => $url,
+                                'dataType' => 'json',
+                                'delay' => 250,
+                                'data' => new JsExpression('function(params) { return {q:params.term, page: params.page}; }'),
+                                'processResults' => new JsExpression($resultsJs),
+                                'cache' => true
+                            ],
+                            'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) { 
+                                if(equipo.txt_nombre){
+                                    return equipo.txt_nombre; 
+                                }else{
+                                    return "'.$estado->txt_nombre.'"
+                                } 
+                            }'),
+                        ],
+                    ]);
+                ?>
             </div>
             <div class="col-md-4">
                 <?= $form->field($model, 'txt_codigo_postal')->textInput(['maxlength' => true]) ?>
@@ -244,9 +290,10 @@ $this->registerJsFile(
             <div class="col-md-4">
                 <?=Html::label("Área", "txt_area")?>
                 <?=Html::textInput("txt_area", $area->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_area' ])?>
+                <?= $form->field($model, 'id_area')->hiddenInput(['value' => $area->id_area])->label(false) ?>
             </div>
             <div class="col-md-4">
-                <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, "disabled"=>"disabled"]) ?>
+                <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, "disabled"=>true]) ?>
             </div>
             <div class="col-md-4">
                 <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
@@ -255,29 +302,46 @@ $this->registerJsFile(
         </div>
         <div class="row">
             <div class="col-md-4">
+                <?php
+                    $hoy = date("d-m-Y");
+                    $tresDias = date("d-m-Y", strtotime($hoy . '+4 day'));
+                ?>
                 <?= $form->field($model, 'fch_cita')->widget(\yii\jui\DatePicker::classname(), [
                     'language' => 'es',
                     'options'=>['class'=>'form-control'],
-                    'dateFormat' => 'dd-MM-yyyy', ])
+                    'dateFormat' => 'dd-MM-yyyy', 
+                    'clientOptions' => [
+                        'minDate' => $tresDias, //date("d-m-Y")
+                        'dayNamesShort' => ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
+                        'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                        'beforeShowDay' => false             
+                    ],    
+                ])
                 ?>
             </div>
             <div class="col-md-4">
                 <?php
-               echo  $form->field($model, 'fch_hora_cita')
-                    ->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
-                    'language' => 'es',
-                    'options' => ['placeholder' => 'Seleccionar horario'],
-                    'pluginOptions' => [
-                        'allowClear' => true
+                echo $form->field($model, 'fch_hora_cita')->widget(DepDrop::classname(), [
+                    'options' => ['placeholder' => 'Seleccionar ...'],
+                    'type' => DepDrop::TYPE_SELECT2,
+                    'select2Options'=>[
+                        'pluginOptions'=>[
+                            
+                            'allowClear'=>true,
+                            'escapeMarkup' => new JsExpression('function (markup) { 
+                                return markup; }'
+                            ),
+                            'templateResult' => new JsExpression('formatRepo'),
+                        ],
                     ],
+                    'pluginOptions'=>[
+                        'depends'=>['entcitas-id_area'],
+                        'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area?fecha='.$model->fch_hora_cita]),
+                        'loadingText' => 'Cargando horarios ...',  
+                    ]
                 ]);
                 ?>
             </div>
-        </div>
-
-        <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? 'Crear cita' : 'Actualizar cita', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
     </div>
 

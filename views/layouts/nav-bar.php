@@ -7,7 +7,7 @@ if(!$usuario){
   $usuario = new EntUsuarios();
 }
 ?>
-<nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+<nav class="site-navbar navbar navbar-inverse navbar-fixed-top navbar-mega bg-purple-600" role="navigation">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle hamburger hamburger-close navbar-toggle-left hided"
       data-toggle="menubar">

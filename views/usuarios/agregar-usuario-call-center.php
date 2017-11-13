@@ -10,7 +10,8 @@ use yii\helpers\ArrayHelper;
 /* @var $model app\models\EntUsuarios */
 
 $this->title = 'Agregar usuario call center';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-users"></i>Usuarios call center', 'url' => ['usuarios-call-center'], 'encode' => false];
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-user-add"></i>'.$this->title, 'encode' => false];
 $this->registerCssFile(
   '@web/webAssets/css/signUp.css',
   ['depends' => [\yii\web\JqueryAsset::className()]]
@@ -20,6 +21,8 @@ $this->registerJsFile(
   '@web/webAssets/js/agregar-usuario-call-center.js',
   ['depends' => [\yii\web\JqueryAsset::className()]]
 );
+
+
 ?>
 <div class="row">
   <div class="col-md-12">
@@ -82,7 +85,7 @@ $this->registerJsFile(
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group text-center">
-                            <?= Html::submitButton('<span class="ladda-label">Guardar usuario</span>', ['class' => "btn btn-success ladda-button", "data-style"=>"zoom-in","id"=>"btn-guardar-usuario"]) ?>
+                            <?= Html::submitButton('<span class="ladda-label"><i class="icon wb-user-add"></i> Guardar usuario</span>', ['class' => "btn btn-success ladda-button", "data-style"=>"zoom-in","id"=>"btn-guardar-usuario"]) ?>
                         </div>
                     </div>
                 </div>
