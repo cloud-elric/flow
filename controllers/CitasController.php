@@ -191,6 +191,8 @@ class CitasController extends Controller
                 }
             }
 
+        }else{
+            return ['status'=>'tiene envio'];
         }
 
         return ['status'=>'error'];
