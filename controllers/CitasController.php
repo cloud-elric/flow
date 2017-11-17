@@ -105,7 +105,8 @@ class CitasController extends Controller
             
             //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
-                return $this->redirect(['view', 'token' => $model->txt_token]);
+                return $this->redirect(['index']);
+                //return $this->redirect(['view', 'token' => $model->txt_token]);
             }
 
             $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
