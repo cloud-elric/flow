@@ -48,6 +48,12 @@ class EntCitasSearch extends EntCitas
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'fch_cita' => SORT_DESC
+                ]
+            ],
+            
         ]);
 
         $this->load($params);
