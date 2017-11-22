@@ -14,6 +14,7 @@ use Yii;
  * @property string $txt_codigo_postal
  * @property boolean $b_habilitado
  *
+ * @property CatCodigosPostales $txtCodigoPostal
  * @property CatMunicipios $idMunicipio
  */
 class CatColonias extends \yii\db\ActiveRecord
@@ -38,6 +39,7 @@ class CatColonias extends \yii\db\ActiveRecord
             [['txt_nombre'], 'string', 'max' => 110],
             [['txt_descripcion'], 'string', 'max' => 2500],
             [['txt_codigo_postal'], 'string', 'max' => 5],
+            [['txt_codigo_postal'], 'exist', 'skipOnError' => true, 'targetClass' => CatCodigosPostales::className(), 'targetAttribute' => ['txt_codigo_postal' => 'txt_codigo_postal']],
             [['id_municipio'], 'exist', 'skipOnError' => true, 'targetClass' => CatMunicipios::className(), 'targetAttribute' => ['id_municipio' => 'id_municipio']],
         ];
     }
@@ -55,6 +57,14 @@ class CatColonias extends \yii\db\ActiveRecord
             'txt_codigo_postal' => 'Txt Codigo Postal',
             'b_habilitado' => 'B Habilitado',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTxtCodigoPostal()
+    {
+        return $this->hasOne(CatCodigosPostales::className(), ['txt_codigo_postal' => 'txt_codigo_postal']);
     }
 
     /**

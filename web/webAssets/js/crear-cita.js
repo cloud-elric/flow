@@ -10,6 +10,10 @@ $(document).ready(function(){
 
     });
 
+    $("#entcitas-txt_colonia").on("change", function(){
+        buscarMunicipioByColonia($(this).val());
+    });
+
 
     $("#entcitas-id_sim_card").on("change", function(){
         var id = $(this).val();
@@ -33,6 +37,20 @@ $(document).ready(function(){
   
     });
 });
+
+function buscarMunicipioByColonia(colonia){
+    $.ajax({
+        url: baseUrl+"municipios/get-municipio-by-colonia?colonia="+colonia,
+        success:function(resp){
+            $("#entcitas-txt_municipio").val(resp.municipio.txt_nombre);
+            $("#txt_municipio").val(resp.municipio.txt_nombre);
+            $("#entcitas-id_estado").val(resp.estado.id_estado);
+            $("#txt_estado").val(resp.estado.txt_nombre);
+            $("#entcitas-id_estado").trigger("change");
+            
+        }
+    });
+}
 
 function buscarSim(id){
     $.ajax({

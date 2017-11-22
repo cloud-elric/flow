@@ -221,22 +221,14 @@ $this->registerJsFile(
         </div>
 
         <div class="row">
-            <div class="col-md-8">
-                <?= $form->field($model, 'txt_calle_numero')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_colonia')->textInput(['maxlength' => true]) ?>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-4">
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
-                    $url = Url::to(['estados/buscar-estado']);
+                    $url = Url::to(['codigos-postales/buscar-codigo']);
                     // render your widget
-                    echo $form->field($model, 'id_estado')->widget(Select2::classname(), [
+                    echo $form->field($model, 'txt_codigo_postal')->widget(Select2::classname(), [
                         'initValueText' => empty($model->id_estado) ? '' : $estado->txt_nombre,
-                        'options' => ['placeholder' => 'Seleccionar equipo'],
+                        'options' => ['placeholder' => 'Seleccionar código postal'],
                         'pluginOptions' => [
                             'allowClear' => true,
                             'minimumInputLength' => 3,
@@ -250,23 +242,59 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { 
-                                if(equipo.txt_nombre){
-                                    return equipo.txt_nombre; 
-                                }else{
-                                    return "'.$estado->txt_nombre.'"
-                                } 
-                            }'),
+                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
                         ],
                     ]);
                 ?>
             </div>
             <div class="col-md-4">
-                <?= $form->field($model, 'txt_codigo_postal')->textInput(['maxlength' => true]) ?>
+                <?php 
+                    echo $form->field($model, 'txt_colonia')->widget(DepDrop::classname(), [
+                        'options' => ['placeholder' => 'Seleccionar ...'],
+                        'type' => DepDrop::TYPE_SELECT2,
+                        'select2Options'=>[
+                            'pluginOptions'=>[
+                                
+                                'allowClear'=>true,
+                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                'templateResult' => new JsExpression('function(colonia) {return colonia.text; }'),
+                                'templateSelection' => new JsExpression('function (colonia) { return colonia.text; }'),
+                            ],
+                            ],
+                        'pluginOptions'=>[
+                            'depends'=>['entcitas-txt_codigo_postal'],
+                            'url' => Url::to(['/codigos-postales/get-colonias-by-codigo-postal']),
+                            'loadingText' => 'Cargando colonias ...',
+                        
+                        ]
+                        
+                    ]);
+                    ?>
             </div>
             <div class="col-md-4">
-                <?= $form->field($model, 'txt_municipio')->textInput(['maxlength' => true]) ?>
+                <div class="form-group">
+                        <?=Html::label("Municipio", "txt_municipio", ['class'=>'control-label'])?>
+                        <?=Html::textInput("txt_municipio", '', ['class'=>'form-control','disabled'=>'disabled', 'id'=>'txt_municipio' ])?>
+                        <?= $form->field($model, 'txt_municipio')->hiddenInput(['maxlength' => true])->label(false) ?>
+                </div>
             </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group field-entcitas-txt_municipio">
+                        <?=Html::label("Estado", "txt_estado", ['class'=>'control-label'])?>
+                        <?=Html::textInput("txt_estado", '', ['class'=>'form-control','disabled'=>'disabled', 'id'=>'txt_estado' ])?>
+                        <?= $form->field($model, 'id_estado')->hiddenInput()->label(false)?>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <?= $form->field($model, 'txt_calle_numero')->textInput(['maxlength' => true]) ?>
+            </div>
+            <!-- <div class="col-md-4">
+                
+                
+            </div> -->
         </div>
 
         <div class="row">

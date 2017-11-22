@@ -14,6 +14,7 @@ use app\components\AccessControlExtend;
 use app\models\EntHorariosAreas;
 use app\models\EntEnvios;
 use \yii\web\Response;
+use app\models\CatColonias;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -103,6 +104,8 @@ class CitasController extends Controller
         if ($model->load(Yii::$app->request->post())){
             $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
             
+            $colonia = CatColonias::findOne($model->txt_colonia);
+            $model->txt_colonia = $colonia->txt_nombre;
             //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
                 return $this->redirect(['index']);
