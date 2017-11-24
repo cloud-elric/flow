@@ -28,3 +28,8 @@ phpunit.phar
 
 tests/_output/*
 tests/_support/_generated
+
+
+# codekit Files
+/web/webAssets/config.codekit3
+*.codekit3
