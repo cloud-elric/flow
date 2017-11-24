@@ -102,10 +102,19 @@ $(document).ready(function(){
         }
 
     });
+ 
+    $("#entcitas-txt_colonia").on("change", function(){
+        var id = $(this).val();
+        
+        if(id){
+            buscarMunicipioByColonia($(this).val());
+        }
+    });
 });
 
 $(window).on('load', function() {
     $("#entcitas-id_area").trigger("change");
+    $("#entcitas-txt_codigo_postal").trigger("change");   
 });
 
 function buscarSim(id){
@@ -182,7 +191,8 @@ function buscarEstado(id){
 
             $("#entcitas-id_area").val(resp.id_area);
             $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
-            $("#entcitas-id_area").trigger("change");            
+            $("#entcitas-id_area").trigger("change");         
+            $("#entcitas-txt_colonia").trigger("change");            
         },
         error: function(){
             $("#txt_area").val('');
@@ -194,4 +204,17 @@ function buscarEstado(id){
 
 function limpiarCamposEstado(){
     $("#txt_area").val('');
+}
+
+function buscarMunicipioByColonia(colonia){
+    $.ajax({
+        url: baseUrl+"municipios/get-municipio-by-colonia?colonia="+colonia,
+        success:function(resp){
+            console.log(resp);
+            $("#entcitas-txt_municipio").val(resp.municipio.txt_nombre);
+            $("#txt_municipio").val(resp.municipio.txt_nombre);
+            $("#entcitas-id_estado").val(resp.estado.id_estado);
+            $("#txt_estado").val(resp.estado.txt_nombre);
+        }
+    });
 }

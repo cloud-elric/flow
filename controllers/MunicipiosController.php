@@ -44,6 +44,7 @@ class MunicipiosController extends Controller
         $respuesta['status'] = "success";
         $respuesta['estado'] = $estado;
         $respuesta['municipio'] = $municipio;
+        $respuesta['colonia'] = $colonia;
 
         return $respuesta;
     }
