@@ -15,6 +15,7 @@ use Yii;
  * @property string $b_habilitado
  *
  * @property EntCitas[] $entCitas
+ * @property RelEquipoPlazoCosto[] $relEquipoPlazoCostos
  */
 class CatEquipos extends \yii\db\ActiveRecord
 {
@@ -63,5 +64,13 @@ class CatEquipos extends \yii\db\ActiveRecord
     public function getEntCitas()
     {
         return $this->hasMany(EntCitas::className(), ['id_equipo' => 'id_equipo']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRelEquipoPlazoCostos()
+    {
+        return $this->hasMany(RelEquipoPlazoCosto::className(), ['id_equipo' => 'id_equipo']);
     }
 }

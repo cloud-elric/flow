@@ -114,3 +114,7 @@ video{
 .contenedor-acciones{
     padding:10px;
 }
+
+.container-monto{
+    display:none;
+}

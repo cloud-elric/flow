@@ -26,7 +26,7 @@ class Utils {
 	 * @param unknown $string
 	 */
 	public static function changeFormatDateInput($string){
-		$date = date_create ($string );
+		$date = \DateTime::createFromFormat('d/m/Y', $string);
 		//$date->add(new \DateInterval('PT1H'));
 		return date_format ( $date, "Y-m-d H:i:s" );
 	}
