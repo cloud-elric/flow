@@ -15,6 +15,7 @@ use app\models\EntHorariosAreas;
 use app\models\EntEnvios;
 use \yii\web\Response;
 use app\models\CatColonias;
+use app\models\Constantes;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -88,28 +89,28 @@ class CitasController extends Controller
      */
     public function actionCreate()
     {
-        $model = new EntCitas();
-        $area = CatAreas::find()->one();
+        $model = new EntCitas(['scenario' => 'create']);
+        
         $usuario = Yii::$app->user->identity;
 
-        //$model->id_area = $area->id_area;
-        //$model->num_dias_servicio = '';
-        //$model->id_tipo_entrega = $area->id_tipo_entrega;
         $model->id_usuario = $usuario->id_usuario;
-        $model->id_status = 1;
+        $model->id_status = Constantes::PROCESO_VALIDACION;
 
-        $horarios = $area->entHorariosAreas;
         $model->txt_token = Utils::generateToken("cit_");
         
         if ($model->load(Yii::$app->request->post())){
-            $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
             
-            $colonia = CatColonias::findOne($model->txt_colonia);
-            $model->txt_colonia = $colonia->txt_nombre;
+            $model->fch_nacimiento = Utils::changeFormatDateInput($model->fch_nacimiento);
+            
+            // $colonia = CatColonias::findOne($model->txt_colonia);
+            // $model->txt_colonia = $colonia->txt_nombre;
             //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
                 return $this->redirect(['index']);
                 //return $this->redirect(['view', 'token' => $model->txt_token]);
+            }else{
+                print_r($model->errors);
+                exit;
             }
 
             $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
@@ -119,8 +120,6 @@ class CitasController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'area' => $area,
-            'horarios'=>$horarios
         ]);
         
     }

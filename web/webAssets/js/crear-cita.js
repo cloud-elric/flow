@@ -1,6 +1,32 @@
+var inputNombre = $("#entcitas-txt_nombre");
+var inputApellidoPaterno = $("#entcitas-txt_apellido_paterno");
+var inputApelllidoMaterno = $("#entcitas-txt_apellido_materno");
+var inputFchNacimiento = $("#entcitas-fch_nacimiento");
+var inputRFC = $("#entcitas-txt_rfc");
+
 $(document).ready(function(){
+
+    inputNombre.on("change", function(){
+        calculaRFC();
+    });
+
+    inputApellidoPaterno.on("change", function(){
+        calculaRFC();
+    });
+
+    inputApelllidoMaterno.on("change", function(){
+        calculaRFC();
+    });
+
+    inputFchNacimiento.on("change", function(){
+        calculaRFC();
+    });
+
     $("#entcitas-id_equipo").on("change", function(){
         var id = $(this).val();
+
+        getCostodiferidoEquipo();
+    
 
         if(id){
             buscarEquipo(id);
@@ -26,6 +52,17 @@ $(document).ready(function(){
 
     });
 
+    $("#entcitas-b_deposito_contra_entrega").on("change", function(){
+        //alert($(this).prop("checked"));
+        if($(this).prop("checked")){
+            $(".container-monto").show();
+        }else{
+            $(".container-monto").hide();
+            $("#entcitas-num_cantidad_deposito").val('');
+        }
+        
+    });
+
     $("#entcitas-id_estado").on("change", function(){
         var id = $(this).val();
 
@@ -36,6 +73,13 @@ $(document).ready(function(){
         }
   
     });
+
+    $("#entcitas-id_tipo_plan_tarifario").on("change", function(){
+        var idPlan = $(this).val();
+        
+        getCostoRenta(idPlan);
+    });
+
 });
 
 function buscarMunicipioByColonia(colonia){
@@ -112,6 +156,49 @@ function buscarEquipo(id){
     });
 }
 
+function getCostodiferidoEquipo(){
+
+    var equipo = $("#entcitas-id_equipo").val();
+    var planTarifario = $("#entcitas-id_tipo_plan_tarifario").val();
+    var plazo = $("#entcitas-id_plazo").val();
+
+    var data = {
+        idEquipo: equipo,
+        idPlanTarifario: planTarifario,
+        idPlazo: plazo,
+    };
+
+    $.ajax({
+        url: baseUrl+"equipos/get-costo-equipo",
+        method: "POST",
+        data: data,
+        success: function (res){
+            if(res.status=="success"){
+                $("#entcitas-num_costo_equipo").val(res.costo);
+                $("#costo_equipo").val(res.costo);
+            }else{
+                $("#entcitas-num_costo_equipo").val(0);
+                $("#costo_equipo").val(0);
+            }
+        }
+    });
+}
+
+function getCostoRenta(idPlanTarifario){
+    $.ajax({
+        url: baseUrl+"planes-tarifarios/get-costo-plan?idPlan="+idPlanTarifario,
+        success:function(res){
+            if(res.status=="success"){
+                $("#entcitas-num_costo_renta").val(res.costo);
+                $("#costo_renta").val(res.costo);
+            }else{
+                $("#entcitas-num_costo_renta").val(0);
+                $("#costo_renta").val(0);
+            }
+        }
+    });
+}
+
 function buscarEstado(id){
     $.ajax({
         url: baseUrl+"estados/get-estado?id="+id,
@@ -145,3 +232,43 @@ function buscarEstado(id){
 function limpiarCamposEstado(){
     $("#txt_area").val('');
 }
+
+function calculaRFC() {
+	function quitaArticulos(palabra) {
+		return palabra.replace("DEL ", "").replace("LAS ", "").replace("DE ",
+				"").replace("LA ", "").replace("Y ", "").replace("A ", "");
+	}
+	function esVocal(letra) {
+		if (letra == 'A' || letra == 'E' || letra == 'I' || letra == 'O'
+				|| letra == 'U' || letra == 'a' || letra == 'e' || letra == 'i'
+				|| letra == 'o' || letra == 'u')
+			return true;
+		else
+			return false;
+	}
+	nombre = inputNombre.val().toUpperCase();
+	apellidoPaterno = inputApellidoPaterno.val().toUpperCase();
+	apellidoMaterno = inputApelllidoMaterno.val().toUpperCase();
+	fecha = inputFchNacimiento.val();
+	var rfc = "";
+	apellidoPaterno = quitaArticulos(apellidoPaterno);
+	apellidoMaterno = quitaArticulos(apellidoMaterno);
+	rfc += apellidoPaterno.substr(0, 1);
+	var l = apellidoPaterno.length;
+	var c;
+	for (i = 0; i < l; i++) {
+		c = apellidoPaterno.charAt(i);
+		if (esVocal(c) && i>0) {
+			rfc += c;
+			break;
+		}
+	}
+	rfc += apellidoMaterno.substr(0, 1);
+	rfc += nombre.substr(0, 1);
+	rfc += fecha.substr(8, 10);
+	rfc += fecha.substr(3, 5).substr(0, 2);
+	rfc += fecha.substr(0, 2);
+	// rfc += "-" + homclave;
+	inputRFC.val(rfc);
+}
+
