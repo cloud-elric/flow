@@ -1,6 +1,7 @@
 <?php
 use app\modules\ModUsuarios\models\EntUsuarios;
 use \yii\helpers\Url;
+use app\models\Constantes;
 
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
@@ -59,9 +60,14 @@ switch ($model->id_status) {
         </button>
         <ul class="dropdown-menu dropdown-menu-info dropdown-menu-right">
             <li>
-                <a href="<?=Url::base()?>/citas/view?token=<?=$model->txt_token?>". data-token="<?=$model->txt_token?>">
+                <?php
+                if($model->id_status==Constantes::PROCESO_VALIDACION){
+                ?>
+                <a href="<?=Url::base()?>/citas/validar-credito?token=<?=$model->txt_token?>" data-token="<?=$model->txt_token?>">
                         Ver detalles
                 </a>
+                <?php 
+                }?>
             </li>
         </ul>
         </div>

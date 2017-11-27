@@ -109,17 +109,48 @@ class CitasController extends Controller
                 return $this->redirect(['index']);
                 //return $this->redirect(['view', 'token' => $model->txt_token]);
             }else{
-                print_r($model->errors);
+                //print_r($model->errors);
                 exit;
             }
 
-            $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
-            $model->fch_hora_cita = $horario->id_horario_area;
+            // $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
+            // $model->fch_hora_cita = $horario->id_horario_area;
             
         } 
 
         return $this->render('create', [
             'model' => $model,
+        ]);
+        
+    }
+
+    public function actionValidarCredito($token=null){
+        $usuario = Yii::$app->user->identity;
+        $citaAValidar = EntCitas::findOne(['txt_token'=>$token]);
+        $citaAValidar->id_usuario = $usuario->id_usuario;
+        $citaAValidar->scenario = 'create';
+        $citaAValidar->fch_nacimiento = Utils::changeFormatDate($citaAValidar->fch_nacimiento);
+
+        if ($citaAValidar->load(Yii::$app->request->post())){
+            
+            $citaAValidar->fch_nacimiento = Utils::changeFormatDateInput($citaAValidar->fch_nacimiento);
+            if($citaAValidar->txt_imei){
+                $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO;
+            }else{
+                $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO_SIN_IMEI;
+            }
+            
+            if($citaAValidar->save()){
+                return $this->redirect(['index']);
+                //return $this->redirect(['view', 'token' => $model->txt_token]);
+            }else{
+                //print_r($model->errors);
+                exit;
+            }
+        } 
+
+        return $this->render('validar-credito', [
+            'model' => $citaAValidar,
         ]);
         
     }
