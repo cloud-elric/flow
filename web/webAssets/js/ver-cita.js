@@ -102,10 +102,27 @@ $(document).ready(function(){
         }
 
     });
+
+    $("#entcitas-txt_colonia").on("change", function(){
+        var id = $(this).val();
+        
+        if(id){
+            buscarMunicipioByColonia($(this).val());
+        }
+    });
+
+    $("#entcitas-id_tipo_plan_tarifario").on("change", function(){
+        var idPlan = $(this).val();
+        
+        getCostoRenta(idPlan);
+        getCostodiferidoEquipo();
+    });
 });
 
 $(window).on('load', function() {
     $("#entcitas-id_area").trigger("change");
+    $("#entcitas-txt_codigo_postal").trigger("change");
+    $("#entcitas-id_tipo_plan_tarifario").trigger("change");      
 });
 
 function buscarSim(id){
@@ -195,3 +212,59 @@ function buscarEstado(id){
 function limpiarCamposEstado(){
     $("#txt_area").val('');
 }
+
+function getCostodiferidoEquipo(){
+    
+        var equipo = $("#entcitas-id_equipo").val();
+        var planTarifario = $("#entcitas-id_tipo_plan_tarifario").val();
+        var plazo = $("#entcitas-id_plazo").val();
+    
+        var data = {
+            idEquipo: equipo,
+            idPlanTarifario: planTarifario,
+            idPlazo: plazo,
+        };
+    
+        $.ajax({
+            url: baseUrl+"equipos/get-costo-equipo",
+            method: "POST",
+            data: data,
+            success: function (res){
+                if(res.status=="success"){
+                    $("#entcitas-num_costo_equipo").val(res.costo);
+                    $("#costo_equipo").val(res.costo);
+                }else{
+                    $("#entcitas-num_costo_equipo").val(0);
+                    $("#costo_equipo").val(0);
+                }
+            }
+        });
+    }
+    
+    function getCostoRenta(idPlanTarifario){
+        $.ajax({
+            url: baseUrl+"planes-tarifarios/get-costo-plan?idPlan="+idPlanTarifario,
+            success:function(res){
+                if(res.status=="success"){
+                    $("#entcitas-num_costo_renta").val(res.costo);
+                    $("#costo_renta").val(res.costo);
+                }else{
+                    $("#entcitas-num_costo_renta").val(0);
+                    $("#costo_renta").val(0);
+                }
+            }
+        });
+    }
+
+    function buscarMunicipioByColonia(colonia){
+        $.ajax({
+            url: baseUrl+"municipios/get-municipio-by-colonia?colonia="+colonia,
+            success:function(resp){
+                console.log(resp);
+                $("#entcitas-txt_municipio").val(resp.municipio.txt_nombre);
+                $("#txt_municipio").val(resp.municipio.txt_nombre);
+                $("#entcitas-id_estado").val(resp.estado.id_estado);
+                $("#txt_estado").val(resp.estado.txt_nombre);
+            }
+        });
+    }

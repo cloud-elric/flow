@@ -14,7 +14,12 @@ use kartik\depdrop\DepDrop;
 use kartik\date\DatePicker;
 use app\models\CatTiposClientes;
 use app\models\CatCondicionesPlan;
+use app\models\CatPlazos;
 use app\models\CatTiposIdentificaciones;
+use app\models\CatTiposPlanesTarifarios;
+use app\models\RelEquipoPlazoCosto;
+use app\models\RelCondicionPlanTarifario;
+use app\models\CatColonias;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -126,48 +131,54 @@ $this->registerJsFile(
             <?= $form->field($model, 'txt_rfc')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'id_tipo_tramite')
-                            ->widget(Select2::classname(), [
-                                'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tramite', 'txt_nombre'),
-                                'language' => 'es',
-                                'options' => ['placeholder' => 'Seleccionar tipo de trámite'],
-                                'pluginOptions' => [
-                                    'allowClear' => true
-                                ],
-                            ]);
+            <?= $form->field($model, 'id_tipo_tramite')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tramite', 'txt_nombre'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccionar tipo de trámite'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
             ?>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-3">
-            <?= $form->field($model, 'id_tipo_cliente')
-                                    ->widget(Select2::classname(), [
-                                        'data' => ArrayHelper::map(CatTiposClientes::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_cliente', 'txt_nombre'),
-                                        'language' => 'es',
-                                        'options' => ['placeholder' => 'Seleccionar tipo de cliente'],
-                                        'pluginOptions' => [
-                                            'allowClear' => true
-                                        ],
-                                    ]);
+            <?= $form->field($model, 'id_tipo_cliente')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(CatTiposClientes::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_cliente', 'txt_nombre'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccionar tipo de cliente'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
             ?>              
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'id_condicion_plan')
-                                        ->widget(Select2::classname(), [
-                                            'data' => ArrayHelper::map(CatCondicionesPlan::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_condicion_plan', 'txt_nombre'),
-                                            'language' => 'es',
-                                            'options' => ['placeholder' => 'Seleccionar condición del plan'],
-                                            'pluginOptions' => [
-                                                'allowClear' => true
-                                            ],
-                                        ]);
+            <?= $form->field($model, 'id_condicion_plan') ->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(CatCondicionesPlan::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_condicion_plan', 'txt_nombre'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccionar condición del plan'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
             ?> 
         </div>
         <div class="col-md-3">
             <?php 
+            //Generar array con id del plan tarifario
+            $idPlan = RelCondicionPlanTarifario::find()->where(['id_condicion_plan'=>$model->id_condicion_plan])->all();
+            $idPlanesTarifarios = [];
+            $i = 0;
+            foreach($idPlan as $plan){
+                $idPlanesTarifarios[$i] = $plan->id_plan_tarifario;
+                $i = $i + 1;
+            }
+
             echo $form->field($model, 'id_tipo_plan_tarifario')->widget(DepDrop::classname(), [
-                
+                'data'=> ArrayHelper::map(CatTiposPlanesTarifarios::find()->where(['in', 'id_tipo_plan', $idPlanesTarifarios])->all(), 'id_tipo_plan', 'txt_nombre'),
                 'options' => [],
                 'type' => DepDrop::TYPE_SELECT2,
                 'select2Options'=>[
@@ -193,7 +204,7 @@ $this->registerJsFile(
         <div class="col-md-3">
         <?php 
             echo $form->field($model, 'id_plazo')->widget(DepDrop::classname(), [
-                
+                'data'=> ArrayHelper::map(CatPlazos::find()->all(), 'id_plazo', 'txt_nombre'),                
                 'options' => [],
                 'type' => DepDrop::TYPE_SELECT2,
                 'select2Options'=>[
@@ -222,6 +233,7 @@ $this->registerJsFile(
             <?php
                 require(__DIR__ . '/../components/scriptSelect2.php');
                 $url = Url::to(['equipos/buscar-equipo']);
+                $valEquipo = empty($model->id_equipo) ? '' : $equipo->txt_nombre;                                    
                 //$equipo = empty($model->id_equipo) ? '' : CatEquipos::findOne($model->id_equipo)->txt_nombre;
                 // render your widget
                 echo $form->field($model, 'id_equipo')->widget(Select2::classname(), [
@@ -240,7 +252,13 @@ $this->registerJsFile(
                         ],
                         'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                         'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                        'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                        'templateSelection' => new JsExpression('function (equipo) { 
+                            if(equipo.txt_nombre){
+                                return equipo.txt_nombre; 
+                            }else{
+                                return "'.$valEquipo.'"
+                            }
+                         }'),
                     ],
                 ]);
             
@@ -248,7 +266,7 @@ $this->registerJsFile(
         </div>
         <div class="col-md-3">
             <?=Html::label("Descripción de equipo","descripcion_equipo")?>
-            <?=Html::textInput("descripcion_equipo", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_equipo'])?>
+            <?=Html::textInput("descripcion_equipo", $equipo->txt_descripcion, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_equipo'])?>
         </div>
         <div class="col-md-3">
             <div class="form-group">
@@ -373,7 +391,13 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) { 
+                                if(equipo.txt_nombre){
+                                    return equipo.txt_nombre;
+                                }else{
+                                    return "'.$model->txt_codigo_postal.'"
+                                }
+                             }'),
                         ],
                     ]);
                 ?>
@@ -381,6 +405,7 @@ $this->registerJsFile(
             <div class="col-md-4">
                 <?php 
                     echo $form->field($model, 'txt_colonia')->widget(DepDrop::classname(), [
+                        'data'=> ArrayHelper::map(CatColonias::find()->where(['txt_codigo_postal'=>$model->txt_codigo_postal])->all(), 'id_colonia', 'txt_nombre'),
                         'options' => ['placeholder' => 'Seleccionar ...'],
                         'type' => DepDrop::TYPE_SELECT2,
                         'select2Options'=>[
@@ -405,7 +430,7 @@ $this->registerJsFile(
             <div class="col-md-4">
                 <div class="form-group">
                         <?=Html::label("Municipio", "txt_municipio", ['class'=>'control-label'])?>
-                        <?=Html::textInput("txt_municipio", '', ['class'=>'form-control','disabled'=>'disabled', 'id'=>'txt_municipio' ])?>
+                        <?=Html::textInput("txt_municipio", $model->txt_municipio, ['class'=>'form-control','disabled'=>'disabled', 'id'=>'txt_municipio' ])?>
                         <?= $form->field($model, 'txt_municipio')->hiddenInput(['maxlength' => true])->label(false) ?>
                 </div>
             </div>
@@ -415,7 +440,7 @@ $this->registerJsFile(
             <div class="col-md-4">
                 <div class="form-group field-entcitas-txt_municipio">
                         <?=Html::label("Estado", "txt_estado", ['class'=>'control-label'])?>
-                        <?=Html::textInput("txt_estado", '', ['class'=>'form-control','disabled'=>'disabled', 'id'=>'txt_estado' ])?>
+                        <?=Html::textInput("txt_estado", $estado->txt_nombre, ['class'=>'form-control','disabled'=>'disabled', 'id'=>'txt_estado' ])?>
                         <?= $form->field($model, 'id_estado')->hiddenInput()->label(false)?>
                 </div>
             </div>
