@@ -232,12 +232,9 @@ $simCard = $model->idSimCard;
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <?php
-                    //$costoDiferido = RelEquipoPlazoCosto::find()->where(['id_tipo_plan_tarifario'=>$model->id_tipo_plan_tarifario])->andWhere(['id_plazo'=>$model->id_plazo])->one(); 
-                    ?>
                     <?=Html::label("Costo diferido del equipo","costo_equipo")?>
-                    <?=Html::textInput("costo_equipo", /*$costoDiferido->num_costo*/'', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'costo_equipo'])?>
-                    <?= $form->field($model, 'num_costo_equipo')->hiddenInput(['value'=>/*$costoDiferido->num_costo*/'', 'maxlength' => true, 'class'=>'form-control input-number'])->label(false) ?>
+                    <?=Html::textInput("costo_equipo", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'costo_equipo'])?>
+                    <?= $form->field($model, 'num_costo_equipo')->hiddenInput(['maxlength' => true, 'class'=>'form-control input-number'])->label(false) ?>
                 </div>    
             </div>
             <div class="col-md-3">
