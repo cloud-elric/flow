@@ -276,12 +276,6 @@ $this->registerJsFile(
                 <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <?= Html::submitButton('Pasar a autorización', ['class' => "btn-success btn-lg btn-block"]) ?>
-            </div>
-        </div>
         
         <div class="row">
             <div class="col-md-4">
@@ -303,9 +297,6 @@ $this->registerJsFile(
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4">
-                                       
-            </div>
             <div class="col-md-4">
                 <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
@@ -480,8 +471,10 @@ $this->registerJsFile(
             </div>
         </div>
 
-        <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? 'Crear cita' : 'Actualizar cita', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <?= Html::submitButton('Actualizar información', ['class' => "btn-success btn-lg btn-block"]) ?>
+            </div>
         </div>
     </div>
     <?php

@@ -18,9 +18,16 @@ use app\models\CatTiposIdentificaciones;
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
 
-$this->title = 'Validar crédito';
+$this->title = 'Autorizar crédito';
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'url' => ['index'], 'encode' => false];
-$this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Validar cita', 'encode' => false];
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Autorizar crédito', 'encode' => false];
+
+$tramite = $model->idTipoTramite;
+$equipo = $model->idEquipo;
+$status = $model->idStatus;
+$simCard = $model->idSimCard;
+$estado = $model->idEstado;
+
 
 $this->registerCssFile(
     '@web/webAssets/plugins/select2/select2.css',
@@ -276,12 +283,6 @@ $this->registerJsFile(
                 <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <?= Html::submitButton('Validar y guardar información', ['class' => "btn-success btn-lg btn-block"]) ?>
-            </div>
-        </div>
         
         <div class="row">
             <div class="col-md-4">
@@ -292,9 +293,7 @@ $this->registerJsFile(
             </div>  
         </div>
     </div>
-    <?php
-    if(!$model->isNewRecord && false){
-    ?>
+    
     <div class="panel-heading">
         <h2 class="panel-title">  
                 Información de contacto
@@ -303,9 +302,7 @@ $this->registerJsFile(
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4">
-                                       
-            </div>
+            
             <div class="col-md-4">
                 <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
@@ -336,7 +333,7 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) {return equipo.txt_nombre; }'),
                         ],
                     ]);
                 ?>
@@ -484,8 +481,5 @@ $this->registerJsFile(
             <?= Html::submitButton($model->isNewRecord ? 'Crear cita' : 'Actualizar cita', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
     </div>
-    <?php
-    }
-    ?>
     <?php ActiveForm::end(); ?>
 </div>
