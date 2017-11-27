@@ -13,7 +13,7 @@ class Utils {
 	 */
 	public static function changeFormatDate($string) {
 		$date = date_create ($string );
-		return date_format ( $date, "d-M-Y" );
+		return date_format ( $date, "d/m/Y" );
 	}
 
 	public static function changeFormatDateInputShort($string) {
