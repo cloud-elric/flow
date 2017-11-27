@@ -14,6 +14,10 @@ use app\models\CatTiposClientes;
 use app\models\CatCondicionesPlan;
 use kartik\date\DatePicker;
 use app\models\CatTiposIdentificaciones;
+use app\models\CatPlazos;
+use app\models\CatTiposPlanesTarifarios;
+use app\models\RelEquipoPlazoCosto;
+use app\models\RelCondicionPlanTarifario;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -38,6 +42,9 @@ $this->registerJsFile(
     '@web/webAssets/js/crear-cita.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
+
+$equipo = $model->idEquipo;
+$simCard = $model->idSimCard;
 ?>
 
 <div class="panel">
@@ -86,48 +93,54 @@ $this->registerJsFile(
                 <?= $form->field($model, 'txt_rfc')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col-md-3">
-                <?= $form->field($model, 'id_tipo_tramite')
-                                ->widget(Select2::classname(), [
-                                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tramite', 'txt_nombre'),
-                                    'language' => 'es',
-                                    'options' => ['placeholder' => 'Seleccionar tipo de trámite'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true
-                                    ],
-                                ]);
+                <?= $form->field($model, 'id_tipo_tramite')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tramite', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar tipo de trámite'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
                 ?>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-3">
-                <?= $form->field($model, 'id_tipo_cliente')
-                                        ->widget(Select2::classname(), [
-                                            'data' => ArrayHelper::map(CatTiposClientes::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_cliente', 'txt_nombre'),
-                                            'language' => 'es',
-                                            'options' => ['placeholder' => 'Seleccionar tipo de cliente'],
-                                            'pluginOptions' => [
-                                                'allowClear' => true
-                                            ],
-                                        ]);
+                <?= $form->field($model, 'id_tipo_cliente') ->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatTiposClientes::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_cliente', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar tipo de cliente'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
                 ?>              
             </div>
             <div class="col-md-3">
-                <?= $form->field($model, 'id_condicion_plan')
-                                            ->widget(Select2::classname(), [
-                                                'data' => ArrayHelper::map(CatCondicionesPlan::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_condicion_plan', 'txt_nombre'),
-                                                'language' => 'es',
-                                                'options' => ['placeholder' => 'Seleccionar condición del plan'],
-                                                'pluginOptions' => [
-                                                    'allowClear' => true
-                                                ],
-                                            ]);
+                <?= $form->field($model, 'id_condicion_plan')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatCondicionesPlan::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_condicion_plan', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar condición del plan'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
                 ?> 
             </div>
             <div class="col-md-3">
-                <?php 
+                <?php
+                //Generar array con id del plan tarifario
+                $idPlan = RelCondicionPlanTarifario::find()->where(['id_condicion_plan'=>$model->id_condicion_plan])->all();
+                $idPlanesTarifarios = [];
+                $i = 0;
+                foreach($idPlan as $plan){
+                    $idPlanesTarifarios[$i] = $plan->id_plan_tarifario;
+                    $i = $i + 1;
+                }
+
                 echo $form->field($model, 'id_tipo_plan_tarifario')->widget(DepDrop::classname(), [
-                    
+                    'data'=> ArrayHelper::map(CatTiposPlanesTarifarios::find()->where(['in', 'id_tipo_plan', $idPlanesTarifarios])->all(), 'id_tipo_plan', 'txt_nombre'),
                     'options' => [],
                     'type' => DepDrop::TYPE_SELECT2,
                     'select2Options'=>[
@@ -153,7 +166,7 @@ $this->registerJsFile(
             <div class="col-md-3">
             <?php 
                 echo $form->field($model, 'id_plazo')->widget(DepDrop::classname(), [
-                    
+                    'data'=> ArrayHelper::map(CatPlazos::find()->all(), 'id_plazo', 'txt_nombre'),
                     'options' => [],
                     'type' => DepDrop::TYPE_SELECT2,
                     'select2Options'=>[
@@ -182,10 +195,11 @@ $this->registerJsFile(
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
                     $url = Url::to(['equipos/buscar-equipo']);
+                    $valEquipo = empty($model->id_equipo) ? '' : $equipo->txt_nombre;                    
                     //$equipo = empty($model->id_equipo) ? '' : CatEquipos::findOne($model->id_equipo)->txt_nombre;
                     // render your widget
                     echo $form->field($model, 'id_equipo')->widget(Select2::classname(), [
-                        //'initValueText' => $cityDesc,
+                        'initValueText' => $valEquipo,                        
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -200,7 +214,13 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (equipo) {
+                                if(equipo.txt_nombre){
+                                    return equipo.txt_nombre; 
+                                }else{
+                                    return "'.$valEquipo.'"
+                                }
+                            }'),
                         ],
                     ]);
                 
@@ -208,13 +228,16 @@ $this->registerJsFile(
             </div>
             <div class="col-md-3">
                 <?=Html::label("Descripción de equipo","descripcion_equipo")?>
-                <?=Html::textInput("descripcion_equipo", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_equipo'])?>
+                <?=Html::textInput("descripcion_equipo", $equipo->txt_descripcion, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_equipo'])?>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
+                    <?php
+                    //$costoDiferido = RelEquipoPlazoCosto::find()->where(['id_tipo_plan_tarifario'=>$model->id_tipo_plan_tarifario])->andWhere(['id_plazo'=>$model->id_plazo])->one(); 
+                    ?>
                     <?=Html::label("Costo diferido del equipo","costo_equipo")?>
-                    <?=Html::textInput("costo_equipo", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'costo_equipo'])?>
-                    <?= $form->field($model, 'num_costo_equipo')->hiddenInput(['maxlength' => true, 'class'=>'form-control input-number'])->label(false) ?>
+                    <?=Html::textInput("costo_equipo", /*$costoDiferido->num_costo*/'', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'costo_equipo'])?>
+                    <?= $form->field($model, 'num_costo_equipo')->hiddenInput(['value'=>/*$costoDiferido->num_costo*/'', 'maxlength' => true, 'class'=>'form-control input-number'])->label(false) ?>
                 </div>    
             </div>
             <div class="col-md-3">
@@ -235,8 +258,10 @@ $this->registerJsFile(
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
                     $url = Url::to(['sims-cards/buscar-sim']);
+                    $valSim = empty($model->id_sim_card) ? '' : $simCard->txt_nombre;                    
                     // render your widget
                     echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
+                        'initValueText' => $valSim,                        
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -251,7 +276,13 @@ $this->registerJsFile(
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
+                            'templateSelection' => new JsExpression('function (sim) { 
+                                if(sim.txt_nombre){
+                                    return sim.txt_nombre; 
+                                }else{
+                                    return "'.$valSim.'"
+                                }
+                            }'),
                         ],
                     ]);
                     
@@ -259,7 +290,7 @@ $this->registerJsFile(
             </div>
             <div class="col-md-3">
                 <?=Html::label("Descripción SIM Card", "descripcion_sim_card")?>
-                <?=Html::textInput("descripcion_sim_card", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
+                <?=Html::textInput("descripcion_sim_card", $simCard->txt_descripcion, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
             </div>
         </div>
 
@@ -268,15 +299,14 @@ $this->registerJsFile(
                 <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
             </div>
             <div class="col-md-3">
-                <?= $form->field($model, 'id_tipo_identificacion')
-                                            ->widget(Select2::classname(), [
-                                                'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
-                                                'language' => 'es',
-                                                'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
-                                                'pluginOptions' => [
-                                                    'allowClear' => true
-                                                ],
-                                            ]);
+                <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
                 ?>
             </div>
             <div class="col-md-3">

@@ -272,4 +272,8 @@ class CitasController extends Controller
         }
        
     }
+
+    public function datos($id_usuario, $id_cita, $comentario){
+
+    }
 }

@@ -78,8 +78,13 @@ $(document).ready(function(){
         var idPlan = $(this).val();
         
         getCostoRenta(idPlan);
+        getCostodiferidoEquipo();
     });
 
+});
+
+$(window).on('load', function() {
+    $("#entcitas-id_tipo_plan_tarifario").trigger("change");  
 });
 
 function buscarMunicipioByColonia(colonia){
