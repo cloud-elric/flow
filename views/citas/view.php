@@ -341,15 +341,7 @@ $this->registerJsFile(
         </h2>
     </div>
     <div class="panel-body">
-        <div class="row">
-            
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
-            </div>
-        </div>
+        
 
         <div class="row">
             <div class="col-md-4">
@@ -434,6 +426,16 @@ $this->registerJsFile(
             </div>
             <div class="col-md-6">
                 <?= $form->field($model, 'txt_observaciones_punto_referencia')->textInput(['maxlength' => true]) ?>
+            </div>
+        </div>
+
+        <div class="row">
+            
+            <div class="col-md-4">
+                <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+            <div class="col-md-4">
+                <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
         </div>
     </div>

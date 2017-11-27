@@ -118,3 +118,15 @@ video{
 .container-monto{
     display:none;
 }
+
+footer img{
+    max-height: 20px;
+    margin-right: 30px;
+}
+
+.site-footer {
+    height: 44px;
+    padding: 10px 30px;
+    background-color: rgb(146, 109, 222);
+    border-top: 1px solid #e4eaec;
+}

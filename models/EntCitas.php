@@ -103,7 +103,9 @@ class EntCitas extends \yii\db\ActiveRecord
             //         return $('#entcitas-b_deposito_contra_entrega').prop('checked');
             //     }"
 			// ],
-            [['id_usuario', 'id_status', 'txt_token', 'txt_nombre', 'txt_apellido_paterno', 'txt_apellido_materno', 'txt_telefono', 'txt_email', 'fch_nacimiento', 'txt_rfc', 'id_tipo_tramite', 'id_tipo_cliente', 'id_condicion_plan', 'id_tipo_plan_tarifario', 'id_plazo', 'id_equipo', 'num_costo_equipo',  'id_sim_card', 'txt_iccid', 'id_tipo_identificacion', 'txt_folio_identificacion'], 'required', 'on'=>'create'],
+            [['id_usuario', 'id_status', 'txt_token', 'txt_nombre', 'txt_apellido_paterno', 'txt_apellido_materno', 'txt_telefono', 'txt_email', 
+                'fch_nacimiento', 'txt_rfc', 'id_tipo_tramite', 'id_tipo_cliente', 'id_condicion_plan', 'id_tipo_plan_tarifario', 
+                'id_plazo', 'id_equipo', 'num_costo_equipo'], 'required', 'on'=>'create'],
             [['txt_email'], 'email'],
             [['id_tipo_tramite','id_estado',  'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 'txt_token', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita'], 'required', 'on'=>'aprobar'],
             [['id_tipo_tramite', 'id_equipo','id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'id_estado', 'id_envio'], 'integer'],
@@ -175,9 +177,9 @@ class EntCitas extends \yii\db\ActiveRecord
             'txt_nombre' => 'Nombre',
             'txt_apellido_paterno' => 'Apellido paterno',
             'txt_apellido_materno' => 'Apellido materno',
-            'txt_numero_referencia' => 'Número de referencia',
-            'txt_numero_referencia_2' => 'Número de referencia 2',
-            'txt_numero_referencia_3' => 'Número de referencia 3',
+            'txt_numero_referencia' => 'Número teléfonico de referencia',
+            'txt_numero_referencia_2' => 'Número teléfonico de referencia 2',
+            'txt_numero_referencia_3' => 'Número teléfonico de referencia 3',
             'txt_calle_numero' => 'Nombre de la calle y número',
             'txt_colonia' => 'Colonia',
             'txt_codigo_postal' => 'C.P.',
