@@ -73,7 +73,9 @@ class CitasController extends Controller
     {
         $model = EntCitas::find()->where(['txt_token'=>$token])->one();
         $area = CatAreas::find()->one();
-        $horarios = $area->entHorariosAreas;        
+        $horarios = $area->entHorariosAreas;  
+        
+        $model->fch_nacimiento = Utils::changeFormatDate($model->fch_nacimiento);
 
         return $this->render('view', [
             'model' => $model,
@@ -128,10 +130,13 @@ class CitasController extends Controller
         $usuario = Yii::$app->user->identity;
         $citaAValidar = EntCitas::findOne(['txt_token'=>$token]);
         $citaAValidar->id_usuario = $usuario->id_usuario;
-        $citaAValidar->scenario = 'create';
+        $citaAValidar->scenario = 'aprobar';
         $citaAValidar->fch_nacimiento = Utils::changeFormatDate($citaAValidar->fch_nacimiento);
 
         if ($citaAValidar->load(Yii::$app->request->post())){
+
+            $colonia = CatColonias::findOne($citaAValidar->txt_colonia);
+            $citaAValidar->txt_colonia = $colonia->txt_nombre;
             
             $citaAValidar->fch_nacimiento = Utils::changeFormatDateInput($citaAValidar->fch_nacimiento);
             if($citaAValidar->txt_imei){
@@ -206,7 +211,7 @@ class CitasController extends Controller
     public function actionAutorizar($token = null)
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $statusAutorizar = 3;
+        $statusAutorizar = Constantes::AUTORIZADO_POR_SUPERVISOR;
         $cita = $this->findModel(['txt_token' => $token]);
 
         if(!$cita->id_envio){
@@ -234,7 +239,7 @@ class CitasController extends Controller
 
     public function actionRechazar($token=null)
     {
-        $statusRechazar = 4;
+        $statusRechazar = Constantes::RECHAZADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
         if($cita && $cita->load(Yii::$app->request->post())){
@@ -252,7 +257,7 @@ class CitasController extends Controller
 
     public function actionCancelar()
     {
-        $statusCancelar = 5;
+        $statusCancelar = Constantes::CANCELADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
         if($cita && $cita->load(Yii::$app->request->post())){
