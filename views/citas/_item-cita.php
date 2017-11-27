@@ -23,7 +23,16 @@ switch ($model->id_status) {
         break;
     case '5':
         $statusColor = 'danger';
-    break;        
+    break;  
+    case '6':
+        $statusColor = 'danger';
+    break;  
+    case '7':
+        $statusColor = 'danger';
+    break;   
+    case '8':
+        $statusColor = 'danger';
+    break;      
     default:
         # code...
         break;
