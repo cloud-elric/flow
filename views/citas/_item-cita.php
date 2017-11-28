@@ -10,28 +10,28 @@ $statusColor = '';
 
 switch ($model->id_status) {
     case '1':
-        $statusColor = 'default';
+        $statusColor = 'warning';
         break;
     case '2':
-        $statusColor = 'primary';
+        $statusColor = ' bg-brown-800';
         break;
     case '3':
-        $statusColor = 'success';
+        $statusColor = ' bg-blue-800';
         break;    
     case '4':
-        $statusColor = 'warning';
+        $statusColor = 'danger';
         break;
     case '5':
         $statusColor = 'danger';
     break;  
     case '6':
-        $statusColor = 'danger';
+        $statusColor = ' bg-blue-800';
     break;  
     case '7':
-        $statusColor = 'danger';
+        $statusColor = 'success';
     break;   
     case '8':
-        $statusColor = 'danger';
+        $statusColor = 'success';
     break;      
     default:
         # code...
