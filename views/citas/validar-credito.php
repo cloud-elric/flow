@@ -18,6 +18,7 @@ use app\models\CatPlazos;
 use app\models\CatTiposPlanesTarifarios;
 use app\models\RelEquipoPlazoCosto;
 use app\models\RelCondicionPlanTarifario;
+use app\models\CatTiposDepositosGarantia;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -243,7 +244,38 @@ $simCard = $model->idSimCard;
                 <?= $form->field($model, 'num_costo_renta')->hiddenInput(['maxlength' => true, 'class'=>'form-control input-number'])->label(false) ?>
             </div>
         </div>
+
+        <div class="js-pago-contraentrega">
+            <div class="row">
+                <div class="col-md-3">
+                    <?= $form->field($model, 'id_tipo_deposito_garantia')
+                                                ->widget(Select2::classname(), [
+                                                    'data' => ArrayHelper::map(CatTiposDepositosGarantia::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_deposito_garantia', 'txt_nombre'),
+                                                    'language' => 'es',
+                                                    'options' => ['placeholder' => 'Seleccionar condición del plan'],
+                                                    'pluginOptions' => [
+                                                        'allowClear' => true
+                                                    ],
+                                                ]);
+                    ?>
+                </div>              
+                <div class="col-md-3">
+                <?=$form->field($model, 'num_monto_cod', ['template'=>'<div class="container-monto" style="'.($model->id_tipo_deposito_garantia==2?'display:block':'').'">{label}{input}{error}</div>'])->textInput(["class"=>'form-control input-number'])?>
+                </div>  
+            </div>
+        </div>
+
+       
         
+    </div>
+
+    <div class="panel-heading">
+        <h2 class="panel-title">  
+                Información adicional de equipo
+                <hr>
+        </h2>
+    </div>
+    <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_telefonico_nuevo')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
@@ -255,10 +287,8 @@ $simCard = $model->idSimCard;
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
                     $url = Url::to(['sims-cards/buscar-sim']);
-                    $valSim = empty($model->id_sim_card) ? '' : $simCard->txt_nombre;                    
                     // render your widget
                     echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
-                        'initValueText' => $valSim,                        
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -273,13 +303,7 @@ $simCard = $model->idSimCard;
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                             'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (sim) { 
-                                if(sim.txt_nombre){
-                                    return sim.txt_nombre; 
-                                }else{
-                                    return "'.$valSim.'"
-                                }
-                            }'),
+                            'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
                         ],
                     ]);
                     
@@ -287,38 +311,16 @@ $simCard = $model->idSimCard;
             </div>
             <div class="col-md-3">
                 <?=Html::label("Descripción SIM Card", "descripcion_sim_card")?>
-                <?=Html::textInput("descripcion_sim_card", $simCard->txt_descripcion, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
+                <?=Html::textInput("descripcion_sim_card", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-3">
-                <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
-                    'language' => 'es',
-                    'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]);
-                ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
             </div>
         </div>
         
-        <div class="row">
-            <div class="col-md-4">
-              
-            </div>              
-            <div class="col-md-4">
-                <?=$form->field($model, 'num_cantidad_deposito', ['template'=>'<div class="container-monto">{label}{input}{error}</div>'])->textInput(["class"=>'form-control input-number'])?>
-            </div>  
-        </div>
     </div>
     
     <div class="panel-heading">
@@ -328,16 +330,6 @@ $simCard = $model->idSimCard;
         </h2>
     </div>
     <div class="panel-body">
-        <div class="row">
-            
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-md-4">
                 <?php
@@ -421,6 +413,16 @@ $simCard = $model->idSimCard;
             </div>
             <div class="col-md-6">
                 <?= $form->field($model, 'txt_observaciones_punto_referencia')->textInput(['maxlength' => true]) ?>
+            </div>
+        </div>
+
+        <div class="row">
+            
+            <div class="col-md-4">
+                <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+            <div class="col-md-4">
+                <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
         </div>
     </div>

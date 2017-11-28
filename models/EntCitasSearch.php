@@ -50,7 +50,7 @@ class EntCitasSearch extends EntCitas
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'fch_cita' => SORT_DESC
+                    'fch_creacion' => \SORT_DESC
                 ]
             ],
             
