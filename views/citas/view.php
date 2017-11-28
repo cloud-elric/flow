@@ -52,14 +52,14 @@ $this->registerJsFile(
             <h4>
                 Estatus de cita: <span class="js-status-cita"><?=$status->txt_nombre?></span>
                 <div class="pull-right">
+                    <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
+                        <i class="icon fa-refresh"></i> Actualizar
+                    </a>
                     <?php
                     if(\Yii::$app->user->can('supervisor-call-center')){
                     ?>
                     <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-check"></i> Autorizar
-                    </a>
-                    <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
-                        <i class="icon fa-refresh"></i> Actualizar
                     </a>
                     <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-times"></i> Rechazar

@@ -76,16 +76,20 @@ switch ($model->id_status) {
                         Ver detalles
                 </a>
                 <?php 
-                }?>
-
-                <?php
-                if($model->id_status==Constantes::CONTRATO_AUTORIZADO || $model->id_status==Constantes::CONTRATO_AUTORIZADO_SIN_IMEI){
+                }else if($model->id_status==Constantes::CONTRATO_AUTORIZADO || $model->id_status==Constantes::CONTRATO_AUTORIZADO_SIN_IMEI){
                 ?>
                 <a href="<?=Url::base()?>/citas/view?token=<?=$model->txt_token?>" data-token="<?=$model->txt_token?>">
                         Ver detalles
                 </a>
                 <?php 
-                }?>
+                }else {?>
+
+                <a href="<?=Url::base()?>/citas/view?token=<?=$model->txt_token?>" data-token="<?=$model->txt_token?>">
+                        Ver detalles
+                </a>
+                <?php 
+                }
+                ?>
 
             </li>
         </ul>
