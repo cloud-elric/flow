@@ -293,8 +293,10 @@ $this->registerJsFile(
             <?php
                 require(__DIR__ . '/../components/scriptSelect2.php');
                 $url = Url::to(['sims-cards/buscar-sim']);
+                $valSim = empty($model->id_sim_card) ? '' : $simCard->txt_nombre;
                 // render your widget
                 echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
+                    'initValueText' => $valSim,
                     'options' => ['placeholder' => 'Seleccionar equipo'],
                     'pluginOptions' => [
                         'allowClear' => true,
@@ -309,7 +311,13 @@ $this->registerJsFile(
                         ],
                         'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                         'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                        'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
+                        'templateSelection' => new JsExpression('function (sim) { 
+                            if(sim.txt_nombre){
+                                return sim.txt_nombre; 
+                            }else{
+                                return "'.$valSim.'"
+                            }
+                         }'),
                     ],
                 ]);
                 
@@ -395,6 +403,7 @@ $this->registerJsFile(
                 ?>
             </div>
             <div class="col-md-4">
+                <input id="texto_colonia" type="hidden" name="colonia" value="<?= $model->txt_colonia ?>">
                 <?php 
                     echo $form->field($model, 'txt_colonia')->widget(DepDrop::classname(), [
                         'data'=> ArrayHelper::map(CatColonias::find()->where(['txt_codigo_postal'=>$model->txt_codigo_postal])->all(), 'id_colonia', 'txt_nombre'),
@@ -411,11 +420,9 @@ $this->registerJsFile(
                             ],
                         'pluginOptions'=>[
                             'depends'=>['entcitas-txt_codigo_postal'],
-                            'url' => Url::to(['/codigos-postales/get-colonias-by-codigo-postal']),
+                            'url' => Url::to(['/codigos-postales/get-colonias-by-codigo-postal?code='.$model->txt_codigo_postal]),
                             'loadingText' => 'Cargando colonias ...',
-                        
                         ]
-                        
                     ]);
                     ?>
             </div>

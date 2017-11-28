@@ -117,6 +117,10 @@ $(document).ready(function(){
         getCostoRenta(idPlan);
         getCostodiferidoEquipo();
     });
+
+    //Seleccionar colonia en select
+    var idColonia = $('#entcitas-txt_colonia option').filter(function () { return $(this).html() == $("#texto_colonia").val(); }).val();    
+    $("#entcitas-txt_colonia").val(idColonia).change();
 });
 
 $(window).on('load', function() {
@@ -199,7 +203,8 @@ function buscarEstado(id){
 
             $("#entcitas-id_area").val(resp.id_area);
             $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
-            $("#entcitas-id_area").trigger("change");            
+            $("#entcitas-id_area").trigger("change");
+            $("#entcitas-txt_colonia").trigger("change");           
         },
         error: function(){
             $("#txt_area").val('');
