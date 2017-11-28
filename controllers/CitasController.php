@@ -171,11 +171,15 @@ class CitasController extends Controller
         $model = $this->findModel(['txt_token' => $token]);
         $area = CatAreas::find()->one();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->render('view', [
-                'model' => $model,
-                'area' => $area
-            ]);
+        if ($model->load(Yii::$app->request->post())){
+            $colonia = CatColonias::findOne($model->txt_colonia);
+            $model->txt_colonia = $colonia->txt_nombre;
+            if($model->save()){
+                return $this->render('view', [
+                    'model' => $model,
+                    'area' => $area
+                ]);
+            }
         }           
     }
 
