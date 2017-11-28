@@ -42,6 +42,35 @@ var formatRepo = function (repo) {
     
     return '<div style="overflow:hidden;">' + markup + '</div>';
 };
+
+
+var formatRepoPlan = function (repo) {
+    var ajaxResults = $('#entcitas-id_tipo_plan_tarifario').depdrop('getAjaxResults');
+    var cantidadDisponible = 0;
+   
+    if (repo.loading) {
+        return repo.text;
+    }
+
+
+    if(!repo.loading){
+        for($i=0; $i<ajaxResults["output"].length; $i++){
+
+            if(ajaxResults["output"][$i]['id'] == repo.id){
+                cantidadDisponible = ajaxResults["output"][$i]['cantidad'];
+            }
+        }
+    }
+    var markup =
+'<div class="row">' + 
+    '<div class="col-md-8">' +
+        '<b style="margin-left:5px">' + repo.text + '</b>' + 
+    '</div>' +
+    '<div class="col-md-4">' + cantidadDisponible + '</div>' +
+'</div>';
+    
+    return '<div style="overflow:hidden;">' + markup + '</div>';
+};
 JS;
  
 // Register the formatting script

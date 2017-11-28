@@ -1,6 +1,7 @@
 <?php
 use app\modules\ModUsuarios\models\EntUsuarios;
 use \yii\helpers\Url;
+use app\models\Constantes;
 
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
@@ -9,20 +10,29 @@ $statusColor = '';
 
 switch ($model->id_status) {
     case '1':
-        $statusColor = 'default';
+        $statusColor = 'warning';
         break;
     case '2':
-        $statusColor = 'primary';
+        $statusColor = ' bg-brown-800';
         break;
     case '3':
-        $statusColor = 'success';
+        $statusColor = ' bg-blue-800';
         break;    
     case '4':
-        $statusColor = 'warning';
+        $statusColor = 'danger';
         break;
     case '5':
         $statusColor = 'danger';
-    break;        
+    break;  
+    case '6':
+        $statusColor = ' bg-blue-800';
+    break;  
+    case '7':
+        $statusColor = 'success';
+    break;   
+    case '8':
+        $statusColor = 'success';
+    break;      
     default:
         # code...
         break;
@@ -59,9 +69,28 @@ switch ($model->id_status) {
         </button>
         <ul class="dropdown-menu dropdown-menu-info dropdown-menu-right">
             <li>
-                <a href="<?=Url::base()?>/citas/view?token=<?=$model->txt_token?>". data-token="<?=$model->txt_token?>">
+                <?php
+                if($model->id_status==Constantes::PROCESO_VALIDACION){
+                ?>
+                <a href="<?=Url::base()?>/citas/validar-credito?token=<?=$model->txt_token?>" data-token="<?=$model->txt_token?>">
                         Ver detalles
                 </a>
+                <?php 
+                }else if($model->id_status==Constantes::CONTRATO_AUTORIZADO || $model->id_status==Constantes::CONTRATO_AUTORIZADO_SIN_IMEI){
+                ?>
+                <a href="<?=Url::base()?>/citas/view?token=<?=$model->txt_token?>" data-token="<?=$model->txt_token?>">
+                        Ver detalles
+                </a>
+                <?php 
+                }else {?>
+
+                <a href="<?=Url::base()?>/citas/view?token=<?=$model->txt_token?>" data-token="<?=$model->txt_token?>">
+                        Ver detalles
+                </a>
+                <?php 
+                }
+                ?>
+
             </li>
         </ul>
         </div>

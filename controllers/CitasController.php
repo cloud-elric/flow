@@ -15,6 +15,7 @@ use app\models\EntHorariosAreas;
 use app\models\EntEnvios;
 use \yii\web\Response;
 use app\models\CatColonias;
+use app\models\Constantes;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -72,7 +73,9 @@ class CitasController extends Controller
     {
         $model = EntCitas::find()->where(['txt_token'=>$token])->one();
         $area = CatAreas::find()->one();
-        $horarios = $area->entHorariosAreas;        
+        $horarios = $area->entHorariosAreas;  
+        
+        $model->fch_nacimiento = Utils::changeFormatDate($model->fch_nacimiento);
 
         return $this->render('view', [
             'model' => $model,
@@ -88,39 +91,71 @@ class CitasController extends Controller
      */
     public function actionCreate()
     {
-        $model = new EntCitas();
-        $area = CatAreas::find()->one();
+        $model = new EntCitas(['scenario' => 'create']);
+        
         $usuario = Yii::$app->user->identity;
 
-        //$model->id_area = $area->id_area;
-        //$model->num_dias_servicio = '';
-        //$model->id_tipo_entrega = $area->id_tipo_entrega;
         $model->id_usuario = $usuario->id_usuario;
-        $model->id_status = 1;
+        $model->id_status = Constantes::PROCESO_VALIDACION;
 
-        $horarios = $area->entHorariosAreas;
         $model->txt_token = Utils::generateToken("cit_");
         
         if ($model->load(Yii::$app->request->post())){
-            $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
             
-            $colonia = CatColonias::findOne($model->txt_colonia);
-            $model->txt_colonia = $colonia->txt_nombre;
+            $model->fch_nacimiento = Utils::changeFormatDateInput($model->fch_nacimiento);
+            
+            // $colonia = CatColonias::findOne($model->txt_colonia);
+            // $model->txt_colonia = $colonia->txt_nombre;
             //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
                 return $this->redirect(['index']);
                 //return $this->redirect(['view', 'token' => $model->txt_token]);
+            }else{
+                //print_r($model->errors);
+                exit;
             }
 
-            $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
-            $model->fch_hora_cita = $horario->id_horario_area;
+            // $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
+            // $model->fch_hora_cita = $horario->id_horario_area;
             
         } 
 
         return $this->render('create', [
             'model' => $model,
-            'area' => $area,
-            'horarios'=>$horarios
+        ]);
+        
+    }
+
+    public function actionValidarCredito($token=null){
+        $usuario = Yii::$app->user->identity;
+        $citaAValidar = EntCitas::findOne(['txt_token'=>$token]);
+        $citaAValidar->id_usuario = $usuario->id_usuario;
+        $citaAValidar->scenario = 'aprobar';
+        $citaAValidar->fch_nacimiento = Utils::changeFormatDate($citaAValidar->fch_nacimiento);
+
+        if ($citaAValidar->load(Yii::$app->request->post())){
+
+            $colonia = CatColonias::findOne($citaAValidar->txt_colonia);
+            $citaAValidar->txt_colonia = $colonia->txt_nombre;
+            
+            $citaAValidar->fch_nacimiento = Utils::changeFormatDateInput($citaAValidar->fch_nacimiento);
+            if($citaAValidar->txt_imei){
+                $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO;
+            }else{
+                $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO_SIN_IMEI;
+            }
+            
+            if($citaAValidar->save()){
+                return $this->redirect(['index']);
+                //return $this->redirect(['view', 'token' => $model->txt_token]);
+            }else{
+                print_r($citaAValidar->errors);
+                exit;
+            }
+        } 
+
+        return $this->render('validar-credito', [
+            'model' => $citaAValidar,
         ]);
         
     }
@@ -176,7 +211,7 @@ class CitasController extends Controller
     public function actionAutorizar($token = null)
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $statusAutorizar = 3;
+        $statusAutorizar = Constantes::AUTORIZADO_POR_SUPERVISOR;
         $cita = $this->findModel(['txt_token' => $token]);
 
         if(!$cita->id_envio){
@@ -204,7 +239,7 @@ class CitasController extends Controller
 
     public function actionRechazar($token=null)
     {
-        $statusRechazar = 4;
+        $statusRechazar = Constantes::RECHAZADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
         if($cita && $cita->load(Yii::$app->request->post())){
@@ -222,7 +257,7 @@ class CitasController extends Controller
 
     public function actionCancelar()
     {
-        $statusCancelar = 5;
+        $statusCancelar = Constantes::CANCELADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
         if($cita && $cita->load(Yii::$app->request->post())){
@@ -236,5 +271,9 @@ class CitasController extends Controller
             }
         }
        
+    }
+
+    public function datos($id_usuario, $id_cita, $comentario){
+
     }
 }

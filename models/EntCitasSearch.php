@@ -20,7 +20,7 @@ class EntCitasSearch extends EntCitas
     {
         return [
             [['id_cita', 'id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status'], 'integer'],
-            [['num_dias_servicio', 'txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_clave_sim_card', 'txt_descripcion_sim', 'txt_serie_sim_card', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
+            [['num_dias_servicio', 'txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_clave_sim_card', 'txt_descripcion_sim', 'txt_serie_sim_card',  'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
         ];
     }
 
@@ -50,7 +50,7 @@ class EntCitasSearch extends EntCitas
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'fch_cita' => SORT_DESC
+                    'fch_creacion' => \SORT_DESC
                 ]
             ],
             
@@ -93,7 +93,7 @@ class EntCitasSearch extends EntCitas
             ->andFilterWhere(['like', 'txt_clave_sim_card', $this->txt_clave_sim_card])
             ->andFilterWhere(['like', 'txt_descripcion_sim', $this->txt_descripcion_sim])
             ->andFilterWhere(['like', 'txt_serie_sim_card', $this->txt_serie_sim_card])
-            ->andFilterWhere(['like', 'txt_nombre_completo_cliente', $this->txt_nombre_completo_cliente])
+            
             ->andFilterWhere(['like', 'txt_numero_referencia', $this->txt_numero_referencia])
             ->andFilterWhere(['like', 'txt_numero_referencia_2', $this->txt_numero_referencia_2])
             ->andFilterWhere(['like', 'txt_numero_referencia_3', $this->txt_numero_referencia_3])
