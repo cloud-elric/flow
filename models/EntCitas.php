@@ -94,18 +94,18 @@ class EntCitas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            // [
-			// 	['num_cantidad_deposito'], 'required',
-			// 	'when' => function ($model) {
-			// 		return $model->b_deposito_contra_entrega!=null;
-			// 	}, 'whenClient' => "function (attribute, value) {
+            [
+				['num_monto_cod'], 'required',
+			 	'when' => function ($model) {
+			 		return $model->id_tipo_deposito_garantia==2;
+			 	}, 'whenClient' => "function (attribute, value) {
                     
-            //         return $('#entcitas-b_deposito_contra_entrega').prop('checked');
-            //     }"
-			// ],
+                     return $('#entcitas-id_tipo_deposito_garantia').val()==2;
+                 }"
+			],
             [['id_usuario', 'id_status', 'txt_token', 'txt_nombre', 'txt_apellido_paterno', 'txt_apellido_materno', 'txt_telefono', 'txt_email', 
                 'fch_nacimiento', 'txt_rfc', 'id_tipo_tramite', 'id_tipo_cliente', 'id_condicion_plan', 'id_tipo_plan_tarifario', 
-                'id_plazo', 'id_equipo', 'num_costo_equipo'], 'required', 'on'=>'create'],
+                'id_plazo', 'id_equipo', 'num_costo_equipo', 'id_tipo_deposito_garantia'], 'required', 'on'=>'create'],
             [['txt_email'], 'email'],
             [['id_tipo_tramite','id_estado',  'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 'txt_token', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita'], 'required', 'on'=>'aprobar'],
             [['id_tipo_tramite', 'id_equipo','id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'id_estado', 'id_envio'], 'integer'],

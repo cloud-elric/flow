@@ -149,7 +149,7 @@ class CitasController extends Controller
                 return $this->redirect(['index']);
                 //return $this->redirect(['view', 'token' => $model->txt_token]);
             }else{
-                //print_r($model->errors);
+                print_r($citaAValidar->errors);
                 exit;
             }
         } 

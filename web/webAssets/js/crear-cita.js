@@ -74,6 +74,17 @@ $(document).ready(function(){
   
     });
 
+    $("#entcitas-id_tipo_deposito_garantia").on("change", function(){
+        
+        if($(this).val()==2){
+            $("#entcitas-num_monto_cod").val($("#entcitas-num_costo_equipo").val());    
+            $(".container-monto").show();
+        }else{
+            $("#entcitas-num_monto_cod").val(0);
+            $(".container-monto").hide();
+        }
+    });
+
     $("#entcitas-id_tipo_plan_tarifario").on("change", function(){
         var idPlan = $(this).val();
         
@@ -181,9 +192,16 @@ function getCostodiferidoEquipo(){
             if(res.status=="success"){
                 $("#entcitas-num_costo_equipo").val(res.costo);
                 $("#costo_equipo").val(res.costo);
+
+                if(res.costo==0){
+                    $("#costo_equipo").val("Gratuito");
+                    $(".js-pago-contraentrega").hide();
+                }else{
+                    $(".js-pago-contraentrega").show();
+                }
             }else{
                 $("#entcitas-num_costo_equipo").val(0);
-                $("#costo_equipo").val(0);
+                $("#costo_equipo").val("");
             }
         }
     });
@@ -196,9 +214,10 @@ function getCostoRenta(idPlanTarifario){
             if(res.status=="success"){
                 $("#entcitas-num_costo_renta").val(res.costo);
                 $("#costo_renta").val(res.costo);
+
             }else{
-                $("#entcitas-num_costo_renta").val(0);
-                $("#costo_renta").val(0);
+                $("#entcitas-num_costo_renta").val();
+                $("#costo_renta").val("");
             }
         }
     });

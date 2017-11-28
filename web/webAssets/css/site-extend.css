@@ -130,3 +130,7 @@ footer img{
     background-color: rgb(146, 109, 222);
     border-top: 1px solid #e4eaec;
 }
+
+.js-pago-contraentrega{
+    display:none;
+}
