@@ -19,6 +19,17 @@ class LoginForm extends Model {
 	private $_user = false;
 	
 	/**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Nombre de Usuario',
+            'password' => 'Contraseña'
+        ];
+    }
+
+	/**
 	 *
 	 * @return array the validation rules.
 	 */

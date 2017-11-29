@@ -47,7 +47,7 @@ class ManagerController extends Controller {
         ];
     }
 
-	public $layout = "@app/views/layouts/mainBlank";
+	public $layout = "@app/views/layouts/plain";
 	
 	/**
 	 * Registrar usuario en la base de datos
@@ -210,7 +210,7 @@ class ManagerController extends Controller {
 			
 			return $this->goBack ();
 		}
-		return $this->render ( 'login', [ 
+		return $this->render ( 'login-page', [ 
 				'model' => $model 
 		] );
 	}
@@ -222,59 +222,7 @@ class ManagerController extends Controller {
 		return $this->render('profile', ['model'=>$usuario]);
 	}
 	
-	/**
-	 * Callback para facebook
-	 */
-	public function actionCallbackFacebook() {
-		$fb = new FacebookI ();
-		
-		// Obtenemos la respuesta de facebook
-		$data = $fb->recoveryDataUserJavaScript ();
-		
-		// Si no existe la informacion enviada de facebook
-		if (gettype ( $data ) == "string") {
-			if ($data == "error" || empty ( $data )) {
-				$this->redirect ( [ 
-						'site/login' 
-				] );
-			}
-		}
-		
-		// asi podemos obtener sus datos de los amigos
-		// foreach($data['friendsInApp'] as $key=>$value){
-		// 	$value->id;
-		// 	$value->name;
-		// }
-		
-		// Buscamos al usuario por email
-		$existUsuario = EntUsuarios::findByEmail ( $data ['profile'] ['email'] );
-		
-		// Si no existe creamos su cuenta
-		if (! $existUsuario) {
-			$entUsuario = new EntUsuarios ();
-			$entUsuario->addDataFromFaceBook ( $data );
-			
-			$existUsuario = $entUsuario->signup (true);
-		}
-		
-		// Buscamos si existe la cuenta de facebook en la base de datos
-		$existUsuarioFacebook = EntUsuariosFacebook::getUsuarioFaceBookByIdFacebook ( $data ['profile'] ['id'] );
-		
-		// Si no existe
-		if (! $existUsuarioFacebook) {
-			$existUsuarioFacebook = new EntUsuariosFacebook ();
-		}
-		$existUsuarioFacebook->id_usuario = $existUsuario->id_usuario;
-		$usuarioGuardado = $existUsuarioFacebook->saveDataFacebook ( $data );
-		
-		if (Yii::$app->getUser ()->login ( $existUsuario )) {
-			return $this->goHome ();
-		}
-	}
-	public function actionTest() {
-		$utils = new Utils ();
-		$utils->sendEmailActivacion ();
-	}
+	
 	
 	/**
 	 * Busca la peticion de cambio de contraseña por el token

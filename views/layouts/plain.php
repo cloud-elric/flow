@@ -1,7 +1,7 @@
 <?php
-use app\assets\AppAsset;
+use app\assets\AppAssetsLogin;
 
-AppAsset::register($this);
+AppAssetsLogin::register($this);
 
 ?>
 

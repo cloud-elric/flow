@@ -13,6 +13,9 @@ use app\components\AccessControlExtend;
 
 class SiteController extends Controller
 {
+
+    public $layout = "mainTopBar";
+
     /**
      * @inheritdoc
      */

@@ -3,18 +3,18 @@
 
 $(document).ready(function() {
     // Animación entre pantallas
-      $(".animsition").animsition({
-        transition: function(url){},
-        loading : false
-      });
+      // $(".animsition").animsition({
+      //   transition: function(url){},
+      //   loading : false
+      // });
       
-      $('.animsition').on('animsition.inStart', function() {
-        $(".animsition-loading").hide();
-      });
+      // $('.animsition').on('animsition.inStart', function() {
+      //   $(".animsition-loading").hide();
+      // });
     
-      $('.animsition').on('animsition.outStart', function() {
-        $(".animsition-loading").show();
-      });
+      // $('.animsition').on('animsition.outStart', function() {
+      //   $(".animsition-loading").show();
+      // });
   
       // Cargador en todos los botones con la clase ladda
       // $(".ladda-button").on("click", function(e){
@@ -73,7 +73,7 @@ $(document).ready(function() {
   
   // Lanza la animación siempre que se cambie las pantallas
   window.onbeforeunload = function(){
-    $('.animsition').animsition('out', $('.animsition'), '');
+    // $('.animsition').animsition('out', $('.animsition'), '');
   }
   
   
