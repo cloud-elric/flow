@@ -56,6 +56,8 @@ class EntCitasSearch extends EntCitas
             
         ]);
 
+        
+
         $this->load($params);
 
         if($this->fch_cita){

@@ -49,7 +49,7 @@ $simCard = $model->idSimCard;
 ?>
 
 <div class="panel">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id'=>'form-cita']); ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite
@@ -441,7 +441,9 @@ $simCard = $model->idSimCard;
                 <?= $form->field($model, 'id_area')->hiddenInput()->label(false) ?>
             </div>
             <div class="col-md-4">
-                <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, 'class' => 'form-control', 'disabled' => true]) ?>
+                <?=Html::label("Días de servicio", "num_dias_servicio")?>
+                <?=Html::textInput("num_dias_servicio", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'num_dias_servicio' ])?>
+                <?= $form->field($model, 'num_dias_servicio')->hiddenInput(['maxlength' => true, 'class' => 'form-control'])->label(false) ?>
             </div>
             <div class="col-md-4">
                 <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
@@ -506,8 +508,10 @@ $simCard = $model->idSimCard;
             </div>
         </div>
 
-        <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? 'Crear cita' : 'Actualizar cita', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <?= Html::submitButton('<span class="ladda-label">Validar crédito</span>', ["data-style"=>"zoom-in" ,'class' => "btn-success btn-lg btn-block ladda-button", 'id'=>'submit-button-ladda']) ?>
+            </div>
         </div>
     </div>
     <?php ActiveForm::end(); ?>

@@ -16,6 +16,7 @@ use app\models\EntEnvios;
 use \yii\web\Response;
 use app\models\CatColonias;
 use app\models\Constantes;
+use app\models\EntHistorialCambiosCitas;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -108,6 +109,9 @@ class CitasController extends Controller
             // $model->txt_colonia = $colonia->txt_nombre;
             //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
+
+                $this->guardarHistorial($usuario->id_usuario, $model->id_cita, "Cita en proceso de autorización de crédito");
+
                 return $this->redirect(['index']);
                 //return $this->redirect(['view', 'token' => $model->txt_token]);
             }else{
@@ -146,6 +150,7 @@ class CitasController extends Controller
             }
             
             if($citaAValidar->save()){
+                $this->guardarHistorial($usuario->id_usuario, $citaAValidar->id_cita, "Cita con crédito autorizado");
                 return $this->redirect(['index']);
                 //return $this->redirect(['view', 'token' => $model->txt_token]);
             }else{
@@ -223,14 +228,15 @@ class CitasController extends Controller
             $envio->txt_token = Utils::generateToken("env_");
             
             if ($envio->save()) {
-
+                
                 $cita->id_status = $statusAutorizar;
                 $cita->id_envio = $envio->id_envio;
                 $cita->txt_motivo_cancelacion = '';
                 
 
                 if($cita->save()){
-                 return ['status'=>'ok', 'envio'=>$envio->txt_token];
+                    $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita autorizada por supervisor");
+                    return ['status'=>'ok', 'envio'=>$envio->txt_token];
                 }
             }
 
@@ -243,6 +249,7 @@ class CitasController extends Controller
 
     public function actionRechazar($token=null)
     {
+        $usuario = Yii::$app->user->identity;
         $statusRechazar = Constantes::RECHAZADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
@@ -250,7 +257,7 @@ class CitasController extends Controller
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-    
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita rechazada");
                 return $this->redirect( ['view',
                     'token' => $token,
                 ]);
@@ -261,6 +268,7 @@ class CitasController extends Controller
 
     public function actionCancelar()
     {
+        $usuario = Yii::$app->user->identity;
         $statusCancelar = Constantes::CANCELADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
@@ -268,7 +276,7 @@ class CitasController extends Controller
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-    
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita cancelada");
                 return $this->redirect( ['view',
                     'token' => $token,
                 ]);
@@ -277,7 +285,13 @@ class CitasController extends Controller
        
     }
 
-    public function datos($id_usuario, $id_cita, $comentario){
+    public function guardarHistorial($id_usuario, $id_cita, $comentario){
+        $historial = new EntHistorialCambiosCitas();
+        $historial->id_usuario = $id_usuario;
+        $historial->id_cita = $id_cita;
+        $historial->txt_modificacion = $comentario;
+
+        $historial->save();
 
     }
 }
