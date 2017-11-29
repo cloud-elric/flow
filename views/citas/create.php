@@ -35,7 +35,7 @@ $this->registerJsFile(
 ?>
 
 <div class="panel">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id'=>'form-cita']); ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite
@@ -239,7 +239,7 @@ $this->registerJsFile(
 
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
-                <?= Html::submitButton('Pasar a autorización', ['class' => "btn-success btn-lg btn-block"]) ?>
+                <?= Html::submitButton('<span class="ladda-label">Pasar a autorización</span>', ["data-style"=>"zoom-in" ,'class' => "btn-success btn-lg btn-block ladda-button", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

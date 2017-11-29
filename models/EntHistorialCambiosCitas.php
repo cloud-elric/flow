@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\modules\ModUsuarios\models\EntUsuarios;
 
 /**
  * This is the model class for table "ent_historial_cambios_citas".
@@ -37,7 +38,7 @@ class EntHistorialCambiosCitas extends \yii\db\ActiveRecord
             [['fch_modificacion'], 'safe'],
             [['txt_modificacion'], 'string', 'max' => 150],
             [['id_cita'], 'exist', 'skipOnError' => true, 'targetClass' => EntCitas::className(), 'targetAttribute' => ['id_cita' => 'id_cita']],
-            [['id_usuario'], 'exist', 'skipOnError' => true, 'targetClass' => ModUsuariosEntUsuarios::className(), 'targetAttribute' => ['id_usuario' => 'id_usuario']],
+            [['id_usuario'], 'exist', 'skipOnError' => true, 'targetClass' => EntUsuarios::className(), 'targetAttribute' => ['id_usuario' => 'id_usuario']],
         ];
     }
 
