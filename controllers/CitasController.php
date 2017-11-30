@@ -105,9 +105,6 @@ class CitasController extends Controller
             
             $model->fch_nacimiento = Utils::changeFormatDateInput($model->fch_nacimiento);
             
-            // $colonia = CatColonias::findOne($model->txt_colonia);
-            // $model->txt_colonia = $colonia->txt_nombre;
-            //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
 
                 $this->guardarHistorial($usuario->id_usuario, $model->id_cita, "Cita en proceso de autorización de crédito");
@@ -119,8 +116,6 @@ class CitasController extends Controller
                 exit;
             }
 
-            // $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
-            // $model->fch_hora_cita = $horario->id_horario_area;
             
         } 
 
