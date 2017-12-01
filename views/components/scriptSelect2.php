@@ -43,6 +43,23 @@ var formatRepo = function (repo) {
     return '<div style="overflow:hidden;">' + markup + '</div>';
 };
 
+var formatRepoEquipo = function (repo) {
+    var cantidadDisponible = 0;
+    console.log(repo);
+    if (repo.loading) {
+        return repo.text;
+    }
+
+    var markup =
+        '<div class="row">' + 
+            '<div class="col-md-8">' +
+                '<b style="margin-left:5px">' + repo.txt_nombre + '</b>' + 
+            '</div>' +
+            '<div class="col-md-4">' + cantidad + '</div>' +
+        '</div>';
+    
+    return '<div style="overflow:hidden;">' + markup + '</div>';
+};
 
 var formatRepoPlan = function (repo) {
     var ajaxResults = $('#entcitas-id_tipo_plan_tarifario').depdrop('getAjaxResults');
