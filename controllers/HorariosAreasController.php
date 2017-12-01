@@ -10,6 +10,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\CatAreas;
 use yii\helpers\Json;
+use app\modules\ModUsuarios\models\Utils;
+use app\models\Calendario;
 
 /**
  * HorariosAreasController implements the CRUD actions for EntHorariosAreas model.
@@ -127,8 +129,10 @@ class HorariosAreasController extends Controller
     public function actionGetHorariosDisponibilidadByArea($fecha = null){
 
         $out = [];
-        if (isset($_POST['depdrop_parents'])) {
-            $id = end($_POST['depdrop_parents']);
+        if (isset($_POST['depdrop_all_params[entcitas-fch_cita]'])) {
+            $id = end($_POST['depdrop_all_params[entcitas-fch_cita]']);
+
+
             $list = EntHorariosAreas::find()->andWhere(['id_area'=>$id])->asArray()->all();
             $selected  = null;
             if ($id != null && count($list) > 0) {
@@ -149,4 +153,8 @@ class HorariosAreasController extends Controller
         }
 
     }
+
+
+    
+    
 }

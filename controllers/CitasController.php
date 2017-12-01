@@ -17,6 +17,7 @@ use \yii\web\Response;
 use app\models\CatColonias;
 use app\models\Constantes;
 use app\models\EntHistorialCambiosCitas;
+use app\models\Helpers;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -153,6 +154,9 @@ class CitasController extends Controller
                 exit;
             }
         } 
+
+        $citaAValidar->fch_cita = Helpers::getFechaEntrega(Utils::getFechaActual());
+        $citaAValidar->fch_cita = Utils::changeFormatDate($citaAValidar->fch_cita);
 
         return $this->render('validar-credito', [
             'model' => $citaAValidar,
