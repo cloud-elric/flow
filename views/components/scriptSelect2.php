@@ -55,7 +55,7 @@ var formatRepoEquipo = function (repo) {
             '<div class="col-md-8">' +
                 '<b style="margin-left:5px">' + repo.txt_nombre + '</b>' + 
             '</div>' +
-            '<div class="col-md-4">' + cantidad + '</div>' +
+            '<div class="col-md-4">' + repo.cantidad + '</div>' +
         '</div>';
     
     return '<div style="overflow:hidden;">' + markup + '</div>';

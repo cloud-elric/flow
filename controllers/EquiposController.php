@@ -142,7 +142,7 @@ class EquiposController extends Controller
         $criterios['txt_nombre'] = $q;
         $searchModel = new EntEquiposSearch();
 
-        $countCitasEquipo = EntCitas::find()->where(['in', 'id_status', ['2,3,6,7,8']])->orWhere(['and', ['id_status'=>1], ['<', 2, new Expression('time_to_sec(timediff(now(),fch_creacion) /3600)')] ])->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
+        
 
         if ($page > 1) {
             $page--;
@@ -158,6 +158,12 @@ class EquiposController extends Controller
 
         foreach ($resultados as $model) {
             $cantidadStock = EntEntradas::find()->where(['id_equipo'=>$model->id_equipo])->sum('num_unidades');
+
+            $countCitasEquipo = EntCitas::find()
+                ->where(['id_equipo'=>$model->id_equipo])
+                ->andWhere(['in', 'id_status', [2,3,6,7,8]])
+                ->orWhere(['and', ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /3600))'), 2] ])
+                ->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
             if($cantidadStock){
                 $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => $cantidadStock - $countCitasEquipo];            
             }else{
