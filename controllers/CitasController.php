@@ -137,6 +137,9 @@ class CitasController extends Controller
 
             $colonia = CatColonias::findOne($citaAValidar->txt_colonia);
             $citaAValidar->txt_colonia = $colonia->txt_nombre;
+
+            $horario = EntHorariosAreas::findOne($citaAValidar->id_horario);
+            $citaAValidar->fch_hora_cita = $horario->txt_hora_inicial." - ". $horario->txt_hora_final;
             
             $citaAValidar->fch_nacimiento = Utils::changeFormatDateInput($citaAValidar->fch_nacimiento);
             if($citaAValidar->txt_imei){

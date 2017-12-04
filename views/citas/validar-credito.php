@@ -96,7 +96,7 @@ $simCard = $model->idSimCard;
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'id_tipo_tramite')->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tramite', 'txt_nombre'),
+                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre DESC')->all(), 'id_tramite', 'txt_nombre'),
                     'language' => 'es',
                     'options' => ['placeholder' => 'Seleccionar tipo de trámite'],
                     'pluginOptions' => [
@@ -215,7 +215,7 @@ $simCard = $model->idSimCard;
                                 'cache' => true
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateResult' => new JsExpression('formatRepoEquipo'),
                             'templateSelection' => new JsExpression('function (equipo) {
                                 if(equipo.txt_nombre){
                                     return equipo.txt_nombre; 
@@ -464,7 +464,10 @@ $simCard = $model->idSimCard;
         <div class="row">
             <div class="col-md-4">
                 
-                <?= $form->field($model, 'fch_cita')->widget(DatePicker::classname(), [
+                <?php
+                $startDate = $model->fch_cita;
+                $model->fch_cita = null;
+                echo $form->field($model, 'fch_cita')->widget(DatePicker::classname(), [
                     //'options' => ['placeholder' => '16/12/1990'],
                     'pickerButton'=>false,
                     'removeButton'=>false,
@@ -472,7 +475,7 @@ $simCard = $model->idSimCard;
                     'pluginOptions' => [
                         'autoclose'=>true,
                         'format' => 'dd-mm-yyyy',
-                        'startDate' => $model->fch_cita, //date("d-m-Y")
+                        'startDate' => $startDate, //date("d-m-Y")
                     ]
                     // 'language' => 'es',
                     // 'options'=>['class'=>'form-control'],
@@ -489,7 +492,7 @@ $simCard = $model->idSimCard;
             <div class="col-md-4">
                 <?php
            
-            echo $form->field($model, 'fch_hora_cita')->widget(DepDrop::classname(), [
+            echo $form->field($model, 'id_horario')->widget(DepDrop::classname(), [
                 
                 'options' => ['placeholder' => 'Seleccionar ...'],
                 'type' => DepDrop::TYPE_SELECT2,
@@ -504,7 +507,7 @@ $simCard = $model->idSimCard;
                     ],
                     ],
                 'pluginOptions'=>[
-                    'depends'=>['entcitas-fch_cita'],
+                    'depends'=>['entcitas-fch_cita', 'entcitas-id_area'],
                     'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area']),
                     'params'=>[
                         'entcitas-id_area',

@@ -12,6 +12,8 @@ use app\models\CatAreas;
 use yii\helpers\Json;
 use app\modules\ModUsuarios\models\Utils;
 use app\models\Calendario;
+use app\models\EntCitas;
+use yii\db\Expression;
 
 /**
  * HorariosAreasController implements the CRUD actions for EntHorariosAreas model.
@@ -129,19 +131,37 @@ class HorariosAreasController extends Controller
     public function actionGetHorariosDisponibilidadByArea($fecha = null){
 
         $out = [];
-        if (isset($_POST['depdrop_all_params[entcitas-fch_cita]'])) {
-            $id = end($_POST['depdrop_all_params[entcitas-fch_cita]']);
 
+        if (isset($_POST['depdrop_all_params']['entcitas-id_area']) &&
+            isset($_POST['depdrop_all_params']['entcitas-fch_cita']) && 
+            isset($_POST['depdrop_all_params']['entcitas-id_tipo_entrega'])) {
 
-            $list = EntHorariosAreas::find()->andWhere(['id_area'=>$id])->asArray()->all();
+            $id = $_POST['depdrop_all_params']['entcitas-id_area'];
+            $fecha = $_POST['depdrop_all_params']['entcitas-fch_cita'];
+            $tipoEntrega = $_POST['depdrop_all_params']['entcitas-id_tipo_entrega'];
+
+            if(!$fecha){
+                echo Json::encode(['output' => $out, 'selected'=>'']);
+                return;
+            }
+            // fch_cita id_tipo_entrega
+            $numDia = Calendario::getNumberDayWeek($fecha);
+
+            $list = EntHorariosAreas::find()->andWhere(['id_area'=>$id, 'id_dia'=>$numDia])->asArray()->all();
             $selected  = null;
             if ($id != null && count($list) > 0) {
                 $selected = '';
                 foreach ($list as $i => $disponibilidad) {
+
+                    $horariosOcupados = EntCitas::find()
+
+                            ->where(new Expression('date_format(fch_cita, "%Y-%m-%d") = date_format(now(), "%Y-%m-%d")') )
+                            ->andWhere(['id_horario'=>$disponibilidad["id_horario_area"]])->count();
+
                     $out[] = [
-                        'id' => $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'], 
+                        'id' => $disponibilidad['id_horario_area'], 
                         'name' => $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'],
-                        'cantidad'=>$disponibilidad['num_disponibles']];
+                        'cantidad'=>$disponibilidad['num_disponibles']-$horariosOcupados];
                     if ($i == 0) {
                         $selected = $fecha;
                     }
@@ -151,6 +171,9 @@ class HorariosAreasController extends Controller
                 return;
             }
         }
+        
+        echo Json::encode(['output' => $out, 'selected'=>'']);
+        
 
     }
 

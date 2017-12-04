@@ -16,7 +16,7 @@ JS;
 
 $formatJs = <<< 'JS'
 var formatRepo = function (repo) {
-    var ajaxResults = $('#entcitas-fch_hora_cita').depdrop('getAjaxResults');
+    var ajaxResults = $('#entcitas-id_horario').depdrop('getAjaxResults');
     var cantidadDisponible = 0;
    
     if (repo.loading) {

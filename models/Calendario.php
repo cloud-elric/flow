@@ -22,6 +22,19 @@ class Calendario
         return $nombreDia;
     }
 
+    public static function getNumberDayWeek($string=null)
+    {
+        // Inicializamos la fecha y hora actual
+        $tiempo = time();
+        if($string){
+            $tiempo = strtotime($string);
+        }
+        
+        $fecha = date('w', $tiempo);
+    
+        return $fecha;
+    }
+
     public static function getDayNumber($string=null)
     {
 
