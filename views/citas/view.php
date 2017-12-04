@@ -325,7 +325,7 @@ $this->registerJsFile(
         </div>
         <div class="col-md-3">
             <?=Html::label("Descripción SIM Card", "descripcion_sim_card")?>
-            <?=Html::textInput("descripcion_sim_card", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
+            <?=Html::textInput("descripcion_sim_card", $simCard->txt_descripcion, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
         </div>
     </div>
 
@@ -334,15 +334,14 @@ $this->registerJsFile(
             <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'id_tipo_identificacion')
-                                        ->widget(Select2::classname(), [
-                                            'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
-                                            'language' => 'es',
-                                            'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
-                                            'pluginOptions' => [
-                                                'allowClear' => true
-                                            ],
-                                        ]);
+            <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
             ?>
         </div>
         <div class="col-md-3">
