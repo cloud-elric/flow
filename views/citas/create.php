@@ -192,7 +192,7 @@ $this->registerJsFile(
                                 'cache' => true
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateResult' => new JsExpression('formatRepoEquipo'),
                             'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
                         ],
                     ]);

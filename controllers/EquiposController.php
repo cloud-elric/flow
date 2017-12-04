@@ -8,7 +8,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use yii\db\Expression;
 use app\models\RelEquipoPlazoCosto;
+use app\models\EntCitas;
+use app\models\EntEntradas;
 
 /**
  * EquiposController implements the CRUD actions for CatEquipos model.
@@ -139,6 +142,8 @@ class EquiposController extends Controller
         $criterios['txt_nombre'] = $q;
         $searchModel = new EntEquiposSearch();
 
+        
+
         if ($page > 1) {
             $page--;
         }
@@ -152,9 +157,19 @@ class EquiposController extends Controller
         }
 
         foreach ($resultados as $model) {
-            $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre];
-        }
+            $cantidadStock = EntEntradas::find()->where(['id_equipo'=>$model->id_equipo])->sum('num_unidades');
 
+            $countCitasEquipo = EntCitas::find()
+                ->where(['id_equipo'=>$model->id_equipo])
+                ->andWhere(['in', 'id_status', [2,3,6,7,8]])
+                ->orWhere(['and', ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /3600))'), 2] ])
+                ->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
+            if($cantidadStock){
+                $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => $cantidadStock - $countCitasEquipo];            
+            }else{
+                $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => 0];
+            }    
+        }        
 
         return $response;
     }
