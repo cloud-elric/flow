@@ -101,6 +101,38 @@ $(document).ready(function(){
         getCostodiferidoEquipo();
     });
 
+    var buttonSubmit = '<button type="submit" '+
+    'id="submit-button-ladda" '+
+    'class="btn btn-success ladda-button pull-right" '+
+    'data-style="zoom-in">'+
+    '<span class="ladda-label">'+
+    'Validar crédito'+
+    '</span>'+
+    '<span class="ladda-spinner"></span>'+
+    '</button>';
+
+    $("#entcitas-id_tipo_entrega").on("change", function(){
+        
+                           
+        if($(this).val()==2){
+            $('#entcitas-fch_cita').kvDatepicker('destroy');
+            $('#entcitas-fch_cita').attr("readonly", true);
+            $("#entcitas-fch_cita").val(getTomorrow());
+            
+        }else{
+            
+            $('#entcitas-fch_cita').kvDatepicker(kvDatepicker_8b2b684e);
+            $('#entcitas-fch_cita').attr("readonly", false);
+            $("#entcitas-fch_cita").val("");
+                
+        }
+
+        $("#entcitas-fch_cita").trigger("change");
+
+    });
+
+    
+
     $("#entcitas-id_tipo_entrega").on("change", function(){
         var tipoEntrega = $(this).val();
 
@@ -124,8 +156,7 @@ $(document).ready(function(){
             l.stop();
             return false;
         }
-    
-       
+
     });
     
     formCita.on('afterValidate', function (e, messages, errorAttributes) {
@@ -143,6 +174,15 @@ $(document).ready(function(){
 $(window).on('load', function() {
     $("#entcitas-id_tipo_plan_tarifario").trigger("change");  
 });
+
+function getTomorrow(){
+    var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+    var day = ("0" + currentDate.getDate()).slice(-2)
+    var month = ("0" + (currentDate.getMonth() + 1)).slice(-2)
+    var year = currentDate.getFullYear()
+  
+    return day+"-"+month+"-"+year;
+}
 
 function buscarMunicipioByColonia(colonia){
     $.ajax({

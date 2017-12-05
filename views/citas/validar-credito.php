@@ -419,13 +419,27 @@ $simCard = $model->idSimCard;
 
         <div class="row">
             
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
-        </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+                ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
+            </div>
+    </div>
     </div>
 
     <div class="panel-heading">
@@ -523,8 +537,8 @@ $simCard = $model->idSimCard;
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <?= Html::submitButton('<span class="ladda-label">Validar crédito</span>', ["data-style"=>"zoom-in" ,'class' => "btn-success btn-lg btn-block ladda-button", 'id'=>'submit-button-ladda']) ?>
+            <div class="col-md-12 container-submit-button">
+                <?= Html::submitButton('<span class="ladda-label">Validar crédito</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

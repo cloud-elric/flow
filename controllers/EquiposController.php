@@ -162,7 +162,7 @@ class EquiposController extends Controller
             $countCitasEquipo = EntCitas::find()
                 ->where(['id_equipo'=>$model->id_equipo])
                 ->andWhere(['in', 'id_status', [2,3,6,7,8]])
-                ->orWhere(['and',['id_equipo'=>$model->id_equipo], ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /3600))'), 2] ])
+                ->orWhere(['and',['id_equipo'=>$model->id_equipo], ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /60))'), 1] ])
                 ->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
             if($cantidadStock){
                 $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => $cantidadStock - $countCitasEquipo];            

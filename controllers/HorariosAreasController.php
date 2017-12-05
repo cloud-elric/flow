@@ -148,7 +148,13 @@ class HorariosAreasController extends Controller
             $numDia = Calendario::getNumberDayWeek($fecha);
             $fechaFormateada = Utils::changeFormatDateInput($fecha);
 
-            $list = EntHorariosAreas::find()->andWhere(['id_area'=>$id, 'id_dia'=>$numDia])->asArray()->all();
+            if($tipoEntrega==2){
+                $list = EntHorariosAreas::find()->andWhere(['id_area'=>$id, 'id_dia'=>7])->asArray()->all();
+            }else if($tipoEntrega==1){
+                $list = EntHorariosAreas::find()->andWhere(['id_area'=>$id, 'id_dia'=>$numDia])->asArray()->all();
+            }
+
+            
             $selected  = null;
             if ($id != null && count($list) > 0) {
                 $selected = '';
