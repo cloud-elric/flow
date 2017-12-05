@@ -19,6 +19,7 @@ use app\models\CatTiposPlanesTarifarios;
 use app\models\RelEquipoPlazoCosto;
 use app\models\RelCondicionPlanTarifario;
 use app\models\CatTiposDepositosGarantia;
+use app\models\CatTiposEntrega;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -79,13 +80,13 @@ $simCard = $model->idSimCard;
             <div class="col-md-3">
                 <?php 
                     echo $form->field($model, 'fch_nacimiento')->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => '16/12/1990'],
+                        'options' => ['placeholder' => '16-12-1990'],
                         'pickerButton'=>false,
                         'removeButton'=>false,
                         'type' => DatePicker::TYPE_INPUT,
                         'pluginOptions' => [
                             'autoclose'=>true,
-                            'format' => 'dd/mm/yyyy'
+                            'format' => 'dd-mm-yyyy'
                         ]
                     ]);
                 ?>
@@ -95,7 +96,7 @@ $simCard = $model->idSimCard;
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'id_tipo_tramite')->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tramite', 'txt_nombre'),
+                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre DESC')->all(), 'id_tramite', 'txt_nombre'),
                     'language' => 'es',
                     'options' => ['placeholder' => 'Seleccionar tipo de trámite'],
                     'pluginOptions' => [
@@ -214,7 +215,7 @@ $simCard = $model->idSimCard;
                                 'cache' => true
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateResult' => new JsExpression('formatRepoEquipo'),
                             'templateSelection' => new JsExpression('function (equipo) {
                                 if(equipo.txt_nombre){
                                     return equipo.txt_nombre; 
@@ -446,43 +447,52 @@ $simCard = $model->idSimCard;
                 <?= $form->field($model, 'num_dias_servicio')->hiddenInput(['maxlength' => true, 'class' => 'form-control'])->label(false) ?>
             </div>
             <div class="col-md-4">
-                <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
-                <?=Html::textInput("txt_tipo_entrega", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
-                <?= $form->field($model, 'id_tipo_entrega')->hiddenInput()->label(false) ?>
+                
+                <?php
+                $model->id_tipo_entrega = 1;
+                echo $form->field($model, 'id_tipo_entrega')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatTiposEntrega::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_entrega', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar tipo de entrega'],
+                    'pluginOptions' => [
+                        'allowClear' => false
+                    ],
+                ]);
+                ?> 
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
+                
                 <?php
-                    $hoy = date("d-m-Y");
-                    $tresDias = date("d-m-Y", strtotime($hoy . '+4 day'));
-                ?>
-                <?= $form->field($model, 'fch_cita')->widget(\yii\jui\DatePicker::classname(), [
-                    'language' => 'es',
-                    'options'=>['class'=>'form-control'],
-                    'dateFormat' => 'dd-MM-yyyy',
-                    'clientOptions' => [
-                        'minDate' => $tresDias, //date("d-m-Y")
-                        'dayNamesShort' => ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
-                        'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-                        'beforeShowDay' => false             
-                    ],
+                $startDate = $model->fch_cita;
+                $model->fch_cita = null;
+                echo $form->field($model, 'fch_cita')->widget(DatePicker::classname(), [
+                    //'options' => ['placeholder' => '16/12/1990'],
+                    'pickerButton'=>false,
+                    'removeButton'=>false,
+                    'type' => DatePicker::TYPE_INPUT,
+                    'pluginOptions' => [
+                        'autoclose'=>true,
+                        'format' => 'dd-mm-yyyy',
+                        'startDate' => $startDate, //date("d-m-Y")
+                    ]
+                    // 'language' => 'es',
+                    // 'options'=>['class'=>'form-control'],
+                    // 'dateFormat' => 'dd-MM-yyyy',
+                    // 'clientOptions' => [
+                    //     'minDate' => $tresDias, //date("d-m-Y")
+                    //     'dayNamesShort' => ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
+                    //     'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                    //     'beforeShowDay' => false             
+                    // ],
                 ])
                 ?>
             </div>
             <div class="col-md-4">
                 <?php
-            //    echo  $form->field($model, 'fch_hora_cita')
-            //         ->widget(Select2::classname(), [
-            //         'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
-            //         'language' => 'es',
-            //         'options' => ['placeholder' => 'Seleccionar horario'],
-            //         'pluginOptions' => [
-            //             'allowClear' => true
-            //         ],
-            //     ]);
-
-            echo $form->field($model, 'fch_hora_cita')->widget(DepDrop::classname(), [
+           
+            echo $form->field($model, 'id_horario')->widget(DepDrop::classname(), [
                 
                 'options' => ['placeholder' => 'Seleccionar ...'],
                 'type' => DepDrop::TYPE_SELECT2,
@@ -497,8 +507,12 @@ $simCard = $model->idSimCard;
                     ],
                     ],
                 'pluginOptions'=>[
-                    'depends'=>['entcitas-id_area'],
+                    'depends'=>['entcitas-fch_cita', 'entcitas-id_area'],
                     'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area']),
+                    'params'=>[
+                        'entcitas-id_area',
+                        'entcitas-id_tipo_entrega'
+                    ],  
                     'loadingText' => 'Cargando horarios ...',
                    
                 ]

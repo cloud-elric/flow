@@ -101,6 +101,16 @@ $(document).ready(function(){
         getCostodiferidoEquipo();
     });
 
+    $("#entcitas-id_tipo_entrega").on("change", function(){
+        var tipoEntrega = $(this).val();
+
+        if(tipoEntrega==1){
+
+        }else if(tipoEntrega==2){
+
+        }
+    });
+
     var formCita = $("#form-cita");
     var botonEnviar = "submit-button-ladda";
     
@@ -270,17 +280,17 @@ function buscarEstado(id){
             $("#txt_area").val(area);
             $("#entcitas-num_dias_servicio").val(resp.txt_dias_servicio);
             $("#num_dias_servicio").val(resp.txt_dias_servicio);
-            $("#txt_tipo_entrega").val(entrega);
+            
 
             $("#entcitas-id_area").val(resp.id_area);
-            $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
+            
             $("#entcitas-id_area").trigger("change");
         },
         error: function(){
             $("#txt_area").val('');
             $("#entcitas-num_dias_servicio").val('');
             $("#num_dias_servicio").val('');
-            $("#txt_tipo_entrega").val('');           
+                      
         }
     });
 }
