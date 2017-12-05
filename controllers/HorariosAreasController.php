@@ -146,6 +146,7 @@ class HorariosAreasController extends Controller
             }
             // fch_cita id_tipo_entrega
             $numDia = Calendario::getNumberDayWeek($fecha);
+            $fechaFormateada = Utils::changeFormatDateInput($fecha);
 
             $list = EntHorariosAreas::find()->andWhere(['id_area'=>$id, 'id_dia'=>$numDia])->asArray()->all();
             $selected  = null;
@@ -155,7 +156,7 @@ class HorariosAreasController extends Controller
 
                     $horariosOcupados = EntCitas::find()
 
-                            ->where(new Expression('date_format(fch_cita, "%Y-%m-%d") = date_format(now(), "%Y-%m-%d")') )
+                            ->where(new Expression('date_format(fch_cita, "%Y-%m-%d") = date_format("'.$fechaFormateada.'", "%Y-%m-%d")') )
                             ->andWhere(['id_horario'=>$disponibilidad["id_horario_area"]])->count();
 
                     $out[] = [

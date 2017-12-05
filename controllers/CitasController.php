@@ -140,8 +140,11 @@ class CitasController extends Controller
 
             $horario = EntHorariosAreas::findOne($citaAValidar->id_horario);
             $citaAValidar->fch_hora_cita = $horario->txt_hora_inicial." - ". $horario->txt_hora_final;
-            
+           
             $citaAValidar->fch_nacimiento = Utils::changeFormatDateInput($citaAValidar->fch_nacimiento);
+
+            $citaAValidar->fch_cita = Utils::changeFormatDateInput($citaAValidar->fch_cita);
+
             if($citaAValidar->txt_imei){
                 $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO;
             }else{
@@ -158,9 +161,10 @@ class CitasController extends Controller
             }
         } 
 
+        date_default_timezone_set('America/Mexico_City');
         $citaAValidar->fch_cita = Helpers::getFechaEntrega(Utils::getFechaActual());
         $citaAValidar->fch_cita = Utils::changeFormatDate($citaAValidar->fch_cita);
-
+        
         return $this->render('validar-credito', [
             'model' => $citaAValidar,
         ]);

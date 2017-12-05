@@ -80,13 +80,13 @@ $simCard = $model->idSimCard;
             <div class="col-md-3">
                 <?php 
                     echo $form->field($model, 'fch_nacimiento')->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => '16/12/1990'],
+                        'options' => ['placeholder' => '16-12-1990'],
                         'pickerButton'=>false,
                         'removeButton'=>false,
                         'type' => DatePicker::TYPE_INPUT,
                         'pluginOptions' => [
                             'autoclose'=>true,
-                            'format' => 'dd/mm/yyyy'
+                            'format' => 'dd-mm-yyyy'
                         ]
                     ]);
                 ?>
