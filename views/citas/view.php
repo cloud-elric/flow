@@ -289,45 +289,18 @@ $this->registerJsFile(
         <div class="col-md-3">
             <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
         </div>
-        <div class="col-md-3">
-            <?php
-                require(__DIR__ . '/../components/scriptSelect2.php');
-                $url = Url::to(['sims-cards/buscar-sim']);
-                $valSim = empty($model->id_sim_card) ? '' : $simCard->txt_nombre;
-                // render your widget
-                echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
-                    'initValueText' => $valSim,
-                    'options' => ['placeholder' => 'Seleccionar equipo'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'minimumInputLength' => 1,
-                        'ajax' => [
-                            'url' => $url,
-                            'dataType' => 'json',
-                            'delay' => 250,
-                            'data' => new JsExpression('function(params) { return {q:params.term, page: params.page}; }'),
-                            'processResults' => new JsExpression($resultsJs),
-                            'cache' => true
-                        ],
-                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                        'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                        'templateSelection' => new JsExpression('function (sim) { 
-                            if(sim.txt_nombre){
-                                return sim.txt_nombre; 
-                            }else{
-                                return "'.$valSim.'"
-                            }
-                         }'),
-                    ],
-                ]);
-                
-            ?>                         
-        </div>
-        <div class="col-md-3">
-            <?=Html::label("Descripción SIM Card", "descripcion_sim_card")?>
-            <?=Html::textInput("descripcion_sim_card", $simCard->txt_descripcion, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
-        </div>
+        
     </div>
+<<<<<<< HEAD
+=======
+
+    <div class="row">
+        <div class="col-md-3">
+            <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
+        </div>
+        
+    </div>
+>>>>>>> dev
     
     <div class="row">
         <div class="col-md-4">
@@ -467,10 +440,10 @@ $this->registerJsFile(
                 ]);
                 ?>
             </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
+            </div>
         </div>
-    </div>
     </div>
 
     <div class="panel-heading">
