@@ -516,7 +516,7 @@ $simCard = $model->idSimCard;
 
         <div class="row">
             <div class="col-md-12 container-submit-button">
-                <?= Html::submitButton('<span class="ladda-label">Validar crédito</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
+                <?= Html::submitButton('<span class="ladda-label">Programar cita</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

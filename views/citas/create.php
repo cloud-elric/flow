@@ -238,7 +238,7 @@ $this->registerJsFile(
 
         <div class="row">
             <div class="col-md-12 container-submit-button">
-                <?= Html::submitButton('<span class="ladda-label">Pasar a autorización</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
+                <?= Html::submitButton('<span class="ladda-label">Crear registro</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>
