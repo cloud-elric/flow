@@ -62,8 +62,13 @@ class EntUsuariosSearch extends EntUsuarios
         ]);
 
         if(!$this->txt_auth_item){
-
             if(\Yii::$app->user->can('mesa-control')) {
+                $query->andWhere([
+                    'txt_auth_item'=> \Yii::$app->params ['roles'] ['supervisorTelcel'],
+                    ])->orWhere(['txt_auth_item'=> \Yii::$app->params ['roles'] ['ejecutivoTelcel']])
+                    ->orWhere(['txt_auth_item'=> 'mesa-control'])->orWhere(['txt_auth_item'=>'socio'])
+                    ->andWhere(['not in', 'id_usuario', [Yii::$app->user->identity->id_usuario]]);
+            }else if(\Yii::$app->user->can('mesa-control')) {
                 $query->andWhere([
                     'txt_auth_item'=> \Yii::$app->params ['roles'] ['supervisorTelcel'],
                     ])->orWhere(['txt_auth_item'=> \Yii::$app->params ['roles'] ['ejecutivoTelcel']])->orWhere(['txt_auth_item'=> 'mesa-control'])

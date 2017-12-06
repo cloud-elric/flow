@@ -23,6 +23,7 @@ use yii\widgets\ActiveForm;
  */
 class UsuariosController extends Controller
 {
+    
     /**
      * @inheritdoc
      */
@@ -59,8 +60,10 @@ class UsuariosController extends Controller
         $searchModel = new EntUsuariosSearch();
         $dataProvider = $searchModel->searchUsuariosCallCenter(Yii::$app->request->queryParams);
 
-        if(\Yii::$app->user->can('mesa-control')) {
+        if(\Yii::$app->user->can('socio')) {
             $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin']])->all();
+        }else if(\Yii::$app->user->can('mesa-control')) {
+            $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin', 'socio']])->all();
         }else if (\Yii::$app->user->can('supervisor-call-center')) {
             $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
         }
@@ -83,8 +86,10 @@ class UsuariosController extends Controller
             return ActiveForm::validate($model);
         }
 
-        if(\Yii::$app->user->can('mesa-control')) {
+        if(\Yii::$app->user->can('socio')) {
             $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin']])->all();
+        }else if(\Yii::$app->user->can('mesa-control')) {
+            $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin', 'socio']])->all();
         }else if (\Yii::$app->user->can('supervisor-call-center')) {
             $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
         }else{
@@ -113,8 +118,10 @@ class UsuariosController extends Controller
 
         if ($usuario) {
 
-            if(\Yii::$app->user->can('mesa-control')) {
+            if(\Yii::$app->user->can('socio')) {
                 $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin']])->all();
+            }else if(\Yii::$app->user->can('mesa-control')) {
+                $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin', 'socio']])->all();
             }else if (\Yii::$app->user->can('supervisor-call-center')) {
                 $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
             }else{
