@@ -291,6 +291,8 @@ $this->registerJsFile(
         </div>
         
     </div>
+<<<<<<< HEAD
+=======
 
     <div class="row">
         <div class="col-md-3">
@@ -298,6 +300,7 @@ $this->registerJsFile(
         </div>
         
     </div>
+>>>>>>> dev
     
     <div class="row">
         <div class="col-md-4">
