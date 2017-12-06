@@ -419,6 +419,12 @@ $this->registerJsFile(
                 <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
             <div class="col-md-3">
+                <?= $form->field($model, 'txt_numero_referencia_3')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+            
+        </div>
+        <div class="row">
+        <div class="col-md-3">
                 <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
                     'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
                     'language' => 'es',
