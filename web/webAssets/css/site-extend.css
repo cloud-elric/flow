@@ -140,3 +140,7 @@ footer img{
     color: #777777;
     cursor: not-allowed;
 }
+
+.select2-dropdown {
+    z-index: 99999999;
+}

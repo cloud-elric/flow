@@ -13,7 +13,6 @@ use app\models\CatTiposPlanes;
 use app\models\CatTiposClientes;
 use app\models\CatCondicionesPlan;
 use kartik\date\DatePicker;
-use app\models\CatTiposIdentificaciones;
 use app\models\CatTiposDepositosGarantia;
 
 /* @var $this yii\web\View */
@@ -238,8 +237,8 @@ $this->registerJsFile(
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <?= Html::submitButton('<span class="ladda-label">Pasar a autorización</span>', ["data-style"=>"zoom-in" ,'class' => "btn-success btn-lg btn-block ladda-button", 'id'=>'submit-button-ladda']) ?>
+            <div class="col-md-12 container-submit-button">
+                <?= Html::submitButton('<span class="ladda-label">Pasar a autorización</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>
