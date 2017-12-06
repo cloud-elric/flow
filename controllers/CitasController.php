@@ -329,4 +329,16 @@ class CitasController extends Controller
         $historial->save();
 
     }
+
+    public function actionVerCita($token=null){
+
+        $cita = EntCitas::find()->where(['txt_token'=>$token])->one();
+
+        if($cita->id_status==Constantes::PROCESO_VALIDACION){
+            return $this->redirect(['validar-credito', 'token'=>$cita->txt_token]);
+        }else{
+            return $this->redirect(['view', 'token'=>$cita->txt_token]);
+        }
+
+    }
 }
