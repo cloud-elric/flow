@@ -291,16 +291,6 @@ $this->registerJsFile(
         </div>
         
     </div>
-<<<<<<< HEAD
-=======
-
-    <div class="row">
-        <div class="col-md-3">
-            <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
-        </div>
-        
-    </div>
->>>>>>> dev
     
     <div class="row">
         <div class="col-md-4">
