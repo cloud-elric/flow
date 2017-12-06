@@ -44,6 +44,9 @@ $this->registerJsFile(
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
+                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
+            </div>
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col-md-3">
@@ -51,9 +54,6 @@ $this->registerJsFile(
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
             </div>
         </div>
         
