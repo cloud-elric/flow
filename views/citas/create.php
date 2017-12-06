@@ -13,7 +13,6 @@ use app\models\CatTiposPlanes;
 use app\models\CatTiposClientes;
 use app\models\CatCondicionesPlan;
 use kartik\date\DatePicker;
-use app\models\CatTiposIdentificaciones;
 use app\models\CatTiposDepositosGarantia;
 
 /* @var $this yii\web\View */
@@ -65,13 +64,13 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?php 
                     echo $form->field($model, 'fch_nacimiento')->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => '16/12/1990'],
+                        'options' => ['placeholder' => '16-12-1990'],
                         'pickerButton'=>false,
                         'removeButton'=>false,
                         'type' => DatePicker::TYPE_INPUT,
                         'pluginOptions' => [
                             'autoclose'=>true,
-                            'format' => 'dd/mm/yyyy'
+                            'format' => 'dd-mm-yyyy'
                         ]
                     ]);
                 ?>
@@ -192,7 +191,7 @@ $this->registerJsFile(
                                 'cache' => true
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateResult' => new JsExpression('formatRepoEquipo'),
                             'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
                         ],
                     ]);
@@ -238,8 +237,8 @@ $this->registerJsFile(
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <?= Html::submitButton('<span class="ladda-label">Pasar a autorización</span>', ["data-style"=>"zoom-in" ,'class' => "btn-success btn-lg btn-block ladda-button", 'id'=>'submit-button-ladda']) ?>
+            <div class="col-md-12 container-submit-button">
+                <?= Html::submitButton('<span class="ladda-label">Pasar a autorización</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

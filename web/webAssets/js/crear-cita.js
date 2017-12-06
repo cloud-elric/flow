@@ -3,6 +3,7 @@ var inputApellidoPaterno = $("#entcitas-txt_apellido_paterno");
 var inputApelllidoMaterno = $("#entcitas-txt_apellido_materno");
 var inputFchNacimiento = $("#entcitas-fch_nacimiento");
 var inputRFC = $("#entcitas-txt_rfc");
+var cargarSupervisores = false;
 
 $(document).ready(function(){
 
@@ -101,6 +102,48 @@ $(document).ready(function(){
         getCostodiferidoEquipo();
     });
 
+    var buttonSubmit = '<button type="submit" '+
+    'id="submit-button-ladda" '+
+    'class="btn btn-success ladda-button pull-right" '+
+    'data-style="zoom-in">'+
+    '<span class="ladda-label">'+
+    'Validar crédito'+
+    '</span>'+
+    '<span class="ladda-spinner"></span>'+
+    '</button>';
+
+    $("#entcitas-id_tipo_entrega").on("change", function(){
+        
+                           
+        if($(this).val()==2){
+            $('#entcitas-fch_cita').kvDatepicker('destroy');
+            $('#entcitas-fch_cita').attr("readonly", true);
+            $("#entcitas-fch_cita").val(getTomorrow());
+            
+        }else{
+            
+            $('#entcitas-fch_cita').kvDatepicker(kvDatepicker_8b2b684e);
+            $('#entcitas-fch_cita').attr("readonly", false);
+            $("#entcitas-fch_cita").val("");
+                
+        }
+
+        $("#entcitas-fch_cita").trigger("change");
+
+    });
+
+    
+
+    $("#entcitas-id_tipo_entrega").on("change", function(){
+        var tipoEntrega = $(this).val();
+
+        if(tipoEntrega==1){
+
+        }else if(tipoEntrega==2){
+
+        }
+    });
+
     var formCita = $("#form-cita");
     var botonEnviar = "submit-button-ladda";
     
@@ -114,8 +157,20 @@ $(document).ready(function(){
             l.stop();
             return false;
         }
-    
-       
+
+        if(($("#entcitas-id_tipo_entrega").val()==2)){
+            l.stop();
+            
+            
+            if(!cargarSupervisores && !$("#express-autorizado").val()){
+                $("#modal-express-autorizar").modal("show");
+                cargarSupervisoresPeticion();
+                //cargarSupervisores = true;
+                return false;
+            }
+            
+        }
+
     });
     
     formCita.on('afterValidate', function (e, messages, errorAttributes) {
@@ -133,6 +188,28 @@ $(document).ready(function(){
 $(window).on('load', function() {
     $("#entcitas-id_tipo_plan_tarifario").trigger("change");  
 });
+
+function cargarSupervisoresPeticion(){
+    $.ajax({
+        url:baseUrl +"citas/form-pass-supervisor",
+        success:function(resp){
+            $(".contenedor-modal").html(resp);
+            $("#express-autorizado").val("");
+            $("#btn-autorizar-envio-express").show();
+            $("#btn-success-autorizacion").hide();
+            $("#alert-autorizacion").hide();
+        }
+    });
+}
+
+function getTomorrow(){
+    var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+    var day = ("0" + currentDate.getDate()).slice(-2)
+    var month = ("0" + (currentDate.getMonth() + 1)).slice(-2)
+    var year = currentDate.getFullYear()
+  
+    return day+"-"+month+"-"+year;
+}
 
 function buscarMunicipioByColonia(colonia){
     $.ajax({
@@ -270,17 +347,17 @@ function buscarEstado(id){
             $("#txt_area").val(area);
             $("#entcitas-num_dias_servicio").val(resp.txt_dias_servicio);
             $("#num_dias_servicio").val(resp.txt_dias_servicio);
-            $("#txt_tipo_entrega").val(entrega);
+            
 
             $("#entcitas-id_area").val(resp.id_area);
-            $("#entcitas-id_tipo_entrega").val(resp.id_tipo_entrega);
+            
             $("#entcitas-id_area").trigger("change");
         },
         error: function(){
             $("#txt_area").val('');
             $("#entcitas-num_dias_servicio").val('');
             $("#num_dias_servicio").val('');
-            $("#txt_tipo_entrega").val('');           
+                      
         }
     });
 }

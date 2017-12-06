@@ -7,13 +7,14 @@ use Yii;
 /**
  * This is the model class for table "ent_horarios_areas".
  *
- * @property string $id_horario_area
  * @property string $id_area
- * @property string $txt_hora_inicial
- * @property string $txt_hora_final
+ * @property string $id_horario
+ * @property string $id_dia
+ * @property string $num_disponibles
  *
- * @property EntDisponibilidadEnvio[] $entDisponibilidadEnvios
  * @property CatAreas $idArea
+ * @property CatDias $idDia
+ * @property CatHorarios $idHorario
  */
 class EntHorariosAreas extends \yii\db\ActiveRecord
 {
@@ -31,10 +32,11 @@ class EntHorariosAreas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_area', 'txt_hora_inicial', 'txt_hora_final'], 'required'],
-            [['id_area'], 'integer'],
-            [['txt_hora_inicial', 'txt_hora_final'], 'string', 'max' => 50],
+            [['id_area', 'id_horario', 'id_dia'], 'required'],
+            [['id_area', 'id_horario', 'id_dia', 'num_disponibles'], 'integer'],
             [['id_area'], 'exist', 'skipOnError' => true, 'targetClass' => CatAreas::className(), 'targetAttribute' => ['id_area' => 'id_area']],
+            [['id_dia'], 'exist', 'skipOnError' => true, 'targetClass' => CatDias::className(), 'targetAttribute' => ['id_dia' => 'id_dia']],
+            [['id_horario'], 'exist', 'skipOnError' => true, 'targetClass' => CatHorarios::className(), 'targetAttribute' => ['id_horario' => 'id_horario']],
         ];
     }
 
@@ -44,19 +46,11 @@ class EntHorariosAreas extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_horario_area' => 'Id Horario Area',
             'id_area' => 'Id Area',
-            'txt_hora_inicial' => 'Txt Hora Inicial',
-            'txt_hora_final' => 'Txt Hora Final',
+            'id_horario' => 'Id Horario',
+            'id_dia' => 'Id Dia',
+            'num_disponibles' => 'Num Disponibles',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEntDisponibilidadEnvios()
-    {
-        return $this->hasMany(EntDisponibilidadEnvio::className(), ['id_horarios_areas' => 'id_horario_area']);
     }
 
     /**
@@ -67,7 +61,19 @@ class EntHorariosAreas extends \yii\db\ActiveRecord
         return $this->hasOne(CatAreas::className(), ['id_area' => 'id_area']);
     }
 
-    public function getHorario(){ 
-        return $this->txt_hora_inicial." - ".$this->txt_hora_final; 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdDia()
+    {
+        return $this->hasOne(CatDias::className(), ['id_dia' => 'id_dia']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdHorario()
+    {
+        return $this->hasOne(CatHorarios::className(), ['id_horario' => 'id_horario']);
     }
 }

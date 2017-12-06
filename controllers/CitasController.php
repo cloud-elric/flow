@@ -17,6 +17,8 @@ use \yii\web\Response;
 use app\models\CatColonias;
 use app\models\Constantes;
 use app\models\EntHistorialCambiosCitas;
+use app\models\Helpers;
+use app\modules\ModUsuarios\models\EntUsuarios;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -105,9 +107,6 @@ class CitasController extends Controller
             
             $model->fch_nacimiento = Utils::changeFormatDateInput($model->fch_nacimiento);
             
-            // $colonia = CatColonias::findOne($model->txt_colonia);
-            // $model->txt_colonia = $colonia->txt_nombre;
-            //$model->fch_hora_cita = $horario->horario;
             if($model->save()){
 
                 $this->guardarHistorial($usuario->id_usuario, $model->id_cita, "Cita en proceso de autorización de crédito");
@@ -119,14 +118,40 @@ class CitasController extends Controller
                 exit;
             }
 
-            // $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
-            // $model->fch_hora_cita = $horario->id_horario_area;
             
         } 
 
         return $this->render('create', [
             'model' => $model,
         ]);
+        
+    }
+
+    public function actionFormPassSupervisor(){
+        $supervisores = EntUsuarios::find()->where(["txt_auth_item"=>"supervisor-call-center"])->orderBy('txt_username, txt_apellido_paterno')->all();
+
+        return $this->renderAjax('form-pass-supervisor', ['supervisores'=>$supervisores]);
+    }
+
+    public function actionValidarPassSupervisor(){
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $respuesta['status'] = 'error';
+        $respuesta['mensaje'] = 'Usuario y/o contraseña incorrecto';
+        if(isset($_POST['id_supervisor']) && isset($_POST['password-supervisor'])){
+            $usuario = $_POST['id_supervisor'];
+            $password = $_POST['password-supervisor'];
+            $supervisor = EntUsuarios::find()->where(["id_usuario"=>$usuario])->one();
+
+            if($supervisor){
+                if (Yii::$app->getSecurity()->validatePassword($password, $supervisor->txt_password_hash)) {
+                    $respuesta['status'] = 'success';
+                    $respuesta['mensaje'] = $supervisor->txt_token;
+                }
+            }
+
+        }
+
+        return $respuesta;
         
     }
 
@@ -141,8 +166,14 @@ class CitasController extends Controller
 
             $colonia = CatColonias::findOne($citaAValidar->txt_colonia);
             $citaAValidar->txt_colonia = $colonia->txt_nombre;
-            
+
+            $horario = EntHorariosAreas::findOne($citaAValidar->id_horario);
+            $citaAValidar->fch_hora_cita = $horario->txt_hora_inicial." - ". $horario->txt_hora_final;
+           
             $citaAValidar->fch_nacimiento = Utils::changeFormatDateInput($citaAValidar->fch_nacimiento);
+
+            $citaAValidar->fch_cita = Utils::changeFormatDateInput($citaAValidar->fch_cita);
+
             if($citaAValidar->txt_imei){
                 $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO;
             }else{
@@ -159,6 +190,10 @@ class CitasController extends Controller
             }
         } 
 
+        date_default_timezone_set('America/Mexico_City');
+        $citaAValidar->fch_cita = Helpers::getFechaEntrega(Utils::getFechaActual());
+        $citaAValidar->fch_cita = Utils::changeFormatDate($citaAValidar->fch_cita);
+        
         return $this->render('validar-credito', [
             'model' => $citaAValidar,
         ]);

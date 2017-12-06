@@ -489,7 +489,7 @@ $this->registerJsFile(
             </div>
             <div class="col-md-4">
                 <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
-                <?=Html::textInput("txt_tipo_entrega", $area->idTipoEntrega->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
+                <?=Html::textInput("txt_tipo_entrega", $model->idTipoEntrega->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
             </div>
         </div>
         <div class="row">
