@@ -291,6 +291,8 @@ $this->registerJsFile(
         </div>
         
     </div>
+<<<<<<< HEAD
+=======
 
     <div class="row">
         <div class="col-md-3">
@@ -298,6 +300,7 @@ $this->registerJsFile(
         </div>
         
     </div>
+>>>>>>> dev
     
     <div class="row">
         <div class="col-md-4">
@@ -417,6 +420,14 @@ $this->registerJsFile(
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_numero_referencia_3')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
