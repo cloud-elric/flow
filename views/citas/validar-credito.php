@@ -61,6 +61,9 @@ $simCard = $model->idSimCard;
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
+                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
+            </div>
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col-md-3">
@@ -69,9 +72,7 @@ $simCard = $model->idSimCard;
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true]) ?>
             </div>
-            <div class="col-md-3">
-                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
-            </div>
+           
         </div>
         
         <div class="row">
@@ -286,41 +287,9 @@ $simCard = $model->idSimCard;
                 <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col-md-3">
-                <?php
-                    require(__DIR__ . '/../components/scriptSelect2.php');
-                    $url = Url::to(['sims-cards/buscar-sim']);
-                    // render your widget
-                    echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
-                        'options' => ['placeholder' => 'Seleccionar equipo'],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                            'minimumInputLength' => 1,
-                            'ajax' => [
-                                'url' => $url,
-                                'dataType' => 'json',
-                                'delay' => 250,
-                                'data' => new JsExpression('function(params) { return {q:params.term, page: params.page}; }'),
-                                'processResults' => new JsExpression($resultsJs),
-                                'cache' => true
-                            ],
-                            'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
-                        ],
-                    ]);
-                    
-                ?>                         
-            </div>
-            <div class="col-md-3">
-                <?=Html::label("Descripción SIM Card", "descripcion_sim_card")?>
-                <?=Html::textInput("descripcion_sim_card", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-3">
                 <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
             </div>
+            
         </div>
         
     </div>
@@ -427,6 +396,13 @@ $simCard = $model->idSimCard;
                 <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
             <div class="col-md-3">
+                <?= $form->field($model, 'txt_numero_referencia_3')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+            
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
                 <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
                     'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
                     'language' => 'es',
@@ -440,7 +416,8 @@ $simCard = $model->idSimCard;
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
             </div>
-    </div>
+        </div>
+        
     </div>
 
     <div class="panel-heading">
@@ -539,7 +516,7 @@ $simCard = $model->idSimCard;
 
         <div class="row">
             <div class="col-md-12 container-submit-button">
-                <?= Html::submitButton('<span class="ladda-label">Validar crédito</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
+                <?= Html::submitButton('<span class="ladda-label">Programar cita</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

@@ -44,6 +44,9 @@ $this->registerJsFile(
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
+                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
+            </div>
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col-md-3">
@@ -51,9 +54,6 @@ $this->registerJsFile(
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
             </div>
         </div>
         
@@ -238,7 +238,7 @@ $this->registerJsFile(
 
         <div class="row">
             <div class="col-md-12 container-submit-button">
-                <?= Html::submitButton('<span class="ladda-label">Pasar a autorización</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
+                <?= Html::submitButton('<span class="ladda-label">Crear registro</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>
