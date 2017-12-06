@@ -3,6 +3,7 @@ var inputApellidoPaterno = $("#entcitas-txt_apellido_paterno");
 var inputApelllidoMaterno = $("#entcitas-txt_apellido_materno");
 var inputFchNacimiento = $("#entcitas-fch_nacimiento");
 var inputRFC = $("#entcitas-txt_rfc");
+var cargarSupervisores = false;
 
 $(document).ready(function(){
 
@@ -157,6 +158,19 @@ $(document).ready(function(){
             return false;
         }
 
+        if(($("#entcitas-id_tipo_entrega").val()==2)){
+            l.stop();
+            
+            
+            if(!cargarSupervisores && !$("#express-autorizado").val()){
+                $("#modal-express-autorizar").modal("show");
+                cargarSupervisoresPeticion();
+                //cargarSupervisores = true;
+                return false;
+            }
+            
+        }
+
     });
     
     formCita.on('afterValidate', function (e, messages, errorAttributes) {
@@ -174,6 +188,19 @@ $(document).ready(function(){
 $(window).on('load', function() {
     $("#entcitas-id_tipo_plan_tarifario").trigger("change");  
 });
+
+function cargarSupervisoresPeticion(){
+    $.ajax({
+        url:baseUrl +"citas/form-pass-supervisor",
+        success:function(resp){
+            $(".contenedor-modal").html(resp);
+            $("#express-autorizado").val("");
+            $("#btn-autorizar-envio-express").show();
+            $("#btn-success-autorizacion").hide();
+            $("#alert-autorizacion").hide();
+        }
+    });
+}
 
 function getTomorrow(){
     var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);

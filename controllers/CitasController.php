@@ -18,6 +18,7 @@ use app\models\CatColonias;
 use app\models\Constantes;
 use app\models\EntHistorialCambiosCitas;
 use app\models\Helpers;
+use app\modules\ModUsuarios\models\EntUsuarios;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -123,6 +124,34 @@ class CitasController extends Controller
         return $this->render('create', [
             'model' => $model,
         ]);
+        
+    }
+
+    public function actionFormPassSupervisor(){
+        $supervisores = EntUsuarios::find()->where(["txt_auth_item"=>"supervisor-call-center"])->orderBy('txt_username, txt_apellido_paterno')->all();
+
+        return $this->renderAjax('form-pass-supervisor', ['supervisores'=>$supervisores]);
+    }
+
+    public function actionValidarPassSupervisor(){
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $respuesta['status'] = 'error';
+        $respuesta['mensaje'] = 'Usuario y/o contraseña incorrecto';
+        if(isset($_POST['id_supervisor']) && isset($_POST['password-supervisor'])){
+            $usuario = $_POST['id_supervisor'];
+            $password = $_POST['password-supervisor'];
+            $supervisor = EntUsuarios::find()->where(["id_usuario"=>$usuario])->one();
+
+            if($supervisor){
+                if (Yii::$app->getSecurity()->validatePassword($password, $supervisor->txt_password_hash)) {
+                    $respuesta['status'] = 'success';
+                    $respuesta['mensaje'] = $supervisor->txt_token;
+                }
+            }
+
+        }
+
+        return $respuesta;
         
     }
 

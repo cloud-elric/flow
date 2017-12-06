@@ -20,6 +20,7 @@ use app\models\RelEquipoPlazoCosto;
 use app\models\RelCondicionPlanTarifario;
 use app\models\CatTiposDepositosGarantia;
 use app\models\CatTiposEntrega;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -542,5 +543,27 @@ $simCard = $model->idSimCard;
             </div>
         </div>
     </div>
+
+    <?=Html::hiddenInput("express-autorizado", '', ['id'=>'express-autorizado' ])?>
     <?php ActiveForm::end(); ?>
 </div>
+
+<?php
+// Using a select2 widget inside a modal dialog
+Modal::begin([
+    'options' => [
+        'id' => 'modal-express-autorizar',
+        'tabindex' => false // important for Select2 to work properly
+    ],
+    'clientOptions'=>[
+        'backdrop'=>"static"
+    ],
+    
+    'header' => '<h4 style="margin:0; padding:0">Autorizar envio express</h4>',
+]);
+?>
+<div class="contenedor-modal">
+Cargando.....
+</div>
+<?php
+Modal::end();
