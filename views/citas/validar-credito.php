@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Autori
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
 $status = $model->idStatus;
-$simCard = $model->idSimCard;
 $estado = $model->idEstado;
 
 
@@ -45,9 +44,6 @@ $this->registerJsFile(
     '@web/webAssets/js/crear-cita.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
-
-$equipo = $model->idEquipo;
-$simCard = $model->idSimCard;
 ?>
 
 <div class="panel">
