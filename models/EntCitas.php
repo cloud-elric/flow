@@ -107,7 +107,7 @@ class EntCitas extends \yii\db\ActiveRecord
                      return $('#entcitas-num_costo_equipo').val()>0;
                  }"
 			],
-            [['txt_telefono'] , 'unique', 'message'=>'Número teléfonico ya se encuentra utilizado', 'on'=>[ 'createRegistro']],
+            [['txt_telefono'] , 'unique', 'message'=>'Número teléfonico ya se encuentra utilizado', 'on'=>[ 'createRegistro', 'create']],
             [['id_usuario', 'id_status', 'txt_token', 'txt_nombre', 'txt_apellido_paterno', 'txt_apellido_materno', 'txt_telefono', 'txt_email', 
                 'fch_nacimiento', 'txt_rfc', 'id_tipo_tramite', 'id_tipo_cliente', 'id_condicion_plan', 'id_tipo_plan_tarifario', 
                 'id_plazo', 'id_equipo', 'num_costo_equipo', 'id_tipo_deposito_garantia', 'id_tipo_identificacion', 'txt_folio_identificacion'], 'required', 'on'=>'create'],
