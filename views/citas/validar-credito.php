@@ -275,9 +275,16 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_telefonico_nuevo')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
             </div>
+            <?php
+            if(!$equipo->b_inventario_virtual){
+            ?>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
             </div>
+
+            <?php
+            }
+            ?>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
             </div>

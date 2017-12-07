@@ -98,7 +98,7 @@ class CitasController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($token=null)
     {
 
         $model = new EntCitas(['scenario'=>'create']);
@@ -109,7 +109,10 @@ class CitasController extends Controller
             return ActiveForm::validate($model);
         }
 
-        if(isset($_POST['EntCitas']["id_cita"])){
+        if($token){
+            $model = EntCitas::find(['txt_token'=>$token])->one();
+            $model->scenario = "create";
+        }else if(isset($_POST['EntCitas']["id_cita"])){
 
             $idCita = $_POST['EntCitas']["id_cita"];
             
@@ -353,6 +356,12 @@ class CitasController extends Controller
     public function actionVerCita($token=null){
 
         $cita = EntCitas::find()->where(['txt_token'=>$token])->one();
+
+        
+
+        if($cita->id_status==Constantes::CREADA){
+            return $this->redirect(['create', 'token'=>$cita->txt_token]);
+        }
 
         if($cita->id_status==Constantes::PROCESO_VALIDACION){
             return $this->redirect(['validar-credito', 'token'=>$cita->txt_token]);

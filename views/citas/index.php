@@ -59,6 +59,9 @@ $this->registerJsFile(
                     case '8':
                         $statusColor = 'success';
                     break;      
+                    case '9':
+                        $statusColor = ' bg-brown-800';
+                    break;  
                     default:
                         # code...
                         break;
@@ -139,7 +142,10 @@ $this->registerJsFile(
                                 break;   
                                 case '8':
                                     $statusColor = 'success';
-                                break;      
+                                break;
+                                case '9':
+                                    $statusColor = ' bg-brown-800';
+                                break;        
                                 default:
                                     # code...
                                     break;
