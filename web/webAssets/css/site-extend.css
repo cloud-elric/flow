@@ -149,4 +149,8 @@ table a.btn {
     text-decoration: none;
 }
 
+.text-white, .text-white:hover{
+    color:white;
+}
+
 
