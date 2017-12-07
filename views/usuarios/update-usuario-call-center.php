@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
 /* @var $model app\models\EntUsuarios */
 
 $this->title = 'Editar usuario:'.$model->nombreCompleto;
-$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-users"></i>Usuarios call center', 'url' => ['usuarios-call-center'], 'encode' => false];
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-users"></i>Usuarios', 'url' => ['usuarios-call-center'], 'encode' => false];
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-edit"></i>'.$this->title, 'encode' => false];
 $this->registerCssFile(
   '@web/webAssets/css/signUp.css',

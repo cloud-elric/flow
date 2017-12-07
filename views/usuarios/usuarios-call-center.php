@@ -8,7 +8,7 @@ use yii\helpers\Url;
 /* @var $searchModel app\modules\ModUsuarios\models\EntUsuariosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Usuarios call center';
+$this->title = 'Usuarios';
 Yii::$app->view->params['btnAcciones'] = '<a class="btn btn-success" href="'.Url::base().'/usuarios/create-usuario-call-center"><i class="icon wb-user-add"></i>Agregar</a>';
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-users"></i>'.$this->title, 'encode' => false];
 
