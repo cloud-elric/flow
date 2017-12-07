@@ -51,6 +51,12 @@ class CondicionesPlanController extends Controller
         if (isset($_POST['depdrop_parents'])) {
             $id = end($_POST['depdrop_parents']);
             $condicionPlan = CatCondicionesPlan::findOne($id);
+
+            if(!$condicionPlan){
+                echo Json::encode(['output' => $out]);
+                return;
+            }
+
             $list = $condicionPlan->relCondicionPlanTarifarios;
             $selected  = null;
             if ($id != null && count($list) > 0) {
