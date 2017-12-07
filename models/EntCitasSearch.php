@@ -66,6 +66,11 @@ class EntCitasSearch extends EntCitas
             
         }
 
+        $usuario = Yii::$app->user->identity;
+        if( $usuario->txt_auth_item=="call-center"){
+            $this->id_usuario = $usuario->id_usuario;
+        }
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');

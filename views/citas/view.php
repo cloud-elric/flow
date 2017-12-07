@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-mobile"></i> '.$
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
 $status = $model->idStatus;
-$simCard = $model->idSimCard;
+
 $estado = $model->idEstado;
 
 $this->registerCssFile(
@@ -99,36 +99,27 @@ $this->registerJsFile(
             <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_apellido_paterno')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_apellido_paterno')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
     </div>
     
     <div class="row">
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_email')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
         <div class="col-md-3">
             <?php 
-                echo $form->field($model, 'fch_nacimiento')->widget(DatePicker::classname(), [
-                    'options' => ['placeholder' => '16/12/1990'],
-                    'pickerButton'=>false,
-                    'removeButton'=>false,
-                    'type' => DatePicker::TYPE_INPUT,
-                    'pluginOptions' => [
-                        'autoclose'=>true,
-                        'format' => 'dd/mm/yyyy'
-                    ]
-                ]);
-            ?>
+                echo $form->field($model, 'fch_nacimiento')->textInput(['maxlength' => true, "disabled"=>true]) ?>
+            
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_rfc')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_rfc')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
         <div class="col-md-3">
             <?= $form->field($model, 'id_tipo_tramite')->widget(Select2::classname(), [
@@ -148,7 +139,7 @@ $this->registerJsFile(
             <?= $form->field($model, 'id_tipo_cliente')->widget(Select2::classname(), [
                 'data' => ArrayHelper::map(CatTiposClientes::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_cliente', 'txt_nombre'),
                 'language' => 'es',
-                'options' => ['placeholder' => 'Seleccionar tipo de cliente'],
+                'options' => ['placeholder' => 'Seleccionar tipo de cliente', "disabled"=>true],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
