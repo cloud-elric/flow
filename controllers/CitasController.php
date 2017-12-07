@@ -345,6 +345,17 @@ class CitasController extends Controller
 
     }
 
+    public function actionVerCita($token=null){
+
+        $cita = EntCitas::find()->where(['txt_token'=>$token])->one();
+
+        if($cita->id_status==Constantes::PROCESO_VALIDACION){
+            return $this->redirect(['validar-credito', 'token'=>$cita->txt_token]);
+        }else{
+            return $this->redirect(['view', 'token'=>$cita->txt_token]);
+        }
+
+    }
     public function actionGenerarRegistro($tel=null){
         \Yii::$app->response->format = Response::FORMAT_JSON;
         $usuario = Yii::$app->user->identity;

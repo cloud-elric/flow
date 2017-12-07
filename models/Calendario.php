@@ -81,7 +81,7 @@ class Calendario
         $anio = self::getYearLastDigit($string);
         $hora = self::getHoursMinutes($string);
 
-        return $nombreDia." ".$dia."/".$mes."/".$anio." ".$hora;
+        return $nombreDia." ".$dia."-".$mes."-".$anio." ".$hora;
     }
 
     public static function getHoursMinutes($string=null){

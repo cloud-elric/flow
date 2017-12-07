@@ -190,7 +190,8 @@ class EntCitas extends \yii\db\ActiveRecord
             'fch_cita' => 'Fecha de la cita',
             'fch_hora_cita' => 'Hora de la cita',
             'num_costo_renta' => 'Costo renta',
-            'id_horario'=> 'Horario de entrega'
+            'id_horario'=> 'Horario de entrega',
+            'fch_creacion'=>'Fecha creación'
         ];
     }
 

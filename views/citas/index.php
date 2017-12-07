@@ -4,6 +4,8 @@ use yii\widgets\ListView;
 use app\components\CustomLinkSorter;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
+use yii\grid\GridView;
+use app\models\Calendario;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\ModUsuarios\models\EntUsuariosSearch */
@@ -25,7 +27,7 @@ $this->registerJsFile(
 ?>
 
 
-<?php Pjax::begin(['id' => 'citas', 'timeout'=>'0', 'linkSelector'=>'']) ?>
+<?php Pjax::begin(['id' => 'citas', 'timeout'=>'0', 'linkSelector'=>'table thead a']) ?>
 <div class="panel-group" id="exampleAccordionDefault" aria-multiselectable="true" role="tablist">
     <div class="panel">
         <div class="panel-heading" id="exampleHeadingDefaultOne" role="tab">
@@ -49,37 +51,73 @@ $this->registerJsFile(
             <h3>Cargando información</h3>
     </div>
     <div class="panel-body">
-        <div class="nav-tabs-horizontal">
-    
-            <div class="tab-content">
-                <div class="tab-pane animation-fade active" id="all_contacts" role="tabpanel">
-                   
+        <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    [
+                        'attribute' => 'id_status',
+                        'format'=>'raw',
+                        'value'=>function($data){
+                            switch ($data->id_status) {
+                                case '1':
+                                    $statusColor = 'warning';
+                                    break;
+                                case '2':
+                                    $statusColor = ' bg-brown-800';
+                                    break;
+                                case '3':
+                                    $statusColor = ' bg-blue-800';
+                                    break;    
+                                case '4':
+                                    $statusColor = 'danger';
+                                    break;
+                                case '5':
+                                    $statusColor = 'danger';
+                                break;  
+                                case '6':
+                                    $statusColor = ' bg-blue-800';
+                                break;  
+                                case '7':
+                                    $statusColor = 'success';
+                                break;   
+                                case '8':
+                                    $statusColor = 'success';
+                                break;      
+                                default:
+                                    # code...
+                                    break;
+                            }
 
-                    <?php
-                    echo ListView::widget([
+                            return Html::a(
+                                $data->idStatus->txt_nombre,
+                                Url::to(['citas/ver-cita', 'token' => $data->txt_token]), 
+                                [
+                                    'class'=>'btn label label-'.$statusColor.'',
+                                ]
+                            );
+                        }
+                    ],
+                    'txt_telefono',
+                    [
+                        'attribute'=>'id_tipo_tramite',
+                        'value'=>'idTipoTramite.txt_nombre'
+                    ],
+                    [
+                        'attribute'=>'fch_creacion',
+                        'format'=>'raw',
+                        'value'=>function($data){
+
+                            return Calendario::getDateComplete($data->fch_creacion);
+                        }
+                    ],
                     
-                        'dataProvider' => $dataProvider,
-                        'itemView' => '_item-cita',
-                        'layout' => "<ul class='list-group'>{items}</ul>\n{summary}\n{pager}",
-                        'itemOptions'=>[
-                            'tag'=>'li',
-                            'class'=>'list-group-item'
-                        ],
-                        'summaryOptions'=>[
-                            'class'=>'pull-left'
-                        ],
-                        'pager'=>[
-                            'options'=>[
-                                'class'=>'pagination pull-right'
-                            ]
-                        ]
-                        
-                    ]);
-                    ?>
-                </div>
-            </div>
-        </div>
-        
+                ],
+                'layout' => "{items}\n{summary}\n{pager}",
+                'tableOptions'=>[
+                    'class'=>'table table-hover table-striped'
+                ]
+            ]) ?>
+ 
     </div>
    
 
