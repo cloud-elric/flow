@@ -55,12 +55,33 @@ $this->registerJsFile(
                     <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
                     </a>
+
                     <?php
-                    if(\Yii::$app->user->can('supervisor-call-center')){
+                    if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
                     ?>
                     <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-check"></i> Autorizar
                     </a>
+                    <?php
+                    }
+                    ?>
+
+
+
+                    <?php
+                    if(\Yii::$app->user->can('supervisor-call-center')){
+                    ?>
+
+                        <?php
+                        if(!$equipo->b_inventario_virtual){
+                        ?>
+                            <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
+                                <i class="icon fa-check"></i> Autorizar
+                            </a>
+
+                        <?php
+                        }
+                        ?>
                     <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-times"></i> Rechazar
                     </a>
@@ -277,9 +298,16 @@ $this->registerJsFile(
         <div class="col-md-3">
             <?= $form->field($model, 'txt_numero_telefonico_nuevo')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
         </div>
+        <?php
+        if(!$equipo->b_inventario_virtual){
+        ?>
         <div class="col-md-3">
             <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
         </div>
+
+        <?php
+        }
+        ?>
         
     </div>
     
