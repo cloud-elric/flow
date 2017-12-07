@@ -4,9 +4,10 @@ var inputApelllidoMaterno = $("#entcitas-txt_apellido_materno");
 var inputFchNacimiento = $("#entcitas-fch_nacimiento");
 var inputRFC = $("#entcitas-txt_rfc");
 var cargarSupervisores = false;
+var formCita = $("#form-cita");
+var botonEnviar = "submit-button-ladda";
 
 $(document).ready(function(){
-
     inputNombre.on("change", function(){
         calculaRFC();
     });
@@ -22,6 +23,7 @@ $(document).ready(function(){
     inputFchNacimiento.on("change", function(){
         calculaRFC();
     });
+
 
     $("#entcitas-id_equipo").on("change", function(){
         var id = $(this).val();
@@ -144,8 +146,6 @@ $(document).ready(function(){
         }
     });
 
-    var formCita = $("#form-cita");
-    var botonEnviar = "submit-button-ladda";
     
     formCita.on('beforeSubmit', function(e) {
         var form = $(this);
@@ -174,7 +174,9 @@ $(document).ready(function(){
     });
     
     formCita.on('afterValidate', function (e, messages, errorAttributes) {
+        
         if(errorAttributes.length > 0){
+            
             var button = document.getElementById(botonEnviar);
             var l = Ladda.create(button);
             l.stop();
@@ -183,11 +185,36 @@ $(document).ready(function(){
         
     });
 
+     formCita.on('afterValidateAttribute', function (e, attribute, messages) {
+
+         if(attribute.name=="txt_telefono"){
+             if(messages.length==0){
+                 generarRegistro();
+             }
+         }
+        
+        
+        
+     });
+
 });
 
 $(window).on('load', function() {
     $("#entcitas-id_tipo_plan_tarifario").trigger("change");  
 });
+
+function generarRegistro(){
+    var telefono = $("#entcitas-txt_telefono").val();
+    $.ajax({
+        url:baseUrl+"citas/generar-registro?tel="+telefono,
+        success:function(resp){
+            if(resp.status=="success"){
+                $("#entcitas-id_cita").val(resp.identificador);
+                
+            }
+        }
+    });
+}
 
 function cargarSupervisoresPeticion(){
     $.ajax({

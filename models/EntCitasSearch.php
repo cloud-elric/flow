@@ -19,8 +19,8 @@ class EntCitasSearch extends EntCitas
     public function rules()
     {
         return [
-            [['id_cita', 'id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status'], 'integer'],
-            [['num_dias_servicio', 'txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_clave_sim_card', 'txt_descripcion_sim', 'txt_serie_sim_card',  'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
+            [['id_cita', 'id_tipo_tramite', 'id_equipo',  'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status'], 'integer'],
+            [['num_dias_servicio', 'txt_token', 'txt_clave_sap_equipo', 'txt_descripcion_equipo', 'txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_cita', 'fch_hora_cita'], 'safe'],
         ];
     }
 
@@ -77,7 +77,6 @@ class EntCitasSearch extends EntCitas
             'id_cita' => $this->id_cita,
             'id_tipo_tramite' => $this->id_tipo_tramite,
             'id_equipo' => $this->id_equipo,
-            'id_sim_card' => $this->id_sim_card,
             'id_area' => $this->id_area,
             'id_tipo_entrega' => $this->id_tipo_entrega,
             'id_usuario' => $this->id_usuario,
@@ -92,9 +91,7 @@ class EntCitasSearch extends EntCitas
             ->andFilterWhere(['like', 'txt_iccid', $this->txt_iccid])
             ->andFilterWhere(['like', 'txt_imei', $this->txt_imei])
             ->andFilterWhere(['like', 'txt_telefono', $this->txt_telefono])
-            ->andFilterWhere(['like', 'txt_clave_sim_card', $this->txt_clave_sim_card])
-            ->andFilterWhere(['like', 'txt_descripcion_sim', $this->txt_descripcion_sim])
-            ->andFilterWhere(['like', 'txt_serie_sim_card', $this->txt_serie_sim_card])
+           
             
             ->andFilterWhere(['like', 'txt_numero_referencia', $this->txt_numero_referencia])
             ->andFilterWhere(['like', 'txt_numero_referencia_2', $this->txt_numero_referencia_2])

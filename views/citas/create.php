@@ -34,7 +34,13 @@ $this->registerJsFile(
 ?>
 
 <div class="panel">
-    <?php $form = ActiveForm::begin(['id'=>'form-cita']); ?>
+    <?php $form = ActiveForm::begin([
+        'id'=>'form-cita',
+        'enableAjaxValidation'=>true,
+        'enableClientValidation'=>true,
+        ]); 
+    echo $form->field($model, 'id_cita')->hiddenInput()->label(false);
+    ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite
@@ -44,7 +50,8 @@ $this->registerJsFile(
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
-                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
+                <?= $form->field($model, 'txt_telefono')
+                        ->textInput(['maxlength' => true, 'class'=>'form-control']) ?>
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
@@ -120,7 +127,6 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?php 
                 echo $form->field($model, 'id_tipo_plan_tarifario')->widget(DepDrop::classname(), [
-                    'options' => [],
                     'type' => DepDrop::TYPE_SELECT2,
                     'select2Options'=>[
                         'pluginOptions'=>[
@@ -136,7 +142,8 @@ $this->registerJsFile(
                         'depends'=>['entcitas-id_condicion_plan'],
                         'url' => Url::to(['/condiciones-plan/get-planes-tarifarios']),
                         'loadingText' => 'Cargando planes ...',
-                        'placeholder' => 'Seleccionar plan ...'
+                        'placeholder' => 'Seleccionar plan ...',
+                        'initialize'=>true
                     ]
                     
                 ]);
@@ -145,7 +152,7 @@ $this->registerJsFile(
             <div class="col-md-3">
             <?php 
                 echo $form->field($model, 'id_plazo')->widget(DepDrop::classname(), [
-                    
+                    'data'=>[],
                     'options' => [],
                     'type' => DepDrop::TYPE_SELECT2,
                     'select2Options'=>[
