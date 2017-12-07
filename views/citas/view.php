@@ -308,6 +308,14 @@ $this->registerJsFile(
         <?php
         }
         ?>
+
+<div class="col-md-3">
+                <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
+            </div>
+
+        <div class="col-md-3">
+                <?= $form->field($model, 'txt_sisacd')->textInput(['maxlength' => true]) ?>
+            </div>
         
     </div>
     
