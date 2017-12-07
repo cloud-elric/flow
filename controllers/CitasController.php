@@ -20,6 +20,7 @@ use app\models\EntHistorialCambiosCitas;
 use app\models\Helpers;
 use app\modules\ModUsuarios\models\EntUsuarios;
 use yii\widgets\ActiveForm;
+use app\models\CatStatusCitas;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -61,10 +62,14 @@ class CitasController extends Controller
     {
         $searchModel = new EntCitasSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        //index?EntCitasSearch%5Bid_status%5D=1
+        
+        $status = CatStatusCitas::find()->where("b_habilitado=1")->orderBy("txt_nombre")->all();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'status'=>$status
         ]);
     }
 

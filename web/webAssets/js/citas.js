@@ -62,7 +62,7 @@ $(document).on({
     'click': function(){
         mostrarLoading();
     }
-}, "table thead a");
+}, "table thead a, a.list-group-item");
 
 
 
