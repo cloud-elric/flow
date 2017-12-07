@@ -27,6 +27,12 @@ $this->registerCssFile(
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
 
+$this->registerCssFile(
+    '@web/webAssets/plugins/date-picker/date-picker.css',
+    ['depends' => [kartik\date\DatePickerAsset::className()]]
+);
+
+
 $this->registerJsFile(
     '@web/webAssets/js/crear-cita.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]

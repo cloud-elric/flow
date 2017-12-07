@@ -110,7 +110,7 @@ class EntCitas extends \yii\db\ActiveRecord
             [['txt_telefono'] , 'unique', 'message'=>'Número teléfonico ya se encuentra utilizado', 'on'=>[ 'createRegistro']],
             [['id_usuario', 'id_status', 'txt_token', 'txt_nombre', 'txt_apellido_paterno', 'txt_apellido_materno', 'txt_telefono', 'txt_email', 
                 'fch_nacimiento', 'txt_rfc', 'id_tipo_tramite', 'id_tipo_cliente', 'id_condicion_plan', 'id_tipo_plan_tarifario', 
-                'id_plazo', 'id_equipo', 'num_costo_equipo', 'id_tipo_deposito_garantia'], 'required', 'on'=>'create'],
+                'id_plazo', 'id_equipo', 'num_costo_equipo', 'id_tipo_deposito_garantia', 'id_tipo_identificacion', 'txt_folio_identificacion'], 'required', 'on'=>'create'],
             [['txt_email'], 'email'],
             [['id_tipo_tramite','id_horario','id_estado',  'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 'txt_token', 'txt_iccid',  'txt_telefono', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita'], 'required', 'on'=>'aprobar'],
             [['id_tipo_tramite', 'id_equipo', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'id_estado', 'id_envio'], 'integer'],

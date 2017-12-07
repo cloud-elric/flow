@@ -58,6 +58,13 @@ class CatStatusCitas extends \yii\db\ActiveRecord
      */
     public function getEntCitas()
     {
-        return $this->hasMany(EntCitas::className(), ['id_status' => 'id_statu_cita']);
+
+        $usuario = Yii::$app->user->identity;
+        if( $usuario->txt_auth_item=="call-center"){
+            return $this->hasMany(EntCitas::className(), ['id_status' => 'id_statu_cita'])->where(['id_usuario'=>$usuario->id_usuario]);
+        }else{
+            return $this->hasMany(EntCitas::className(), ['id_status' => 'id_statu_cita']);
+        }
+        
     }
 }
