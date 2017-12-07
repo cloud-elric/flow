@@ -145,10 +145,8 @@ footer img{
     z-index: 99999999;
 }
 
-.table a.btn {
+table a.btn {
     text-decoration: none;
 }
 
-a.asc:after {
-    content: url(link/to/images/img.jpg);
-}
+
