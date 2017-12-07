@@ -19,6 +19,7 @@ use app\models\Constantes;
 use app\models\EntHistorialCambiosCitas;
 use app\models\Helpers;
 use app\modules\ModUsuarios\models\EntUsuarios;
+use yii\widgets\ActiveForm;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -94,16 +95,30 @@ class CitasController extends Controller
      */
     public function actionCreate()
     {
-        $model = new EntCitas(['scenario' => 'create']);
-        
+
+        $model = new EntCitas(['scenario'=>'create']);
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+
+        if(isset($_POST['EntCitas']["id_cita"])){
+
+            $idCita = $_POST['EntCitas']["id_cita"];
+            
+            $model = EntCitas::find($idCita)->one();
+            $model->scenario = "create";
+        }
+
         $usuario = Yii::$app->user->identity;
 
         $model->id_usuario = $usuario->id_usuario;
         $model->id_status = Constantes::PROCESO_VALIDACION;
-
-        $model->txt_token = Utils::generateToken("cit_");
-        
+        $camposGuardar = $_POST;
         if ($model->load(Yii::$app->request->post())){
+            
             
             $model->fch_nacimiento = Utils::changeFormatDateInput($model->fch_nacimiento);
             
@@ -114,7 +129,7 @@ class CitasController extends Controller
                 return $this->redirect(['index']);
                 //return $this->redirect(['view', 'token' => $model->txt_token]);
             }else{
-                //print_r($model->errors);
+                print_r($model->errors);
                 exit;
             }
 
@@ -341,4 +356,30 @@ class CitasController extends Controller
         }
 
     }
+    public function actionGenerarRegistro($tel=null){
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $usuario = Yii::$app->user->identity;
+        $status = 9;
+
+        $respuesta['status'] = 'error';
+        $respuesta['mensaje'] = 'No se puede generar el registro con un número teléfonico repetido';
+        
+        $cita = new EntCitas(['scenario'=>'createRegistro']);
+        $cita->txt_telefono = $tel;
+        $cita->txt_token = Utils::generateToken("cit_");
+        $cita->id_usuario = $usuario->id_usuario;
+        $cita->id_status = $status;
+        if(!$cita->save()){
+            //print_r($cita->errors);
+        }else{
+            $respuesta['status'] = 'success';
+            $respuesta['mensaje']= 'Registro guardado';
+            $respuesta['identificador'] = $cita->id_cita;
+        }
+        
+
+        return $respuesta;
+
+    }
+
 }
