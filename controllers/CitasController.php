@@ -238,10 +238,7 @@ class CitasController extends Controller
             $colonia = CatColonias::findOne($model->txt_colonia);
             $model->txt_colonia = $colonia->txt_nombre;
             if($model->save()){
-                return $this->render('view', [
-                    'model' => $model,
-                    'area' => $area
-                ]);
+                return $this->render('update');
             }
         }           
     }
@@ -316,9 +313,7 @@ class CitasController extends Controller
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
                 $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita rechazada");
-                return $this->redirect( ['view',
-                    'token' => $token,
-                ]);
+                return $this->redirect( ['index']);
             }
         }
        
@@ -335,9 +330,7 @@ class CitasController extends Controller
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
                 $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita cancelada");
-                return $this->redirect( ['view',
-                    'token' => $token,
-                ]);
+                return $this->redirect( ['index']);
             }
         }
        
