@@ -103,11 +103,21 @@ class CitasController extends Controller
 
         $model = new EntCitas(['scenario'=>'create']);
 
-        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
-            
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return ActiveForm::validate($model);
+        if (Yii::$app->request->isAjax && $token) {
+            $model = new EntCitas(['scenario'=>'create']);
+            if($model->load(Yii::$app->request->post())){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            }
+           
+        }else if (Yii::$app->request->isAjax) {
+            $model = new EntCitas(['scenario'=>'createRegistro']);
+            if($model->load(Yii::$app->request->post())){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            }
         }
+        
 
         if($token){
             $model = EntCitas::find(['txt_token'=>$token])->one();
@@ -274,8 +284,16 @@ class CitasController extends Controller
 
     public function actionAutorizar($token = null)
     {
+        $usuario = Yii::$app->user->identity;
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $statusAutorizar = Constantes::AUTORIZADO_POR_SUPERVISOR;
+
+        if($usuario->txt_auth_item=="supervisor-call-center"){
+            $statusAutorizar = Constantes::AUTORIZADO_POR_SUPERVISOR;
+        }else{
+            $statusAutorizar = Constantes::AUTORIZADO_POR_MESA_DE_CONTROL;
+        }
+        
+
         $cita = $this->findModel(['txt_token' => $token]);
 
         if(!$cita->id_envio){
@@ -290,7 +308,7 @@ class CitasController extends Controller
                 
 
                 if($cita->save()){
-                    $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita autorizada por supervisor");
+                    $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita autorizada por".$usuario->txt_auth_item);
                     return ['status'=>'ok', 'envio'=>$envio->txt_token];
                 }
             }
@@ -312,7 +330,7 @@ class CitasController extends Controller
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita rechazada");
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita rechazada ".$usuario->txt_auth_item);
                 return $this->redirect( ['index']);
             }
         }
@@ -329,7 +347,7 @@ class CitasController extends Controller
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita cancelada");
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita cancelada por ".$usuario->txt_auth_item);
                 return $this->redirect( ['index']);
             }
         }
@@ -341,6 +359,7 @@ class CitasController extends Controller
         $historial->id_usuario = $id_usuario;
         $historial->id_cita = $id_cita;
         $historial->txt_modificacion = $comentario;
+        $historial->fch_modificacion = Utils::getFechaActual();
 
         $historial->save();
 
@@ -376,9 +395,13 @@ class CitasController extends Controller
         $cita->txt_token = Utils::generateToken("cit_");
         $cita->id_usuario = $usuario->id_usuario;
         $cita->id_status = $status;
+        $cita->fch_creacion = Utils::getFechaActual();
+
+
         if(!$cita->save()){
             //print_r($cita->errors);
         }else{
+            $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Registro guardado");
             $respuesta['status'] = 'success';
             $respuesta['mensaje']= 'Registro guardado';
             $respuesta['identificador'] = $cita->id_cita;

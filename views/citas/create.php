@@ -42,8 +42,8 @@ $this->registerJsFile(
 <div class="panel">
     <?php $form = ActiveForm::begin([
         'id'=>'form-cita',
-        'enableAjaxValidation'=>true,
-        'enableClientValidation'=>true,
+        
+        //'enableClientValidation'=>true,
         ]); 
     echo $form->field($model, 'id_cita')->hiddenInput()->label(false);
     ?>
@@ -56,7 +56,7 @@ $this->registerJsFile(
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
-                <?= $form->field($model, 'txt_telefono')
+                <?= $form->field($model, 'txt_telefono',['enableAjaxValidation'=>true,])
                         ->textInput(['maxlength' => true, 'class'=>'form-control']) ?>
             </div>
             <div class="col-md-3">

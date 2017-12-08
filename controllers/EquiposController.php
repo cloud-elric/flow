@@ -12,6 +12,7 @@ use yii\db\Expression;
 use app\models\RelEquipoPlazoCosto;
 use app\models\EntCitas;
 use app\models\EntEntradas;
+use app\modules\ModUsuarios\models\Utils;
 
 /**
  * EquiposController implements the CRUD actions for CatEquipos model.
@@ -164,7 +165,7 @@ class EquiposController extends Controller
                 ->andWhere(['in', 'id_status', [2,3,6,7,8]])
                 ->orWhere(['and',['id_equipo'=>$model->id_equipo], ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /3600))'), 2] ])
                 ->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
-            if($cantidadStock && $cantidadStock - $countCitasEquipo < 0 ){
+            if($cantidadStock && ($cantidadStock - $countCitasEquipo) > 0 ){
                 $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => $cantidadStock - $countCitasEquipo];            
             }
             // else{
@@ -204,4 +205,5 @@ class EquiposController extends Controller
         return $respuesta;
 
     }
+
 }

@@ -38,7 +38,7 @@ class Utils {
 	 * @return string
 	 */
 	public static function getFechaActual() {
-		
+		date_default_timezone_set('America/Mexico_City');
 		// Inicializamos la fecha y hora actual
 		$fecha = date ( 'Y-m-d H:i:s', time () );
 		return $fecha;
