@@ -102,8 +102,10 @@ class CitasController extends Controller
     {
 
         $model = new EntCitas(['scenario'=>'create']);
-
-        if (Yii::$app->request->isAjax && $token) {
+        $usuario = Yii::$app->user->identity;
+        $model->id_usuario = $usuario->id_usuario;
+        $model->id_status = Constantes::PROCESO_VALIDACION;
+        if ((Yii::$app->request->isAjax && $token)|| (Yii::$app->request->isAjax && isset($_POST['EntCitas']['id_cita']))) {
             $model = new EntCitas(['scenario'=>'create']);
             if($model->load(Yii::$app->request->post())){
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -131,15 +133,12 @@ class CitasController extends Controller
         }
 
         $usuario = Yii::$app->user->identity;
-
-        $model->id_usuario = $usuario->id_usuario;
-        $model->id_status = Constantes::PROCESO_VALIDACION;
-        $camposGuardar = $_POST;
         if ($model->load(Yii::$app->request->post())){
-            
+            $model->id_usuario = $usuario->id_usuario;
+            $model->id_status = Constantes::PROCESO_VALIDACION;
             
             $model->fch_nacimiento = Utils::changeFormatDateInput($model->fch_nacimiento);
-            
+           
             if($model->save()){
 
                 $this->guardarHistorial($usuario->id_usuario, $model->id_cita, "Cita en proceso de autorización de crédito");
@@ -399,7 +398,8 @@ class CitasController extends Controller
 
 
         if(!$cita->save()){
-            //print_r($cita->errors);
+            // print_r($cita->errors);
+            // return;
         }else{
             $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Registro guardado");
             $respuesta['status'] = 'success';
