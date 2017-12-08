@@ -13,4 +13,6 @@ class Constantes{
 
     const DIFERIDO = 1;
     const CONTADO = 2;
+
+    const LIMITE_EXPRESS = 1;
 }

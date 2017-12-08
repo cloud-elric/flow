@@ -124,7 +124,7 @@ $(document).ready(function(){
             
         }else{
             
-            $('#entcitas-fch_cita').kvDatepicker(kvDatepicker_8b2b684e);
+            $('#entcitas-fch_cita').kvDatepicker({"autoclose":true,"format":"dd-mm-yyyy","startDate":"11-12-2017","language":"es"});
             $('#entcitas-fch_cita').attr("readonly", false);
             $("#entcitas-fch_cita").val("");
                 

@@ -14,6 +14,7 @@ use app\modules\ModUsuarios\models\Utils;
 use app\models\Calendario;
 use app\models\EntCitas;
 use yii\db\Expression;
+use app\models\Constantes;
 
 /**
  * HorariosAreasController implements the CRUD actions for EntHorariosAreas model.
@@ -130,6 +131,7 @@ class HorariosAreasController extends Controller
 
     public function actionGetHorariosDisponibilidadByArea($fecha = null){
 
+        $cantidadEnviosExpress = Constantes::LIMITE_EXPRESS;
         $out = [];
 
         if (isset($_POST['depdrop_all_params']['entcitas-id_area']) &&
@@ -164,13 +166,14 @@ class HorariosAreasController extends Controller
 
                             ->where(new Expression('date_format(fch_cita, "%Y-%m-%d") = date_format("'.$fechaFormateada.'", "%Y-%m-%d")') )
                             ->andWhere(['id_horario'=>$disponibilidad["id_horario_area"]])->count();
-
-                    $out[] = [
-                        'id' => $disponibilidad['id_horario_area'], 
-                        'name' => $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'],
-                        'cantidad'=>$disponibilidad['num_disponibles']-$horariosOcupados];
-                    if ($i == 0) {
-                        $selected = $fecha;
+                    if(($disponibilidad['num_disponibles']-$horariosOcupados)>0){
+                        $out[] = [
+                            'id' => $disponibilidad['id_horario_area'], 
+                            'name' => $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'],
+                            'cantidad'=>$disponibilidad['num_disponibles']-$horariosOcupados];
+                        if ($i == 0) {
+                            $selected = $fecha;
+                        }
                     }
                 }
                 // Shows how you can preselect a value
