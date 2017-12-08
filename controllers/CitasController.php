@@ -14,6 +14,13 @@ use app\components\AccessControlExtend;
 use app\models\EntHorariosAreas;
 use app\models\EntEnvios;
 use \yii\web\Response;
+use app\models\CatColonias;
+use app\models\Constantes;
+use app\models\EntHistorialCambiosCitas;
+use app\models\Helpers;
+use app\modules\ModUsuarios\models\EntUsuarios;
+use yii\widgets\ActiveForm;
+use app\models\CatStatusCitas;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -55,10 +62,14 @@ class CitasController extends Controller
     {
         $searchModel = new EntCitasSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        //index?EntCitasSearch%5Bid_status%5D=1
+        
+        $status = CatStatusCitas::find()->where("b_habilitado=1")->orderBy("txt_nombre")->all();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'status'=>$status
         ]);
     }
 
@@ -71,7 +82,9 @@ class CitasController extends Controller
     {
         $model = EntCitas::find()->where(['txt_token'=>$token])->one();
         $area = CatAreas::find()->one();
-        $horarios = $area->entHorariosAreas;        
+        $horarios = $area->entHorariosAreas;  
+        
+        $model->fch_nacimiento = Utils::changeFormatDate($model->fch_nacimiento);
 
         return $this->render('view', [
             'model' => $model,
@@ -85,38 +98,136 @@ class CitasController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($token=null)
     {
-        $model = new EntCitas();
-        $area = CatAreas::find()->one();
+
+        $model = new EntCitas(['scenario'=>'create']);
         $usuario = Yii::$app->user->identity;
-
-        //$model->id_area = $area->id_area;
-        //$model->num_dias_servicio = '';
-        //$model->id_tipo_entrega = $area->id_tipo_entrega;
         $model->id_usuario = $usuario->id_usuario;
-        $model->id_status = 1;
-
-        $horarios = $area->entHorariosAreas;
-        $model->txt_token = Utils::generateToken("cit_");
+        $model->id_status = Constantes::PROCESO_VALIDACION;
+        if ((Yii::$app->request->isAjax && $token)|| (Yii::$app->request->isAjax && isset($_POST['EntCitas']['id_cita']))) {
+            $model = new EntCitas(['scenario'=>'create']);
+            if($model->load(Yii::$app->request->post())){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            }
+           
+        }else if (Yii::$app->request->isAjax) {
+            $model = new EntCitas(['scenario'=>'createRegistro']);
+            if($model->load(Yii::$app->request->post())){
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            }
+        }
         
-        if ($model->load(Yii::$app->request->post())){
-            $model->fch_cita = Utils::changeFormatDateInput($model->fch_cita);
+
+        if($token){
+            $model = EntCitas::find()->where(['txt_token'=>$token])->one();
+            $model->scenario = "create";
+        }else if(isset($_POST['EntCitas']["id_cita"])){
+
+            $idCita = $_POST['EntCitas']["id_cita"];
             
-            //$model->fch_hora_cita = $horario->horario;
+            $model = EntCitas::find($idCita)->one();
+            $model->scenario = "create";
+        }
+
+        $usuario = Yii::$app->user->identity;
+        if ($model->load(Yii::$app->request->post())){
+            $model->id_usuario = $usuario->id_usuario;
+            $model->id_status = Constantes::PROCESO_VALIDACION;
+            
+            $model->fch_nacimiento = Utils::changeFormatDateInput($model->fch_nacimiento);
+           
             if($model->save()){
-                return $this->redirect(['view', 'token' => $model->txt_token]);
+
+                $this->guardarHistorial($usuario->id_usuario, $model->id_cita, "Cita en proceso de autorización de crédito");
+
+                return $this->redirect(['index']);
+                //return $this->redirect(['view', 'token' => $model->txt_token]);
+            }else{
+                print_r($model->errors);
+                exit;
             }
 
-            $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
-            $model->fch_hora_cita = $horario->id_horario_area;
             
         } 
 
         return $this->render('create', [
             'model' => $model,
-            'area' => $area,
-            'horarios'=>$horarios
+        ]);
+        
+    }
+
+    public function actionFormPassSupervisor(){
+        $supervisores = EntUsuarios::find()->where(["txt_auth_item"=>"supervisor-call-center"])->orderBy('txt_username, txt_apellido_paterno')->all();
+
+        return $this->renderAjax('form-pass-supervisor', ['supervisores'=>$supervisores]);
+    }
+
+    public function actionValidarPassSupervisor(){
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $respuesta['status'] = 'error';
+        $respuesta['mensaje'] = 'Usuario y/o contraseña incorrecto';
+        if(isset($_POST['id_supervisor']) && isset($_POST['password-supervisor'])){
+            $usuario = $_POST['id_supervisor'];
+            $password = $_POST['password-supervisor'];
+            $supervisor = EntUsuarios::find()->where(["id_usuario"=>$usuario])->one();
+
+            if($supervisor){
+                if (Yii::$app->getSecurity()->validatePassword($password, $supervisor->txt_password_hash)) {
+                    $respuesta['status'] = 'success';
+                    $respuesta['mensaje'] = $supervisor->txt_token;
+                }
+            }
+
+        }
+
+        return $respuesta;
+        
+    }
+
+    public function actionValidarCredito($token=null){
+        $usuario = Yii::$app->user->identity;
+        $citaAValidar = EntCitas::findOne(['txt_token'=>$token]);
+        $citaAValidar->id_usuario = $usuario->id_usuario;
+        $citaAValidar->scenario = 'aprobar';
+        $citaAValidar->fch_nacimiento = Utils::changeFormatDate($citaAValidar->fch_nacimiento);
+
+        if ($citaAValidar->load(Yii::$app->request->post())){
+
+            $colonia = CatColonias::findOne($citaAValidar->txt_colonia);
+            $citaAValidar->txt_colonia = $colonia->txt_nombre;
+
+            $horario = EntHorariosAreas::findOne($citaAValidar->id_horario);
+            $citaAValidar->fch_hora_cita = $horario->txt_hora_inicial." - ". $horario->txt_hora_final;
+           
+            $citaAValidar->fch_nacimiento = Utils::changeFormatDateInput($citaAValidar->fch_nacimiento);
+
+            $citaAValidar->fch_cita = Utils::changeFormatDateInput($citaAValidar->fch_cita);
+
+            if($citaAValidar->txt_imei){
+                $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO;
+            }else{
+                $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO_SIN_IMEI;
+            }
+            
+            if($citaAValidar->save()){
+                $this->guardarHistorial($usuario->id_usuario, $citaAValidar->id_cita, "Cita con crédito autorizado");
+                return $this->redirect(['index']);
+                //return $this->redirect(['view', 'token' => $model->txt_token]);
+            }else{
+                print_r($citaAValidar->errors);
+                exit;
+            }
+        } 
+
+        date_default_timezone_set('America/Mexico_City');
+        $citaAValidar->fch_cita = Helpers::getFechaEntrega(Utils::getFechaActual());
+        $citaAValidar->fch_cita = Utils::changeFormatDate($citaAValidar->fch_cita);
+        
+        return $this->render('validar-credito', [
+            'model' => $citaAValidar,
         ]);
         
     }
@@ -132,11 +243,12 @@ class CitasController extends Controller
         $model = $this->findModel(['txt_token' => $token]);
         $area = CatAreas::find()->one();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->render('view', [
-                'model' => $model,
-                'area' => $area
-            ]);
+        if ($model->load(Yii::$app->request->post())){
+            $colonia = CatColonias::findOne($model->txt_colonia);
+            $model->txt_colonia = $colonia->txt_nombre;
+            if($model->save()){
+                return $this->render('update');
+            }
         }           
     }
 
@@ -171,8 +283,16 @@ class CitasController extends Controller
 
     public function actionAutorizar($token = null)
     {
+        $usuario = Yii::$app->user->identity;
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $statusAutorizar = 3;
+
+        if($usuario->txt_auth_item=="supervisor-call-center"){
+            $statusAutorizar = Constantes::AUTORIZADO_POR_SUPERVISOR;
+        }else{
+            $statusAutorizar = Constantes::AUTORIZADO_POR_MESA_DE_CONTROL;
+        }
+        
+
         $cita = $this->findModel(['txt_token' => $token]);
 
         if(!$cita->id_envio){
@@ -180,14 +300,15 @@ class CitasController extends Controller
             $envio->txt_token = Utils::generateToken("env_");
             
             if ($envio->save()) {
-
+                
                 $cita->id_status = $statusAutorizar;
                 $cita->id_envio = $envio->id_envio;
                 $cita->txt_motivo_cancelacion = '';
                 
 
                 if($cita->save()){
-                 return ['status'=>'ok', 'envio'=>$envio->txt_token];
+                    $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita autorizada por".$usuario->txt_auth_item);
+                    return ['status'=>'ok', 'envio'=>$envio->txt_token];
                 }
             }
 
@@ -200,17 +321,16 @@ class CitasController extends Controller
 
     public function actionRechazar($token=null)
     {
-        $statusRechazar = 4;
+        $usuario = Yii::$app->user->identity;
+        $statusRechazar = Constantes::RECHAZADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
         if($cita && $cita->load(Yii::$app->request->post())){
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-    
-                return $this->redirect( ['view',
-                    'token' => $token,
-                ]);
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita rechazada ".$usuario->txt_auth_item);
+                return $this->redirect( ['index']);
             }
         }
        
@@ -218,19 +338,78 @@ class CitasController extends Controller
 
     public function actionCancelar()
     {
-        $statusCancelar = 5;
+        $usuario = Yii::$app->user->identity;
+        $statusCancelar = Constantes::CANCELADA;
         $cita = $this->findModel(['txt_token' => $token]);
         
         if($cita && $cita->load(Yii::$app->request->post())){
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-    
-                return $this->redirect( ['view',
-                    'token' => $token,
-                ]);
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita cancelada por ".$usuario->txt_auth_item);
+                return $this->redirect( ['index']);
             }
         }
        
     }
+
+    public function guardarHistorial($id_usuario, $id_cita, $comentario){
+        $historial = new EntHistorialCambiosCitas();
+        $historial->id_usuario = $id_usuario;
+        $historial->id_cita = $id_cita;
+        $historial->txt_modificacion = $comentario;
+        $historial->fch_modificacion = Utils::getFechaActual();
+
+        $historial->save();
+
+    }
+
+    public function actionVerCita($token=null){
+
+        $cita = EntCitas::find()->where(['txt_token'=>$token])->one();
+
+        
+
+        if($cita->id_status==Constantes::CREADA){
+            return $this->redirect(['create', 'token'=>$cita->txt_token]);
+        }
+
+        if($cita->id_status==Constantes::PROCESO_VALIDACION){
+            return $this->redirect(['validar-credito', 'token'=>$cita->txt_token]);
+        }else{
+            return $this->redirect(['view', 'token'=>$cita->txt_token]);
+        }
+
+    }
+    public function actionGenerarRegistro($tel=null){
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $usuario = Yii::$app->user->identity;
+        $status = 9;
+
+        $respuesta['status'] = 'error';
+        $respuesta['mensaje'] = 'No se puede generar el registro con un número teléfonico repetido';
+        
+        $cita = new EntCitas(['scenario'=>'createRegistro']);
+        $cita->txt_telefono = $tel;
+        $cita->txt_token = Utils::generateToken("cit_");
+        $cita->id_usuario = $usuario->id_usuario;
+        $cita->id_status = $status;
+        $cita->fch_creacion = Utils::getFechaActual();
+
+
+        if(!$cita->save()){
+            // print_r($cita->errors);
+            // return;
+        }else{
+            $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Registro guardado");
+            $respuesta['status'] = 'success';
+            $respuesta['mensaje']= 'Registro guardado';
+            $respuesta['identificador'] = $cita->id_cita;
+        }
+        
+
+        return $respuesta;
+
+    }
+
 }

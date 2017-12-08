@@ -11,13 +11,27 @@ use app\modules\ModUsuarios\models\EntUsuarios;
  * @property string $id_cita
  * @property string $id_tipo_tramite
  * @property string $id_equipo
- * @property string $id_sim_card
  * @property string $id_area
  * @property string $id_tipo_entrega
  * @property string $id_usuario
  * @property string $id_status
  * @property string $id_estado
  * @property string $id_envio
+ * @property string $id_tipo_cliente
+ * @property string $id_condicion_plan
+ * @property string $id_tipo_plan_tarifario
+ * @property string $id_plazo
+ * @property string $id_tipo_deposito_garantia
+ * @property string $id_tipo_identificacion
+ * @property string $b_pago_contra_entrega
+ * @property double $num_monto_cod
+ * @property double $num_cantidad_deposito
+ * @property string $txt_numero_telefonico_nuevo
+ * @property string $txt_rfc
+ * @property string $txt_email
+ * @property string $txt_folio_identificacion
+ * @property string $fch_nacimiento
+ * @property double $num_costo_equipo 
  * @property string $num_dias_servicio
  * @property string $txt_token
  * @property string $txt_clave_sap_equipo
@@ -26,10 +40,9 @@ use app\modules\ModUsuarios\models\EntUsuarios;
  * @property string $txt_iccid
  * @property string $txt_imei
  * @property string $txt_telefono
- * @property string $txt_clave_sim_card
- * @property string $txt_descripcion_sim
- * @property string $txt_serie_sim_card
- * @property string $txt_nombre_completo_cliente
+ * @property string $txt_nombre
+ * @property string $txt_apellido_paterno
+ * @property string $txt_apellido_materno
  * @property string $txt_numero_referencia
  * @property string $txt_numero_referencia_2
  * @property string $txt_numero_referencia_3
@@ -42,13 +55,19 @@ use app\modules\ModUsuarios\models\EntUsuarios;
  * @property string $txt_motivo_cancelacion
  * @property string $fch_cita
  * @property string $fch_hora_cita
+ * @property string $b_deposito_contra_entrega
  *
  * @property CatAreas $idArea
+ * @property CatCondicionesPlan $idCondicionPlan 
  * @property CatEquipos $idEquipo
  * @property CatEstados $idEstado
- * @property CatSimsCards $idSimCard
+ * @property CatPlazos $idPlazo 
  * @property CatStatusCitas $idStatus
+ * @property CatTiposClientes $idTipoCliente 
+ * @property CatTiposDepositosGarantia $idTipoDepositoGarantia 
+ * @property CatTiposDepositosGarantia $idTipoIdentificacion
  * @property CatTiposEntrega $idTipoEntrega
+ * @property CatTiposPlanesTarifarios $idTipoPlanTarifario
  * @property CatTiposTramites $idTipoTramite
  * @property EntEnvios $idEnvio
  * @property ModUsuariosEntUsuarios $idUsuario
@@ -70,23 +89,48 @@ class EntCitas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_tipo_tramite', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 'txt_token', 'txt_iccid', 'txt_imei', 'txt_telefono', 'txt_nombre_completo_cliente', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita'], 'required'],
-            [['id_tipo_tramite', 'id_equipo', 'id_sim_card', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'id_estado', 'id_envio'], 'integer'],
+            [
+				['num_monto_cod'], 'required',
+			 	'when' => function ($model) {
+			 		return $model->id_tipo_deposito_garantia==2;
+			 	}, 'whenClient' => "function (attribute, value) {
+                    
+                     return $('#entcitas-id_tipo_deposito_garantia').val()==2;
+                 }"
+            ],
+            [
+				['id_tipo_deposito_garantia'], 'required',
+			 	'when' => function ($model) {
+			 		return $model->num_costo_equipo>0;
+			 	}, 'whenClient' => "function (attribute, value) {
+                    
+                     return $('#entcitas-num_costo_equipo').val()>0;
+                 }"
+			],
+            [['txt_telefono'] , 'unique', 'message'=>'Número teléfonico ya se encuentra utilizado', 'on'=>[ 'createRegistro']],
+            [['id_usuario', 'id_status', 'txt_token', 'txt_nombre', 'txt_apellido_paterno', 'txt_apellido_materno', 'txt_telefono', 'txt_email', 
+                'fch_nacimiento', 'txt_rfc', 'id_tipo_tramite', 'id_tipo_cliente', 'id_condicion_plan', 'id_tipo_plan_tarifario', 
+                'id_plazo', 'id_equipo', 'num_costo_equipo', 'id_tipo_deposito_garantia', ], 'required', 'on'=>['create']],
+            [['txt_email'], 'email'],
+            [['id_tipo_tramite','id_horario','id_estado',  'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'num_dias_servicio', 
+            'txt_token', 'txt_iccid',  'txt_telefono', 'txt_numero_referencia', 'txt_calle_numero', 'txt_colonia', 'txt_codigo_postal', 
+            'txt_municipio', 'txt_entre_calles', 'txt_observaciones_punto_referencia', 'fch_hora_cita',
+            'id_tipo_identificacion', 'txt_folio_identificacion'], 'required', 'on'=>'aprobar'],
+            [['id_tipo_tramite', 'id_equipo', 'id_area', 'id_tipo_entrega', 'id_usuario', 'id_status', 'id_estado', 'id_envio'], 'integer'],
             [['fch_cita'], 'safe'],
             [['num_dias_servicio', 'fch_hora_cita'], 'string', 'max' => 50],
             [['txt_token'], 'string', 'max' => 60],
-            [['txt_clave_sap_equipo', 'txt_clave_sim_card', 'txt_nombre_completo_cliente'], 'string', 'max' => 200],
-            [['txt_descripcion_equipo', 'txt_descripcion_sim', 'txt_entre_calles', 'txt_observaciones_punto_referencia'], 'string', 'max' => 500],
-            [['txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_serie_sim_card', 'txt_calle_numero'], 'string', 'max' => 150],
-            [['txt_telefono', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3'], 'string', 'max' => 20],
+            [['txt_clave_sap_equipo'], 'string', 'max' => 200],
+            [['txt_descripcion_equipo',  'txt_entre_calles', 'txt_observaciones_punto_referencia'], 'string', 'max' => 500],
+            [['txt_serie_equipo', 'txt_iccid', 'txt_imei', 'txt_calle_numero'], 'string', 'max' => 150],
+            [['txt_telefono', 'txt_numero_referencia', 'txt_numero_referencia_2', 'txt_numero_referencia_3'], 'string', 'max' => 10],
+            [['txt_telefono', 'txt_numero_referencia'], 'string', 'max' => 10, 'min' => 10, 'tooLong' => 'El campo no debe superar 10 dígitos','tooShort' => 'El campo debe ser mínimo de 10 digítos'],
             [['txt_colonia', 'txt_municipio'], 'string', 'max' => 100],
             [['txt_codigo_postal'], 'string', 'max' => 5],
             [['txt_motivo_cancelacion'], 'string', 'max' => 700],
-            [['txt_token'], 'unique'],
             [['id_area'], 'exist', 'skipOnError' => true, 'targetClass' => CatAreas::className(), 'targetAttribute' => ['id_area' => 'id_area']],
             [['id_equipo'], 'exist', 'skipOnError' => true, 'targetClass' => CatEquipos::className(), 'targetAttribute' => ['id_equipo' => 'id_equipo']],
             [['id_estado'], 'exist', 'skipOnError' => true, 'targetClass' => CatEstados::className(), 'targetAttribute' => ['id_estado' => 'id_estado']],
-            [['id_sim_card'], 'exist', 'skipOnError' => true, 'targetClass' => CatSimsCards::className(), 'targetAttribute' => ['id_sim_card' => 'id_sim_card']],
             [['id_status'], 'exist', 'skipOnError' => true, 'targetClass' => CatStatusCitas::className(), 'targetAttribute' => ['id_status' => 'id_statu_cita']],
             [['id_tipo_entrega'], 'exist', 'skipOnError' => true, 'targetClass' => CatTiposEntrega::className(), 'targetAttribute' => ['id_tipo_entrega' => 'id_tipo_entrega']],
             [['id_tipo_tramite'], 'exist', 'skipOnError' => true, 'targetClass' => CatTiposTramites::className(), 'targetAttribute' => ['id_tipo_tramite' => 'id_tramite']],
@@ -102,42 +146,56 @@ class EntCitas extends \yii\db\ActiveRecord
     {
         return [
             'id_cita' => 'Id Cita',
-
-            'id_tipo_tramite' => 'Tipo de Tramite',
+            'id_tipo_tramite' => 'Tipo de tramite',
             'id_equipo' => 'Equipo',
-            'id_sim_card' => 'Sim Card',
-            'id_area' => 'Area',
-            'id_tipo_entrega' => 'Tipo de Entrega',
-            'id_usuario' => 'Usuario',
-            'id_status' => 'Status',
+            'id_area' => 'Área',
+            'id_tipo_entrega' => 'Tipo de entrega',
+            'id_usuario' => 'Id Usuario',
+            'id_status' => 'Estatus',
             'id_estado' => 'Estado',
-            'id_envio' => 'Envio',
-            'num_dias_servicio' => 'Dias de Servicio',
+            'id_envio' => 'Id Envio',
+            'id_tipo_cliente' => 'Tipo de cliente',
+            'id_condicion_plan' => 'Condición del plan',
+            'id_tipo_plan_tarifario' => 'Plan tarifario',
+            'id_plazo' => 'Plazo',
+            'id_tipo_deposito_garantia' => 'Tipo de deposito',
+            'id_tipo_identificacion' => 'Tipo de identificación',
+            'b_pago_contra_entrega' => 'Pagar contra entrega',
+            'num_monto_cod' => 'Monto de COD',
+            'num_cantidad_deposito' => 'Cantidad de deposito',
+            'txt_numero_telefonico_nuevo' => 'Número teléfonico nuevo/provicional',
+            'txt_rfc' => 'RFC',
+            'txt_email' => 'Correo electrónico',
+            'txt_folio_identificacion' => 'Folio de identificación',
+            'fch_nacimiento' => 'Fecha de nacimiento',
+            'num_costo_equipo' => 'Costo de equipo',
+            'num_dias_servicio' => 'Días de servicio',
             'txt_token' => 'Txt Token',
-            'txt_clave_sap_equipo' => 'Clave SAP equipo',
-            'txt_descripcion_equipo' => 'Descripción Equipo',
-            'txt_serie_equipo' => 'Serie equipo',
+            'txt_clave_sap_equipo' => 'Clave sap del equipo',
+            'txt_descripcion_equipo' => 'Descripción del equipo',
+            'txt_serie_equipo' => 'Serie del equipo',
+            'txt_iccid' => 'ICCID',
+            'txt_imei' => 'IMEI',
             'txt_telefono' => 'Teléfono',
-            'txt_clave_sim_card' => 'Clave SAP SIM Card',
-            'txt_descripcion_sim' => 'Descripción SIM Card',
-            'txt_serie_sim_card' => 'Serie SIM Card',
-            'txt_nombre_completo_cliente' => 'Nombre y apellidos del cliente',
-            'txt_numero_referencia' => 'Télefono de referencia',
-            'txt_numero_referencia_2' => 'Télefono de referencia 2',
-            'txt_numero_referencia_3' => 'Télefono de referencia 3',
-            'txt_calle_numero' => 'Dirección (calle, número exterior y número interior)',
+            'txt_nombre' => 'Nombre',
+            'txt_apellido_paterno' => 'Apellido paterno',
+            'txt_apellido_materno' => 'Apellido materno',
+            'txt_numero_referencia' => 'Número teléfonico de referencia',
+            'txt_numero_referencia_2' => 'Número teléfonico de referencia 2',
+            'txt_numero_referencia_3' => 'Número teléfonico de referencia 3',
+            'txt_calle_numero' => 'Nombre de la calle y número',
             'txt_colonia' => 'Colonia',
-            'txt_codigo_postal' => 'Código postal',
+            'txt_codigo_postal' => 'C.P.',
             'txt_municipio' => 'Municipio',
-            'txt_entre_calles' => 'Entre calles',
-            'txt_observaciones_punto_referencia' => 'Observaciones o punto referencia',
+            'txt_entre_calles' => 'Entre Calles',
+            'txt_observaciones_punto_referencia' => 'Puntos de referencia',
+            'txt_motivo_cancelacion' => 'Motivo cancelación',
             'fch_cita' => 'Fecha de la cita',
             'fch_hora_cita' => 'Hora de la cita',
-            'txt_iccid'=>'ICCID',
-            'txt_imei'=>'IMEI',
-            'id_status'=>'Estatus de la cita',
-            'txt_motivo_cancelacion'=>'Motivo de rechazo',
-            'id_estado'=>'Estado de la república'
+            'num_costo_renta' => 'Costo renta',
+            'id_horario'=> 'Horario de entrega',
+            'fch_creacion'=>'Fecha creación',
+            'txt_sisacd'=>'SISACD'
         ];
     }
 
@@ -165,13 +223,6 @@ class EntCitas extends \yii\db\ActiveRecord
         return $this->hasOne(CatEstados::className(), ['id_estado' => 'id_estado']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIdSimCard()
-    {
-        return $this->hasOne(CatSimsCards::className(), ['id_sim_card' => 'id_sim_card']);
-    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -220,4 +271,49 @@ class EntCitas extends \yii\db\ActiveRecord
     {
         return $this->hasMany(EntHistorialCambiosCitas::className(), ['id_cita' => 'id_cita']);
     }
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getIdCondicionPlan() 
+   { 
+       return $this->hasOne(CatCondicionesPlan::className(), ['id_condicion_plan' => 'id_condicion_plan']); 
+   }
+
+   /**
+    * @return \yii\db\ActiveQuery
+    */
+    public function getIdPlazo() 
+    { 
+        return $this->hasOne(CatPlazos::className(), ['id_plazo' => 'id_plazo']); 
+    } 
+
+    public function getIdTipoCliente() 
+    { 
+        return $this->hasOne(CatTiposClientes::className(), ['id_tipo_cliente' => 'id_tipo_cliente']); 
+    } 
+  
+    /** 
+     * @return \yii\db\ActiveQuery 
+     */ 
+    public function getIdTipoDepositoGarantia() 
+    { 
+        return $this->hasOne(CatTiposDepositosGarantia::className(), ['id_tipo_deposito_garantia' => 'id_tipo_deposito_garantia']); 
+    } 
+  
+    /** 
+     * @return \yii\db\ActiveQuery 
+     */ 
+    public function getIdTipoIdentificacion() 
+    { 
+        return $this->hasOne(CatTiposDepositosGarantia::className(), ['id_tipo_deposito_garantia' => 'id_tipo_identificacion']); 
+    } 
+
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getIdTipoPlanTarifario() 
+   { 
+       return $this->hasOne(CatTiposPlanesTarifarios::className(), ['id_tipo_plan' => 'id_tipo_plan_tarifario']); 
+   } 
 }

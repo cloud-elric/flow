@@ -100,7 +100,7 @@ class EntEquiposSearch extends CatEquipos
         // grid filtering conditions
         $query->andFilterWhere([
             'id_equipo' => $this->id_equipo,
-            'b_habilitado' => $this->b_habilitado,
+            'b_habilitado' => 1,
         ]);
 
         $query->andFilterWhere(['like', 'txt_token', $this->txt_token])

@@ -13,7 +13,7 @@ class Utils {
 	 */
 	public static function changeFormatDate($string) {
 		$date = date_create ($string );
-		return date_format ( $date, "d-M-Y" );
+		return date_format ( $date, "d-m-Y" );
 	}
 
 	public static function changeFormatDateInputShort($string) {
@@ -26,9 +26,10 @@ class Utils {
 	 * @param unknown $string
 	 */
 	public static function changeFormatDateInput($string){
-		$date = date_create ($string );
+		$date = \DateTime::createFromFormat('d-m-Y', $string);
 		//$date->add(new \DateInterval('PT1H'));
-		return date_format ( $date, "Y-m-d H:i:s" );
+		return $date->format('Y-m-d H:i:s');
+		//return date_format ( $date, "Y-m-d H:i:s" );
 	}
 	
 	/**
@@ -37,7 +38,7 @@ class Utils {
 	 * @return string
 	 */
 	public static function getFechaActual() {
-		
+		date_default_timezone_set('America/Mexico_City');
 		// Inicializamos la fecha y hora actual
 		$fecha = date ( 'Y-m-d H:i:s', time () );
 		return $fecha;

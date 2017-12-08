@@ -9,6 +9,11 @@ use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
 use kartik\depdrop\DepDrop;
+use app\models\CatTiposPlanes;
+use app\models\CatTiposClientes;
+use app\models\CatCondicionesPlan;
+use kartik\date\DatePicker;
+use app\models\CatTiposDepositosGarantia;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -22,6 +27,12 @@ $this->registerCssFile(
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
 
+$this->registerCssFile(
+    '@web/webAssets/plugins/date-picker/date-picker.css',
+    ['depends' => [kartik\date\DatePickerAsset::className()]]
+);
+
+
 $this->registerJsFile(
     '@web/webAssets/js/crear-cita.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]
@@ -29,7 +40,13 @@ $this->registerJsFile(
 ?>
 
 <div class="panel">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id'=>'form-cita',
+        
+        //'enableClientValidation'=>true,
+        ]); 
+    echo $form->field($model, 'id_cita')->hiddenInput()->label(false);
+    ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite
@@ -38,67 +55,142 @@ $this->registerJsFile(
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_telefono',['enableAjaxValidation'=>true,])
+                        ->textInput(['maxlength' => true, 'class'=>'form-control']) ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_apellido_paterno')->textInput(['maxlength' => true]) ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true]) ?>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_email')->textInput(['maxlength' => true]) ?>
+            </div>
+            <div class="col-md-3">
+                <?php 
+                    echo $form->field($model, 'fch_nacimiento')->widget(DatePicker::classname(), [
+                        'options' => ['placeholder' => '16-12-1990'],
+                        'pickerButton'=>false,
+                        'removeButton'=>false,
+                        'type' => DatePicker::TYPE_INPUT,
+                        'pluginOptions' => [
+                            'autoclose'=>true,
+                            'format' => 'dd-mm-yyyy'
+                        ]
+                    ]);
+                ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_rfc')->textInput(['maxlength' => true]) ?>
+            </div>
+            <div class="col-md-3">
                 <?= $form->field($model, 'id_tipo_tramite')
                                 ->widget(Select2::classname(), [
-                                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->all(), 'id_tramite', 'txt_nombre'),
+                                    'data' => ArrayHelper::map(CatTiposTramites::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tramite', 'txt_nombre'),
                                     'language' => 'es',
                                     'options' => ['placeholder' => 'Seleccionar tipo de trámite'],
                                     'pluginOptions' => [
                                         'allowClear' => true
                                     ],
                                 ]);
-                ?>                
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <?php
-                require(__DIR__ . '/../components/scriptSelect2.php');
-                $url = Url::to(['equipos/buscar-equipo']);
-                //$equipo = empty($model->id_equipo) ? '' : CatEquipos::findOne($model->id_equipo)->txt_nombre;
-                // render your widget
-                echo $form->field($model, 'id_equipo')->widget(Select2::classname(), [
-                    //'initValueText' => $cityDesc,
-                    'options' => ['placeholder' => 'Seleccionar equipo'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'minimumInputLength' => 1,
-                        'ajax' => [
-                            'url' => $url,
-                            'dataType' => 'json',
-                            'delay' => 250,
-                            'data' => new JsExpression('function(params) { return {q:params.term, page: params.page}; }'),
-                            'processResults' => new JsExpression($resultsJs),
-                            'cache' => true
-                        ],
-                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                        'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
-                        'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
-                    ],
-                ]);
-                
-                ?>                
-            </div>
-            <div class="col-md-4">
-                <?=Html::label("Descripción de equipo","descripcion_equipo")?>
-                <?=Html::textInput("descripcion_equipo", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_equipo'])?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>                          
+                ?>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <?= $form->field($model, 'id_tipo_cliente')
+                                        ->widget(Select2::classname(), [
+                                            'data' => ArrayHelper::map(CatTiposClientes::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_cliente', 'txt_nombre'),
+                                            'language' => 'es',
+                                            'options' => ['placeholder' => 'Seleccionar tipo de cliente'],
+                                            'pluginOptions' => [
+                                                'allowClear' => true
+                                            ],
+                                        ]);
+                ?>              
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'id_condicion_plan')
+                                            ->widget(Select2::classname(), [
+                                                'data' => ArrayHelper::map(CatCondicionesPlan::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_condicion_plan', 'txt_nombre'),
+                                                'language' => 'es',
+                                                'options' => ['placeholder' => 'Seleccionar condición del plan'],
+                                                'pluginOptions' => [
+                                                    'allowClear' => true
+                                                ],
+                                            ]);
+                ?> 
+            </div>
+            <div class="col-md-3">
+                <?php 
+                echo $form->field($model, 'id_tipo_plan_tarifario')->widget(DepDrop::classname(), [
+                    'type' => DepDrop::TYPE_SELECT2,
+                    'select2Options'=>[
+                        'pluginOptions'=>[
+                            
+                            'allowClear'=>true,
+                            'escapeMarkup' => new JsExpression('function (markup) { 
+                                
+                                return markup; }'),
+                            'templateResult' => new JsExpression('formatRepoPlan'),
+                        ],
+                        ],
+                    'pluginOptions'=>[
+                        'depends'=>['entcitas-id_condicion_plan'],
+                        'url' => Url::to(['/condiciones-plan/get-planes-tarifarios']),
+                        'loadingText' => 'Cargando planes ...',
+                        'placeholder' => 'Seleccionar plan ...',
+                        'initialize'=>true
+                    ]
+                    
+                ]);
+                ?>
+            </div>
+            <div class="col-md-3">
+            <?php 
+                echo $form->field($model, 'id_plazo')->widget(DepDrop::classname(), [
+                    'data'=>[],
+                    'options' => [],
+                    'type' => DepDrop::TYPE_SELECT2,
+                    'select2Options'=>[
+                        'pluginOptions'=>[
+                            'allowClear'=>true,
+                            'escapeMarkup' => new JsExpression('function (markup) { 
+                                
+                                return markup; }'),
+                            'templateResult' => new JsExpression('formatRepoPlan'),
+                        ],
+                        ],
+                    'pluginOptions'=>[
+                        'depends'=>['entcitas-id_tipo_plan_tarifario'],
+                        'url' => Url::to(['/planes-tarifarios/get-plazos']),
+                        'loadingText' => 'Cargando plazos ...',
+                        'placeholder' => 'Seleccionar plazo ...'
+                    ]
+                    
+                ]);
+                ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
-                    $url = Url::to(['sims-cards/buscar-sim']);
+                    $url = Url::to(['equipos/buscar-equipo']);
+                    //$equipo = empty($model->id_equipo) ? '' : CatEquipos::findOne($model->id_equipo)->txt_nombre;
                     // render your widget
-                    echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
+                    echo $form->field($model, 'id_equipo')->widget(Select2::classname(), [
+                        //'initValueText' => $cityDesc,
                         'options' => ['placeholder' => 'Seleccionar equipo'],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -112,181 +204,57 @@ $this->registerJsFile(
                                 'cache' => true
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                            'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
-                        ],
-                    ]);
-                    
-                    ?>  
-               
-            </div>
-            <div class="col-md-4">
-                <?=Html::label("Descripción SIM Card", "descripcion_sim_card")?>
-                <?=Html::textInput("descripcion_sim_card", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
-            </div>
-        </div>
-        
-    </div>
-
-    <div class="panel-heading">
-        <h2 class="panel-title">  
-                Información de contacto
-                <hr>
-        </h2>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_nombre_completo_cliente')->textInput(['maxlength' => true]) ?>                        
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-8">
-                <?= $form->field($model, 'txt_calle_numero')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_colonia')->textInput(['maxlength' => true]) ?>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <?php
-                    require(__DIR__ . '/../components/scriptSelect2.php');
-                    $url = Url::to(['estados/buscar-estado']);
-                    // render your widget
-                    echo $form->field($model, 'id_estado')->widget(Select2::classname(), [
-                        'initValueText' => empty($model->id_estado) ? '' : $estado->txt_nombre,
-                        'options' => ['placeholder' => 'Seleccionar equipo'],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                            'minimumInputLength' => 3,
-                            'ajax' => [
-                                'url' => $url,
-                                'dataType' => 'json',
-                                'delay' => 250,
-                                'data' => new JsExpression('function(params) { return {q:params.term, page: params.page}; }'),
-                                'processResults' => new JsExpression($resultsJs),
-                                'cache' => true
-                            ],
-                            'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateResult' => new JsExpression('formatRepoEquipo'),
                             'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
                         ],
                     ]);
-                ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_codigo_postal')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'txt_municipio')->textInput(['maxlength' => true]) ?>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <?= $form->field($model, 'txt_entre_calles')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col-md-6">
-                <?= $form->field($model, 'txt_observaciones_punto_referencia')->textInput(['maxlength' => true]) ?>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel-heading">
-        <h2 class="panel-title">  
-            Información de la cita
-            <hr>
-        </h2>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-4">
-                <?=Html::label("Área", "txt_area")?>
-                <?=Html::textInput("txt_area", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_area' ])?>
-                <?= $form->field($model, 'id_area')->hiddenInput()->label(false) ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, 'class' => 'form-control', 'disabled' => true]) ?>
-            </div>
-            <div class="col-md-4">
-                <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
-                <?=Html::textInput("txt_tipo_entrega", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
-                <?= $form->field($model, 'id_tipo_entrega')->hiddenInput()->label(false) ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <?php
-                    $hoy = date("d-m-Y");
-                    $tresDias = date("d-m-Y", strtotime($hoy . '+4 day'));
-                ?>
-                <?= $form->field($model, 'fch_cita')->widget(\yii\jui\DatePicker::classname(), [
-                    'language' => 'es',
-                    'options'=>['class'=>'form-control'],
-                    'dateFormat' => 'dd-MM-yyyy',
-                    'clientOptions' => [
-                        'minDate' => $tresDias, //date("d-m-Y")
-                        'dayNamesShort' => ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
-                        'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-                        'beforeShowDay' => false             
-                    ],
-                ])
-                ?>
-            </div>
-            <div class="col-md-4">
-                <?php
-            //    echo  $form->field($model, 'fch_hora_cita')
-            //         ->widget(Select2::classname(), [
-            //         'data' => ArrayHelper::map($horarios, 'id_horario_area', 'horario'),
-            //         'language' => 'es',
-            //         'options' => ['placeholder' => 'Seleccionar horario'],
-            //         'pluginOptions' => [
-            //             'allowClear' => true
-            //         ],
-            //     ]);
-
-            echo $form->field($model, 'fch_hora_cita')->widget(DepDrop::classname(), [
                 
-                'options' => ['placeholder' => 'Seleccionar ...'],
-                'type' => DepDrop::TYPE_SELECT2,
-                'select2Options'=>[
-                    'pluginOptions'=>[
-                        
-                        'allowClear'=>true,
-                        'escapeMarkup' => new JsExpression('function (markup) { 
-                            
-                            return markup; }'),
-                        'templateResult' => new JsExpression('formatRepo'),
-                    ],
-                    ],
-                'pluginOptions'=>[
-                    'depends'=>['entcitas-id_area'],
-                    'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area']),
-                    'loadingText' => 'Cargando horarios ...',
-                   
-                ]
-                
-            ]);
                 ?>
+            </div>
+            <div class="col-md-3">
+                <?=Html::label("Descripción de equipo","descripcion_equipo")?>
+                <?=Html::textInput("descripcion_equipo", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_equipo'])?>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <?=Html::label("Costo diferido del equipo","costo_equipo")?>
+                    <?=Html::textInput("costo_equipo", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'costo_equipo'])?>
+                    <?= $form->field($model, 'num_costo_equipo')->hiddenInput(['maxlength' => true, 'class'=>'form-control input-number'])->label(false) ?>
+                </div>    
+            </div>
+            <div class="col-md-3">
+                <?=Html::label("Costo de renta","costo_renta")?>
+                <?=Html::textInput("costo_renta", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'costo_renta'])?>
+                <?= $form->field($model, 'num_costo_renta')->hiddenInput(['maxlength' => true, 'class'=>'form-control input-number'])->label(false) ?>
             </div>
         </div>
 
-        <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? 'Crear cita' : 'Actualizar cita', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <div class="js-pago-contraentrega">
+            <div class="row">
+                <div class="col-md-3">
+                    <?= $form->field($model, 'id_tipo_deposito_garantia')
+                                                ->widget(Select2::classname(), [
+                                                    'data' => ArrayHelper::map(CatTiposDepositosGarantia::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_deposito_garantia', 'txt_nombre'),
+                                                    'language' => 'es',
+                                                    'options' => ['placeholder' => 'Seleccionar condición del plan'],
+                                                    'pluginOptions' => [
+                                                        'allowClear' => true
+                                                    ],
+                                                ]);
+                    ?>
+                </div>              
+                <div class="col-md-3">
+                <?=$form->field($model, 'num_monto_cod', ['template'=>'<div class="container-monto">{label}{input}{error}</div>'])->textInput(["class"=>'form-control input-number'])?>
+                </div>  
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 container-submit-button">
+                <?= Html::submitButton('<span class="ladda-label">Crear registro</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
+            </div>
         </div>
     </div>
-
+    
     <?php ActiveForm::end(); ?>
 </div>

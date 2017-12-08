@@ -157,7 +157,7 @@ window.fbAsyncInit = function() {
 						<!-- <input type="checkbox" id="inputCheckbox" name="remember">
 						<label for="inputCheckbox">Remember me</label> -->
 					</div>
-					<a class="pull-right" href="<?=Url::base()."/peticion-pass"?>">¿Olvidé mi contraseña?</a>
+					
 				</div>
 				<?= Html::submitButton('<span class="ladda-label">Login</span>', ["data-style"=>"zoom-in", 'class' => 'btn btn-primary btn-block btn-lg margin-top-15  ladda-button', 'name' => 'login-button']) ?>
 				<?php 
@@ -173,7 +173,7 @@ window.fbAsyncInit = function() {
 				?>
 
 				<?php ActiveForm::end(); ?>
-          		<p class="margin-top-15">¿Aún no tienes una cuenta? <a href="<?=Url::base()."/sign-up"?>">Registrate</a></p>
+          		
         	</div>
       	</div>
       

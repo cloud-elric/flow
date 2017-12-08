@@ -114,3 +114,43 @@ video{
 .contenedor-acciones{
     padding:10px;
 }
+
+.container-monto{
+    display:none;
+}
+
+footer img{
+    max-height: 20px;
+    margin-right: 30px;
+}
+
+.site-footer {
+    height: 44px;
+    padding: 10px 30px;
+    background-color: rgb(146, 109, 222);
+    border-top: 1px solid #e4eaec;
+}
+
+.js-pago-contraentrega{
+    display:none;
+}
+
+.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+    background: none;
+    color: #777777;
+    cursor: not-allowed;
+}
+
+.select2-dropdown {
+    z-index: 99999999;
+}
+
+table a.btn {
+    text-decoration: none;
+}
+
+.text-white, .text-white:hover{
+    color:white;
+}
+
+

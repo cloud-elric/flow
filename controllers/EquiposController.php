@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 use Yii;
@@ -8,6 +7,12 @@ use app\models\EntEquiposSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\db\Expression;
+use app\models\RelEquipoPlazoCosto;
+use app\models\EntCitas;
+use app\models\EntEntradas;
+use app\modules\ModUsuarios\models\Utils;
 
 /**
  * EquiposController implements the CRUD actions for CatEquipos model.
@@ -115,14 +120,15 @@ class EquiposController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = CatEquipos::findOne($id)) !== null) {
+        if ( ($model = CatEquipos::findOne(['id_equipo' => $id, 'b_habilitado' => 1])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
 
-    public function actionGetEquipo($id){
+    public function actionGetEquipo($id)
+    {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         $model = $this->findModel($id);
@@ -131,28 +137,73 @@ class EquiposController extends Controller
 
     }
 
-    public function actionBuscarEquipo($q=null, $page=0){
+    public function actionBuscarEquipo($q = null, $page = 0)
+    {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $criterios['txt_nombre'] = $q;
         $searchModel = new EntEquiposSearch();
 
-        if($page > 1){
+        
+
+        if ($page > 1) {
             $page--;
         }
         $dataProvider = $searchModel->searchEquipo($criterios, $page);
-        $response['results']= null;
+        $response['results'] = null;
         $response['total_count'] = $dataProvider->getTotalCount();
 
         $resultados = $dataProvider->getModels();
-        if(count($resultados)==0){
-            $response['results'][0] = ['id'=>'', "txt_nombre"=>''];
+        if (count($resultados) == 0) {
+            $response['results'][0] = ['id' => '', "txt_nombre" => ''];
         }
 
-        foreach($resultados as $model){
-            $response['results'][]=['id'=>$model->id_equipo, "txt_nombre"=>$model->txt_nombre];
-        }
-    
-        
+        foreach ($resultados as $model) {
+            $cantidadStock = EntEntradas::find()->where(['id_equipo'=>$model->id_equipo])->sum('num_unidades');
+
+            $countCitasEquipo = EntCitas::find()
+                ->where(['id_equipo'=>$model->id_equipo])
+                ->andWhere(['in', 'id_status', [2,3,6,7,8]])
+                ->orWhere(['and',['id_equipo'=>$model->id_equipo], ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /3600))'), 2] ])
+                ->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
+            if($cantidadStock && ($cantidadStock - $countCitasEquipo) > 0 ){
+                $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => $cantidadStock - $countCitasEquipo];            
+            }
+            // else{
+            //     $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => 0];
+            // }    
+        }        
+
         return $response;
     }
+
+    public function actionGetCostoEquipo()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $respuesta['status'] = 'error';
+        $respuesta['message'] = "Campos insuficientes";
+
+        if (isset($_POST['idEquipo']) && isset($_POST['idPlanTarifario']) && isset($_POST['idPlazo'])) {
+            $idEquipo = $_POST['idEquipo'];
+            $idPlanTarifario = $_POST['idPlanTarifario'];
+            $idPlazo = $_POST['idPlazo'];
+            $relCostoEquipo = RelEquipoPlazoCosto::findOne([
+                'id_equipo' => $idEquipo,
+                'id_tipo_plan_tarifario' => $idPlanTarifario, 
+                'id_plazo' => $idPlazo
+            ]);
+
+            if ($relCostoEquipo) {
+                $respuesta['status'] = 'success';
+                $respuesta['costo'] = $relCostoEquipo->num_costo;
+                $respuesta['message'] = "";
+            }else{
+                $respuesta['message'] = 'Sin datos';
+            }
+
+        }
+
+        return $respuesta;
+
+    }
+
 }

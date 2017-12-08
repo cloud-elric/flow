@@ -23,6 +23,7 @@ use yii\widgets\ActiveForm;
  */
 class UsuariosController extends Controller
 {
+    
     /**
      * @inheritdoc
      */
@@ -59,7 +60,13 @@ class UsuariosController extends Controller
         $searchModel = new EntUsuariosSearch();
         $dataProvider = $searchModel->searchUsuariosCallCenter(Yii::$app->request->queryParams);
 
-        $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
+        if(\Yii::$app->user->can('socio')) {
+            $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin']])->all();
+        }else if(\Yii::$app->user->can('mesa-control')) {
+            $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin', 'socio']])->all();
+        }else if (\Yii::$app->user->can('supervisor-call-center')) {
+            $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
+        }
 
         return $this->render('usuarios-call-center', [
             'searchModel' => $searchModel,
@@ -79,7 +86,15 @@ class UsuariosController extends Controller
             return ActiveForm::validate($model);
         }
 
-        $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
+        if(\Yii::$app->user->can('socio')) {
+            $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin']])->all();
+        }else if(\Yii::$app->user->can('mesa-control')) {
+            $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin', 'socio']])->all();
+        }else if (\Yii::$app->user->can('supervisor-call-center')) {
+            $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
+        }else{
+            
+        }
 
         if ($model->load(Yii::$app->request->post())) {
 
@@ -103,7 +118,15 @@ class UsuariosController extends Controller
 
         if ($usuario) {
 
-            $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
+            if(\Yii::$app->user->can('socio')) {
+                $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin']])->all();
+            }else if(\Yii::$app->user->can('mesa-control')) {
+                $usuariosCallCenter = AuthItem::find()->where(['not in', 'name', ['admin', 'socio']])->all();
+            }else if (\Yii::$app->user->can('supervisor-call-center')) {
+                $usuariosCallCenter = AuthItem::find()->where(['name' => \Yii::$app->params['roles']['supervisorTelcel']])->orWhere(['name' => \Yii::$app->params['roles']['ejecutivoTelcel']])->all();
+            }else{
+                
+            }
 
             if (Yii::$app->request->isAjax && $usuario->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;

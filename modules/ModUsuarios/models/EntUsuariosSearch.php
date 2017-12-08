@@ -62,11 +62,27 @@ class EntUsuariosSearch extends EntUsuarios
         ]);
 
         if(!$this->txt_auth_item){
-            $query->andWhere([
-                'txt_auth_item'=> \Yii::$app->params ['roles'] ['supervisorTelcel'],
-                ])->orWhere(['txt_auth_item'=> \Yii::$app->params ['roles'] ['ejecutivoTelcel']]);
+            if(\Yii::$app->user->can('mesa-control')) {
+                $query->andWhere([
+                    'txt_auth_item'=> \Yii::$app->params ['roles'] ['supervisorTelcel'],
+                    ])->orWhere(['txt_auth_item'=> \Yii::$app->params ['roles'] ['ejecutivoTelcel']])
+                    ->orWhere(['txt_auth_item'=> 'mesa-control'])->orWhere(['txt_auth_item'=>'socio'])
+                    ->andWhere(['not in', 'id_usuario', [Yii::$app->user->identity->id_usuario]]);
+            }else if(\Yii::$app->user->can('mesa-control')) {
+                $query->andWhere([
+                    'txt_auth_item'=> \Yii::$app->params ['roles'] ['supervisorTelcel'],
+                    ])->orWhere(['txt_auth_item'=> \Yii::$app->params ['roles'] ['ejecutivoTelcel']])->orWhere(['txt_auth_item'=> 'mesa-control'])
+                    ->andWhere(['not in', 'id_usuario', [Yii::$app->user->identity->id_usuario]]);
+            }else if (\Yii::$app->user->can('supervisor-call-center')) {
+                $query->andWhere([
+                    'txt_auth_item'=> \Yii::$app->params ['roles'] ['supervisorTelcel'],
+                    ])->orWhere(['txt_auth_item'=> \Yii::$app->params ['roles'] ['ejecutivoTelcel']])
+                    ->andWhere(['not in', 'id_usuario', [Yii::$app->user->identity->id_usuario]]);
+            }
+
+            
         }else{
-            $query->andFilterWhere(['txt_auth_item'=>$this->txt_auth_item]);
+            $query->andFilterWhere(['txt_auth_item'=>$this->txt_auth_item])->andFilterWhere(['not in', 'id_usuario', [Yii::$app->user->identity->id_usuario]]);
         }
         $query->andFilterWhere(['like', 'txt_token', $this->txt_token])
             ->andFilterWhere(['like', 'txt_imagen', $this->txt_imagen])

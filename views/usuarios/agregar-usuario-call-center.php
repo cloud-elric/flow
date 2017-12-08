@@ -9,7 +9,7 @@ use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $model app\models\EntUsuarios */
 
-$this->title = 'Agregar usuario call center';
+$this->title = 'Agregar';
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-users"></i>Usuarios call center', 'url' => ['usuarios-call-center'], 'encode' => false];
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-user-add"></i>'.$this->title, 'encode' => false];
 $this->registerCssFile(
