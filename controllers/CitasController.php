@@ -21,6 +21,8 @@ use app\models\Helpers;
 use app\modules\ModUsuarios\models\EntUsuarios;
 use yii\widgets\ActiveForm;
 use app\models\CatStatusCitas;
+use app\models\RelSupervisorCitaExpress;
+use yii\db\Expression;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -176,8 +178,22 @@ class CitasController extends Controller
 
             if($supervisor){
                 if (Yii::$app->getSecurity()->validatePassword($password, $supervisor->txt_password_hash)) {
-                    $respuesta['status'] = 'success';
-                    $respuesta['mensaje'] = $supervisor->txt_token;
+
+                    $cantidadEnviosExpress = 100;
+                    $fechaFormateada = Utils::getFechaActual();
+
+                    $horariosOcupados = RelSupervisorCitaExpress::find() 
+                    ->where(new Expression('date_format(fch_autorizacion, "%Y-%m-%d") = date_format("'.$fechaFormateada.'", "%Y-%m-%d")') )
+                    ->andWhere(['id_usuario'=>$supervisor->id_usuario])->count();
+
+                    if(($cantidadEnviosExpress - $horariosOcupados)>0){
+                        $respuesta['status'] = 'success';
+                        $respuesta['mensaje'] = $supervisor->txt_token;    
+                    }else{
+                        
+                        $respuesta['mensaje'] = "Supervisor sin envíos express disponibles";
+                    }
+
                 }
             }
 

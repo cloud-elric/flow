@@ -17,6 +17,7 @@ $(document).on({
                             $("#btn-autorizar-envio-express").hide();
                             $("#btn-success-autorizacion").show();
                         }else{
+                            $("#alert-autorizacion").html(resp.mensaje);
                             $("#alert-autorizacion").show();
                         }
                         l.stop();

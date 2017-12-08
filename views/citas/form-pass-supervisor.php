@@ -42,7 +42,7 @@ $this->registerJsFile(
         <div class="col-md-6 col-md-offset-3 text-center">
             <div class="form-group">
                 <div class="alert alert-danger" role="alert" style="display:none" id="alert-autorizacion">
-                    Usuario y/o contraseña incorrectos
+                    
                 </div>
                 
             </div>

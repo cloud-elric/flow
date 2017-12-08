@@ -224,6 +224,7 @@ function cargarSupervisoresPeticion(){
             $("#express-autorizado").val("");
             $("#btn-autorizar-envio-express").show();
             $("#btn-success-autorizacion").hide();
+           
             $("#alert-autorizacion").hide();
         }
     });
