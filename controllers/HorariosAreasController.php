@@ -130,8 +130,6 @@ class HorariosAreasController extends Controller
     }
 
     public function actionGetHorariosDisponibilidadByArea($fecha = null){
-
-        $cantidadEnviosExpress = Constantes::LIMITE_EXPRESS;
         $out = [];
 
         if (isset($_POST['depdrop_all_params']['entcitas-id_area']) &&
@@ -162,19 +160,30 @@ class HorariosAreasController extends Controller
                 $selected = '';
                 foreach ($list as $i => $disponibilidad) {
 
-                    $horariosOcupados = EntCitas::find()
-
+                    $horariosOcupados = EntCitas::find() 
                             ->where(new Expression('date_format(fch_cita, "%Y-%m-%d") = date_format("'.$fechaFormateada.'", "%Y-%m-%d")') )
                             ->andWhere(['id_horario'=>$disponibilidad["id_horario_area"]])->count();
-                    if(($disponibilidad['num_disponibles']-$horariosOcupados)>0){
+
+                    if($tipoEntrega==2){        
                         $out[] = [
                             'id' => $disponibilidad['id_horario_area'], 
                             'name' => $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'],
-                            'cantidad'=>$disponibilidad['num_disponibles']-$horariosOcupados];
-                        if ($i == 0) {
-                            $selected = $fecha;
+                            'cantidad'=>''];
+                        
+                    }else{
+                        if(($disponibilidad['num_disponibles']-$horariosOcupados)>0){
+                            $out[] = [
+                                'id' => $disponibilidad['id_horario_area'], 
+                                'name' => $disponibilidad['txt_hora_inicial']." - ".$disponibilidad['txt_hora_final'],
+                                'cantidad'=>$disponibilidad['num_disponibles']-$horariosOcupados];
                         }
+                    }    
+
+                    if ($i == 0) {
+                        $selected = $fecha;
                     }
+
+                    
                 }
                 // Shows how you can preselect a value
                 echo Json::encode(['output' => $out, 'selected'=>$selected]);
