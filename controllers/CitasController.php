@@ -122,7 +122,7 @@ class CitasController extends Controller
         
 
         if($token){
-            $model = EntCitas::find(['txt_token'=>$token])->one();
+            $model = EntCitas::find()->where(['txt_token'=>$token])->one();
             $model->scenario = "create";
         }else if(isset($_POST['EntCitas']["id_cita"])){
 
