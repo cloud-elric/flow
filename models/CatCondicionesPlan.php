@@ -67,7 +67,7 @@ class CatCondicionesPlan extends \yii\db\ActiveRecord
     {
         return $this->hasMany(RelCondicionPlanTarifario::className(), ['id_condicion_plan' => 'id_condicion_plan'])
         ->joinWith('idPlanTarifario')
-            ->orderBy('cat_tipos_planes_tarifarios.txt_nombre ASC');
+            ->orderBy('cat_tipos_planes_tarifarios.num_orden ASC');
     }
 
     /**
