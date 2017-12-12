@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use app\models\CatStatusCitas;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitasSearch */
@@ -39,10 +40,15 @@ use kartik\select2\Select2;
         </div>
 
         <div class="col-md-4">
-            <?php  echo $form->field($model, 'fch_cita')->widget(\yii\jui\DatePicker::classname(), [
-                    'language' => 'es',
-                    'options'=>['class'=>'form-control'],
-                    'dateFormat' => 'dd-MM-yyyy', ]) ?>
+            <?php  echo $form->field($model, 'fch_cita')->widget(DatePicker::classname(), [
+                    'pickerButton'=>false,
+                    'removeButton'=>false,
+                    'type' => DatePicker::TYPE_INPUT,
+                    'pluginOptions' => [
+                        'autoclose'=>true,
+                        'format' => 'dd-mm-yyyy'
+                    ]]);
+            ?>
         </div>
     </div>
 
