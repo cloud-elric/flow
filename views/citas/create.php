@@ -13,7 +13,6 @@ use app\models\CatTiposPlanes;
 use app\models\CatTiposClientes;
 use app\models\CatCondicionesPlan;
 use kartik\date\DatePicker;
-use app\models\CatTiposIdentificaciones;
 use app\models\CatTiposDepositosGarantia;
 
 /* @var $this yii\web\View */
@@ -28,6 +27,12 @@ $this->registerCssFile(
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
 
+$this->registerCssFile(
+    '@web/webAssets/plugins/date-picker/date-picker.css',
+    ['depends' => [kartik\date\DatePickerAsset::className()]]
+);
+
+
 $this->registerJsFile(
     '@web/webAssets/js/crear-cita.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]
@@ -35,7 +40,13 @@ $this->registerJsFile(
 ?>
 
 <div class="panel">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id'=>'form-cita',
+        
+        //'enableClientValidation'=>true,
+        ]); 
+    echo $form->field($model, 'id_cita')->hiddenInput()->label(false);
+    ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite
@@ -45,6 +56,10 @@ $this->registerJsFile(
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
+                <?= $form->field($model, 'txt_telefono',['enableAjaxValidation'=>true,])
+                        ->textInput(['maxlength' => true, 'class'=>'form-control']) ?>
+            </div>
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col-md-3">
@@ -52,9 +67,6 @@ $this->registerJsFile(
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
             </div>
         </div>
         
@@ -65,13 +77,13 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?php 
                     echo $form->field($model, 'fch_nacimiento')->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => '16/12/1990'],
+                        'options' => ['placeholder' => '16-12-1990'],
                         'pickerButton'=>false,
                         'removeButton'=>false,
                         'type' => DatePicker::TYPE_INPUT,
                         'pluginOptions' => [
                             'autoclose'=>true,
-                            'format' => 'dd/mm/yyyy'
+                            'format' => 'dd-mm-yyyy'
                         ]
                     ]);
                 ?>
@@ -121,7 +133,6 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?php 
                 echo $form->field($model, 'id_tipo_plan_tarifario')->widget(DepDrop::classname(), [
-                    'options' => [],
                     'type' => DepDrop::TYPE_SELECT2,
                     'select2Options'=>[
                         'pluginOptions'=>[
@@ -137,7 +148,8 @@ $this->registerJsFile(
                         'depends'=>['entcitas-id_condicion_plan'],
                         'url' => Url::to(['/condiciones-plan/get-planes-tarifarios']),
                         'loadingText' => 'Cargando planes ...',
-                        'placeholder' => 'Seleccionar plan ...'
+                        'placeholder' => 'Seleccionar plan ...',
+                        'initialize'=>true
                     ]
                     
                 ]);
@@ -146,7 +158,7 @@ $this->registerJsFile(
             <div class="col-md-3">
             <?php 
                 echo $form->field($model, 'id_plazo')->widget(DepDrop::classname(), [
-                    
+                    'data'=>[],
                     'options' => [],
                     'type' => DepDrop::TYPE_SELECT2,
                     'select2Options'=>[
@@ -192,7 +204,7 @@ $this->registerJsFile(
                                 'cache' => true
                             ],
                             'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            'templateResult' => new JsExpression('function(equipo) { return equipo.txt_nombre; }'),
+                            'templateResult' => new JsExpression('formatRepoEquipo'),
                             'templateSelection' => new JsExpression('function (equipo) { return equipo.txt_nombre; }'),
                         ],
                     ]);
@@ -238,8 +250,8 @@ $this->registerJsFile(
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <?= Html::submitButton('Pasar a autorización', ['class' => "btn-success btn-lg btn-block"]) ?>
+            <div class="col-md-12 container-submit-button">
+                <?= Html::submitButton('<span class="ladda-label">Crear registro</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

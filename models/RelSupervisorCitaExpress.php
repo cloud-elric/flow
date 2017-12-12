@@ -3,28 +3,25 @@
 namespace app\models;
 
 use Yii;
-use app\modules\ModUsuarios\models\EntUsuarios;
 
 /**
- * This is the model class for table "ent_historial_cambios_citas".
+ * This is the model class for table "rel_supervisor_cita_express".
  *
- * @property string $id_cambio_cita
  * @property string $id_usuario
  * @property string $id_cita
- * @property string $txt_modificacion
- * @property string $fch_modificacion
+ * @property string $fch_autorizacion
  *
  * @property EntCitas $idCita
  * @property ModUsuariosEntUsuarios $idUsuario
  */
-class EntHistorialCambiosCitas extends \yii\db\ActiveRecord
+class RelSupervisorCitaExpress extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'ent_historial_cambios_citas';
+        return 'rel_supervisor_cita_express';
     }
 
     /**
@@ -33,12 +30,11 @@ class EntHistorialCambiosCitas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_usuario', 'id_cita', 'txt_modificacion'], 'required'],
+            [['id_usuario', 'id_cita'], 'required'],
             [['id_usuario', 'id_cita'], 'integer'],
-            [['fch_modificacion'], 'safe'],
-            [['txt_modificacion'], 'string', 'max' => 150],
+            [['fch_autorizacion'], 'safe'],
             [['id_cita'], 'exist', 'skipOnError' => true, 'targetClass' => EntCitas::className(), 'targetAttribute' => ['id_cita' => 'id_cita']],
-            [['id_usuario'], 'exist', 'skipOnError' => true, 'targetClass' => EntUsuarios::className(), 'targetAttribute' => ['id_usuario' => 'id_usuario']],
+            [['id_usuario'], 'exist', 'skipOnError' => true, 'targetClass' => ModUsuariosEntUsuarios::className(), 'targetAttribute' => ['id_usuario' => 'id_usuario']],
         ];
     }
 
@@ -48,11 +44,9 @@ class EntHistorialCambiosCitas extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_cambio_cita' => 'Id Cambio Cita',
             'id_usuario' => 'Id Usuario',
             'id_cita' => 'Id Cita',
-            'txt_modificacion' => 'Txt Modificacion',
-            'fch_modificacion' => 'Fch Modificacion',
+            'fch_autorizacion' => 'Fch Autorizacion',
         ];
     }
 

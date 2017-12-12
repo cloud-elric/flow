@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-mobile"></i> '.$
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
 $status = $model->idStatus;
-$simCard = $model->idSimCard;
+
 $estado = $model->idEstado;
 
 $this->registerCssFile(
@@ -55,12 +55,33 @@ $this->registerJsFile(
                     <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
                     </a>
+
                     <?php
-                    if(\Yii::$app->user->can('supervisor-call-center')){
+                    if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
                     ?>
                     <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-check"></i> Autorizar
                     </a>
+                    <?php
+                    }
+                    ?>
+
+
+
+                    <?php
+                    if(\Yii::$app->user->can('supervisor-call-center')){
+                    ?>
+
+                        <?php
+                        if(!$equipo->b_inventario_virtual){
+                        ?>
+                            <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
+                                <i class="icon fa-check"></i> Autorizar
+                            </a>
+
+                        <?php
+                        }
+                        ?>
                     <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-times"></i> Rechazar
                     </a>
@@ -96,39 +117,30 @@ $this->registerJsFile(
 <div class="panel-body">
     <div class="row">
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'txt_apellido_paterno')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-md-3">
             <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true, "disabled"=>true]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'txt_apellido_paterno')->textInput(['maxlength' => true, "disabled"=>true]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'txt_apellido_materno')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
     </div>
     
     <div class="row">
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_email')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
         <div class="col-md-3">
             <?php 
-                echo $form->field($model, 'fch_nacimiento')->widget(DatePicker::classname(), [
-                    'options' => ['placeholder' => '16/12/1990'],
-                    'pickerButton'=>false,
-                    'removeButton'=>false,
-                    'type' => DatePicker::TYPE_INPUT,
-                    'pluginOptions' => [
-                        'autoclose'=>true,
-                        'format' => 'dd/mm/yyyy'
-                    ]
-                ]);
-            ?>
+                echo $form->field($model, 'fch_nacimiento')->textInput(['maxlength' => true, "disabled"=>true]) ?>
+            
         </div>
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_rfc')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_rfc')->textInput(['maxlength' => true, "disabled"=>true]) ?>
         </div>
         <div class="col-md-3">
             <?= $form->field($model, 'id_tipo_tramite')->widget(Select2::classname(), [
@@ -148,7 +160,7 @@ $this->registerJsFile(
             <?= $form->field($model, 'id_tipo_cliente')->widget(Select2::classname(), [
                 'data' => ArrayHelper::map(CatTiposClientes::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_cliente', 'txt_nombre'),
                 'language' => 'es',
-                'options' => ['placeholder' => 'Seleccionar tipo de cliente'],
+                'options' => ['placeholder' => 'Seleccionar tipo de cliente', "disabled"=>true],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
@@ -286,60 +298,25 @@ $this->registerJsFile(
         <div class="col-md-3">
             <?= $form->field($model, 'txt_numero_telefonico_nuevo')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
         </div>
+        <?php
+         if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
+        ?>
         <div class="col-md-3">
             <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
         </div>
-        <div class="col-md-3">
-            <?php
-                require(__DIR__ . '/../components/scriptSelect2.php');
-                $url = Url::to(['sims-cards/buscar-sim']);
-                // render your widget
-                echo $form->field($model, 'id_sim_card')->widget(Select2::classname(), [
-                    'options' => ['placeholder' => 'Seleccionar equipo'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'minimumInputLength' => 1,
-                        'ajax' => [
-                            'url' => $url,
-                            'dataType' => 'json',
-                            'delay' => 250,
-                            'data' => new JsExpression('function(params) { return {q:params.term, page: params.page}; }'),
-                            'processResults' => new JsExpression($resultsJs),
-                            'cache' => true
-                        ],
-                        'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                        'templateResult' => new JsExpression('function(sim) { return sim.txt_nombre; }'),
-                        'templateSelection' => new JsExpression('function (sim) { return sim.txt_nombre; }'),
-                    ],
-                ]);
-                
-            ?>                         
-        </div>
-        <div class="col-md-3">
-            <?=Html::label("Descripción SIM Card", "descripcion_sim_card")?>
-            <?=Html::textInput("descripcion_sim_card", '', ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'descripcion_sim' ])?>                     
-        </div>
-    </div>
 
-    <div class="row">
+        <?php
+        }
+        ?>
+
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
+            </div>
+
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true]) ?>                          
-        </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'id_tipo_identificacion')
-                                        ->widget(Select2::classname(), [
-                                            'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
-                                            'language' => 'es',
-                                            'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
-                                            'pluginOptions' => [
-                                                'allowClear' => true
-                                            ],
-                                        ]);
-            ?>
-        </div>
-        <div class="col-md-3">
-            <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
-        </div>
+                <?= $form->field($model, 'txt_sisacd')->textInput(['maxlength' => true]) ?>
+            </div>
+        
     </div>
     
     <div class="row">
@@ -395,6 +372,7 @@ $this->registerJsFile(
                 ?>
             </div>
             <div class="col-md-4">
+                <input id="texto_colonia" type="hidden" name="colonia" value="<?= $model->txt_colonia ?>">
                 <?php 
                     echo $form->field($model, 'txt_colonia')->widget(DepDrop::classname(), [
                         'data'=> ArrayHelper::map(CatColonias::find()->where(['txt_codigo_postal'=>$model->txt_codigo_postal])->all(), 'id_colonia', 'txt_nombre'),
@@ -411,11 +389,9 @@ $this->registerJsFile(
                             ],
                         'pluginOptions'=>[
                             'depends'=>['entcitas-txt_codigo_postal'],
-                            'url' => Url::to(['/codigos-postales/get-colonias-by-codigo-postal']),
+                            'url' => Url::to(['/codigos-postales/get-colonias-by-codigo-postal?code='.$model->txt_codigo_postal]),
                             'loadingText' => 'Cargando colonias ...',
-                        
                         ]
-                        
                     ]);
                     ?>
             </div>
@@ -456,11 +432,31 @@ $this->registerJsFile(
 
         <div class="row">
             
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_referencia')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_referencia_2')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_numero_referencia_3')->textInput(['maxlength' => true, "class"=>'form-control input-number']) ?>
+            </div>
+            
+        </div>
+        <div class="row">
+        <div class="col-md-3">
+                <?= $form->field($model, 'id_tipo_identificacion')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatTiposIdentificaciones::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_identificacion', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar tipo de identificación'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+                ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'txt_folio_identificacion')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
     </div>
@@ -483,7 +479,7 @@ $this->registerJsFile(
             </div>
             <div class="col-md-4">
                 <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
-                <?=Html::textInput("txt_tipo_entrega", $area->idTipoEntrega->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
+                <?=Html::textInput("txt_tipo_entrega", $model->idTipoEntrega->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
             </div>
         </div>
         <div class="row">

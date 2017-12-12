@@ -46,18 +46,18 @@ switch ($model->id_status) {
         <span class="label label-<?=$statusColor?>"><?=$status->txt_nombre?></span>
             <?=$model->txt_telefono?>
             <small>
-                <?=$tramite->txt_nombre?>
+                <?=$tramite?$tramite->txt_nombre:''?>
             </small>
         </h4>
         <p>
             <i class="icon icon-color wb-mobile" aria-hidden="true"></i>
-            <?=$equipo->txt_nombre?>
+            <?=$equipo?$equipo->txt_nombre:''?>
         </p>
         <p>
             Clave de envio: <?=$model->id_envio?$model->idEnvio->txt_token:'Sin clave'?>
         </p>
         <p>
-            <?=$equipo->txt_descripcion?>
+            <?=$equipo?$equipo->txt_descripcion:''?>
         </p>
     </div>
 

@@ -58,6 +58,14 @@ $(document).on({
     }
 }, ".js-collapse");
 
+$(document).on({
+    'click': function(){
+        mostrarLoading();
+    }
+}, "table thead a, a.list-group-item");
+
+
+
 
 function mostrarLoading(){
     $("#panel .panel-body").addClass("fade-out");
