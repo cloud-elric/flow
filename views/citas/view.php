@@ -28,6 +28,7 @@ $this->title = "Revisión de cita";
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'url' => ['index'], 'encode' => false];
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-mobile"></i> '.$this->title, 'encode' => false];
 
+$usuario = Yii::$app->user->identity;
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
 $status = $model->idStatus;
@@ -52,9 +53,16 @@ $this->registerJsFile(
             <h4>
                 Estatus de cita: <span class="js-status-cita"><?=$status->txt_nombre?></span>
                 <div class="pull-right">
+
+                    <?php
+                    if($usuario->txt_auth_item=="call-center"){
+                    ?>
                     <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
                     </a>
+                    <?php
+                    }
+                    ?>
 
                     <?php
                     if(\Yii::$app->user->can('supervisor-call-center')){
