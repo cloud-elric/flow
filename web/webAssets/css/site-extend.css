@@ -153,4 +153,8 @@ table a.btn {
     color:white;
 }
 
+.swal2-container.swal2-shown{
+    z-index: 999999999;
+}
+
 

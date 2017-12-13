@@ -3,6 +3,16 @@ $(document).ready(function(){
       e.preventDefault();
         var token = $(this).data("token");
 
+        if($("#entcitas-txt_imei").val()==""){
+            $("#w0").yiiActiveForm('updateAttribute', 'entcitas-txt_imei', ["IMEI debe ser ingresado"]);
+            swal("Espera", "Para autorizar debe ingresar el IMEI.", "warning");
+            return false;
+        }else{
+            $("#w0").yiiActiveForm('updateAttribute', 'entcitas-txt_imei', "");
+            var imei = $("#entcitas-txt_imei").val();
+        }
+
+
         swal({
             title: "Autorización",
             text: "¿Estas seguro de autorizar esta cita?",
@@ -13,19 +23,23 @@ $(document).ready(function(){
             showLoaderOnConfirm: true,
             preConfirm: function (email) {
                 return new Promise(function (resolve, reject) {
-                    $.get(baseUrl+"citas/autorizar?token="+token)
+                    $.post(baseUrl+"citas/autorizar?token="+token, {imei:imei})
                     .done(function (data) {
                         $(".js-status-cita").html("Autorizada");
                         $(".js-motivo-cancelacion").remove();
                         $(".token-envio").html(data.envio);
-                      resolve()
-                    })
+                      resolve();
+                    }).error(function(){
+                        swal("Error", "Un problema ha ocurrido al intentar guardar la información.", "error");
+                        reject();
+                    });
                      // resolve()
                    
                 })
               },
               allowOutsideClick: false
             }).then(function (email) {
+                console.log(email);
                 swal("Autorizada", "Cita ha sido autorizada.", "success");
             })
 

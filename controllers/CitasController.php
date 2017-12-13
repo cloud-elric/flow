@@ -308,9 +308,13 @@ class CitasController extends Controller
         }else{
             $statusAutorizar = Constantes::AUTORIZADO_POR_MESA_DE_CONTROL;
         }
-        
+    
 
         $cita = $this->findModel(['txt_token' => $token]);
+
+        if($_POST['imei']){
+            $cita->txt_imei = $_POST['imei'];
+        }
 
         if(!$cita->id_envio){
             $envio = new EntEnvios();

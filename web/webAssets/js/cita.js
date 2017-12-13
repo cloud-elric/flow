@@ -1,6 +1,7 @@
 $(document).ready(function(){
     $("#js-btn-autorizar").on('click', function(e){
         e.preventDefault();
+        var url = $(this).data("url");
         console.log($(this).data("url"));
         swal({
             title: 'Are you sure?',
@@ -20,7 +21,7 @@ $(document).ready(function(){
               'Your file has been deleted.',
               'success'
             )
-            window.location.href = baseUrl + $(this).data("url");
+            window.location.href = baseUrl + url;
 
         }, function (dismiss) {
             // dismiss can be 'cancel', 'overlay',
