@@ -211,7 +211,7 @@ function generarRegistro(){
             if(resp.status=="success"){
                 $("#entcitas-id_cita").val(resp.identificador);
                 
-            }else{
+            }else if($("#entcitas-id_cita").val()!=resp.identificador){
                 formCita.yiiActiveForm('updateAttribute', 'entcitas-txt_telefono', ["No se puede generar el registro con un número teléfonico repetido"]);
             }
         }

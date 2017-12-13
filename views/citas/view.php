@@ -57,18 +57,6 @@ $this->registerJsFile(
                     </a>
 
                     <?php
-                    if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
-                    ?>
-                    <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
-                        <i class="icon fa-check"></i> Autorizar
-                    </a>
-                    <?php
-                    }
-                    ?>
-
-
-
-                    <?php
                     if(\Yii::$app->user->can('supervisor-call-center')){
                     ?>
 
@@ -82,6 +70,18 @@ $this->registerJsFile(
                         <?php
                         }
                         ?>
+                    
+                    <?php
+                    }
+                    ?>
+
+                    <?php
+                    if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
+                    ?>
+                    <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
+                        <i class="icon fa-check"></i> Autorizar
+                    </a>
+
                     <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-times"></i> Rechazar
                     </a>

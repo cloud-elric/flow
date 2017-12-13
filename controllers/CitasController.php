@@ -108,6 +108,7 @@ class CitasController extends Controller
         $model->id_usuario = $usuario->id_usuario;
         $model->id_status = Constantes::PROCESO_VALIDACION;
         if ((Yii::$app->request->isAjax && $token)|| (Yii::$app->request->isAjax && isset($_POST['EntCitas']['id_cita']))) {
+            
             $model = new EntCitas(['scenario'=>'create']);
             if($model->load(Yii::$app->request->post())){
                 Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -404,6 +405,12 @@ class CitasController extends Controller
 
         $respuesta['status'] = 'error';
         $respuesta['mensaje'] = 'No se puede generar el registro con un número teléfonico repetido';
+
+        $telefonoEncontrado = EntCitas::find()->where(['txt_telefono'=>$tel])->one();
+
+        if($telefonoEncontrado){
+            $respuesta['identificador'] = $telefonoEncontrado->id_cita;
+        }
         
         $cita = new EntCitas(['scenario'=>'createRegistro']);
         $cita->txt_telefono = $tel;
