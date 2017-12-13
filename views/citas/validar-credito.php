@@ -469,6 +469,7 @@ $this->registerJsFile(
                     'pluginOptions' => [
                         'autoclose'=>true,
                         'format' => 'dd-mm-yyyy',
+                        'daysOfWeekDisabled'=> "0",
                         'startDate' => $startDate, //date("d-m-Y")
                     ]
                     // 'language' => 'es',

@@ -123,8 +123,8 @@ $(document).ready(function(){
             $("#entcitas-fch_cita").val(getTomorrow());
             
         }else{
-            
-            $('#entcitas-fch_cita').kvDatepicker({"autoclose":true,"format":"dd-mm-yyyy","startDate":"11-12-2017","language":"es"});
+            var fechaEntrega = getFechaEntrega();
+            $('#entcitas-fch_cita').kvDatepicker({"autoclose":true,"format":"dd-mm-yyyy","startDate":fechaEntrega,"language":"es",  daysOfWeekDisabled: "0"});
             $('#entcitas-fch_cita').attr("readonly", false);
             $("#entcitas-fch_cita").val("");
                 
@@ -239,6 +239,22 @@ function getTomorrow(){
     var year = currentDate.getFullYear()
   
     return day+"-"+month+"-"+year;
+}
+
+function getFechaEntrega(){
+    var currentDate = new Date(new Date().getTime() + 48 * 60 * 60 * 1000);
+    if(currentDate==7){
+        var currentDate = new Date(new Date().getTime() + 72 * 60 * 60 * 1000);
+    }
+    var day = ("0" + currentDate.getDate()).slice(-2)
+    var month = ("0" + (currentDate.getMonth() + 1)).slice(-2)
+    var year = currentDate.getFullYear()
+  
+    return day+"-"+month+"-"+year;
+}
+
+function validarDia(){
+
 }
 
 function buscarMunicipioByColonia(colonia){

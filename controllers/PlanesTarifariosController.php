@@ -71,6 +71,11 @@ class PlanesTarifariosController extends Controller
             }
 
             $list = $condicionPlan->idPlazos;
+
+            if(!$list){
+                echo Json::encode(['output' => $out]);
+                return;
+            }
             $selected  = null;
             if ($id != null && count($list) > 0) {
                 $selected = '';
