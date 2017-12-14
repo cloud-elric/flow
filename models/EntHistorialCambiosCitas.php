@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\modules\ModUsuarios\models\EntUsuarios;
+use app\modules\ModUsuarios\models\EntUsuariosSearch;
 
 /**
  * This is the model class for table "ent_historial_cambios_citas".
@@ -49,10 +50,10 @@ class EntHistorialCambiosCitas extends \yii\db\ActiveRecord
     {
         return [
             'id_cambio_cita' => 'Id Cambio Cita',
-            'id_usuario' => 'Id Usuario',
+            'id_usuario' => 'Usuario modificación',
             'id_cita' => 'Id Cita',
-            'txt_modificacion' => 'Txt Modificacion',
-            'fch_modificacion' => 'Fch Modificacion',
+            'txt_modificacion' => 'Modificación',
+            'fch_modificacion' => 'Fecha de modificación',
         ];
     }
 
@@ -69,6 +70,6 @@ class EntHistorialCambiosCitas extends \yii\db\ActiveRecord
      */
     public function getIdUsuario()
     {
-        return $this->hasOne(ModUsuariosEntUsuarios::className(), ['id_usuario' => 'id_usuario']);
+        return $this->hasOne(EntUsuarios::className(), ['id_usuario' => 'id_usuario']);
     }
 }

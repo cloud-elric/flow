@@ -269,7 +269,7 @@ class EntCitas extends \yii\db\ActiveRecord
      */
     public function getEntHistorialCambiosCitas()
     {
-        return $this->hasMany(EntHistorialCambiosCitas::className(), ['id_cita' => 'id_cita']);
+        return $this->hasMany(EntHistorialCambiosCitas::className(), ['id_cita' => 'id_cita'])->orderBy('fch_modificacion DESC');
     }
 
     /**
