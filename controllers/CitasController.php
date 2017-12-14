@@ -165,7 +165,26 @@ class CitasController extends Controller
     public function actionFormPassSupervisor(){
         $supervisores = EntUsuarios::find()->where(["txt_auth_item"=>"supervisor-call-center"])->orderBy('txt_username, txt_apellido_paterno')->all();
 
-        return $this->renderAjax('form-pass-supervisor', ['supervisores'=>$supervisores]);
+        foreach($supervisores as $supervisor){
+            $cantidadEnviosExpress = Constantes::LIMITE_EXPRESS;
+            $fechaFormateada = Utils::getFechaActual();
+
+            $horariosOcupados = RelSupervisorCitaExpress::find() 
+            ->where(new Expression('date_format(fch_autorizacion, "%Y-%m-%d") = date_format("'.$fechaFormateada.'", "%Y-%m-%d")') )
+            ->andWhere(['id_usuario'=>$supervisor->id_usuario])->count();
+
+            $markup =  '<div class="row">' .
+            '<div class="col-md-8">' .
+                '<b>'.$supervisor->nombreCompleto. '</b>' .
+            '</div>' .
+            '<div class="col-md-4">'.($cantidadEnviosExpress - $horariosOcupados).'</div>'.
+        '</div>';
+        $resultado = '<div style="overflow:hidden;">' .$markup.'</div>';
+            $data[$supervisor->id_usuario]=$resultado;
+            
+        }
+
+        return $this->renderAjax('form-pass-supervisor', ['supervisores'=>$data]);
     }
 
     public function actionValidarPassSupervisor(){

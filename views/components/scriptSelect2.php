@@ -61,6 +61,27 @@ var formatRepoEquipo = function (repo) {
     return '<div style="overflow:hidden;">' + markup + '</div>';
 };
 
+var formatRepoSupervisor = function (repo) {
+    
+    console.log(repo);
+    if (repo.loading) {
+        return repo.text;
+    }
+
+   
+    return $(repo.text);
+};
+
+var formatSelectionSupervisor = function (repo){
+    console.log(repo);
+    if (repo.loading) {
+        return repo.text;
+    }
+
+   
+    return $(repo.text);
+}
+
 var formatRepoPlan = function (repo) {
     var ajaxResults = $('#entcitas-id_tipo_plan_tarifario').depdrop('getAjaxResults');
     var cantidadDisponible = 0;

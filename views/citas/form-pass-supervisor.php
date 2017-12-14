@@ -2,11 +2,13 @@
 
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
+use yii\web\JsExpression;
 
 $this->registerJsFile(
     '@web/webAssets/js/autorizar-envio-express.js',
     ['depends' => [kartik\select2\Select2Asset::className()]]
 );
+require(__DIR__ . '/../components/scriptSelect2.php');
 ?>
 
 <form id="form-autorizar-supervisor">
@@ -16,10 +18,12 @@ $this->registerJsFile(
                 <?php
                 echo Select2::widget([
                     'name' => 'id_supervisor',
-                    'data' => ArrayHelper::map($supervisores, 'id_usuario', 'nombreCompleto'),
+                    'data' => $supervisores,
                     'options' => ['placeholder' => 'Seleccionar supervisor'],
                     'pluginOptions' => [
-                        'allowClear' => false
+                        'allowClear' => false,
+                        'templateResult' => new JsExpression('formatRepoSupervisor'),
+                        'templateSelection' => new JsExpression('formatSelectionSupervisor'),
                     ],
                 ]);
                 ?>
