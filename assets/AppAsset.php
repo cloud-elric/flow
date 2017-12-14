@@ -36,7 +36,9 @@ class AppAsset extends AssetBundle
         'webAssets/fonts/web-icons/web-icons.min.css',
         'webAssets/fonts/brand-icons/brand-icons.css',
         'webAssets/fonts/font-awesome/font-awesome.css',
-        'http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'
+        'http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic',
+        //Diseño de Sitio
+        'webAssets/css/styles.css'
 
         
     ];

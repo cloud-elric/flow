@@ -1,0 +1,125 @@
+//	========================
+//	1.0 - Mixins
+//	========================
+
+//
+// Border Radius
+//
+=border-radius($radio)
+	-webkit-border-radius: $radio
+	-moz-border-radius: $radio
+	-ms-border-radius: $radio
+	border-radius: $radio
+
+// 
+// Box Shadow
+//
+=box-shadow($shadow)
+	-webkit-box-shadow: $shadow
+	-moz-box-shadow: $shadow
+	box-shadow: $shadow
+
+
+// Media Queries
+//
+=respond-to($media)
+	@if $media == lg
+		@media (min-width: $screen-lg + 1)
+			@content
+
+	@else if $media == md
+		@media (min-width: $screen-tl) and (max-width: $screen-md - 1 )
+			@content
+
+	@else if $media == tl
+		@media (min-width: $screen-tp + 1) and (max-width: $screen-tl - 1)
+			@content
+
+	@else if $media == tp-
+		@media screen and (min-width: $screen-sl)
+			@content
+
+	@else if $media == tp
+		@media screen and (max-width: $screen-tp)
+			@content
+
+	@else if $media == sl
+		@media screen and (max-width: $screen-sl)
+			@content
+
+	@else if $media == sp
+		@media screen and (max-width: $screen-sp)
+			@content
+			@content
+
+
+//
+// Transición
+//
+=transition($delay)
+	-ms-transition: $delay
+	-moz-transition: $delay
+	-webkit-transition: $delay
+	transition: $delay
+
+=placeholder
+	&::-webkit-input-placeholder
+		@content
+	&:-moz-placeholder
+		@content
+	&::-moz-placeholder
+		@content
+	&:-ms-input-placeholder
+		@content
+
+
+=perspective($perspective)
+	-webkit-perspective: $perspective
+	-moz-perspective: $perspective
+
+=backface($bool)
+	-webkit-backface-visibility: $bool
+	-moz-backface-visibility: $bool
+
+=fullbkgd($url)
+	background:
+		image: url('$url')
+		repeat: no-repeat
+		size: cover
+		position: center
+
+// Browser Prefixes
+=transform($transforms)
+	-webkit-transform: $transforms
+	-moz-transform: $transforms
+	-ms-transform: $transforms
+	transform: $transforms
+
+
+=transform-style($style)
+	-webkit-transform-style: $style
+	-moz-transform-style: $style
+
+// Rotate
+=rotate($degX, $degY)  
+	+transform(rotateX(#{$degX}deg) rotateY(#{$degY}deg))
+
+
+// Scale
+=scale($scale)
+	+transform(scale($scale))
+
+// Translate
+=translate($x, $y)
+	+transform(translate($x, $y))
+
+// Skew
+=skew ($x, $y)
+	+transform(skew(#{$x}deg, #{$y}deg))
+
+// Transform Origin
+=origin ($origin)
+	-webkit-transform-origin: $origin
+	-moz-transform-origin: $origin
+	-ms-transform-origin: $origin
+	transform-origin: $origin

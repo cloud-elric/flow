@@ -29,8 +29,12 @@ class AppAssetsCore extends AssetBundle
 
 	    //Fonts
 	    'webAssets/fonts/web-icons/web-icons.min.css',
+        'webAssets/fonts/stroke7/Pe-icon-7-stroke.css',
 	    'webAssets/fonts/brand-icons/brand-icons.min.css',
-        'http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'
+        'http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic',
+
+        //Diseño de plantilla general
+        'webAssets/css/core/helpers.css',
 
         //JS del principio
 
@@ -64,7 +68,8 @@ class AppAssetsCore extends AssetBundle
     	'webAssets/js/plugins/asscrollable.js',
     	'webAssets/js/plugins/slidepanel.js',
     	'webAssets/js/plugins/switchery.js',
-        'webAssets/js/geek.js'
+        // 'webAssets/plugins/ladda/ladda.js',
+        'webAssets/js/geeks.js'
 
 
     ];

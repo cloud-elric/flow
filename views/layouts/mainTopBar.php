@@ -18,7 +18,7 @@ AppAssetsCore::register($this);
 
 
 <?= $content ?>
-
+<?= $this->render("//components/footer")?>
 <?php $this->endBody() ?>
 
 <script>
