@@ -23,6 +23,7 @@ use yii\widgets\ActiveForm;
 use app\models\CatStatusCitas;
 use app\models\RelSupervisorCitaExpress;
 use yii\db\Expression;
+use yii\data\ActiveDataProvider;
 
 /**
  * CitasController implements the CRUD actions for EntCitas model.
@@ -88,10 +89,17 @@ class CitasController extends Controller
         
         $model->fch_nacimiento = Utils::changeFormatDate($model->fch_nacimiento);
 
+        $historialCambios = $model->getEntHistorialCambiosCitas();
+        //$historialCambios = EntHistorialCambiosCitas::find()->where(['id_cita'=>$model->id_cita]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $historialCambios
+        ]);
+
         return $this->render('view', [
             'model' => $model,
             'area' => $area,
-            'horarios'=>$horarios
+            'horarios'=>$horarios,
+            'dataProvider'=>$dataProvider
         ]);
     }
 
@@ -331,7 +339,7 @@ class CitasController extends Controller
 
         $cita = $this->findModel(['txt_token' => $token]);
 
-        if($_POST['imei']){
+        if(isset($_POST['imei'])){
             $cita->txt_imei = $_POST['imei'];
         }
 
@@ -347,7 +355,7 @@ class CitasController extends Controller
                 
 
                 if($cita->save()){
-                    $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita autorizada por".$usuario->txt_auth_item);
+                    $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita autorizada por ".$usuario->authItem->description);
                     return ['status'=>'ok', 'envio'=>$envio->txt_token];
                 }
             }
@@ -418,6 +426,7 @@ class CitasController extends Controller
         if($cita->id_status==Constantes::PROCESO_VALIDACION){
             return $this->redirect(['validar-credito', 'token'=>$cita->txt_token]);
         }else{
+           
             return $this->redirect(['view', 'token'=>$cita->txt_token]);
         }
 

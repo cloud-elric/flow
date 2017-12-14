@@ -22,6 +22,8 @@ use app\models\RelCondicionPlanTarifario;
 use app\models\CatColonias;
 use app\modules\ModUsuarios\models\Utils;
 use app\models\CatTiposEntrega;
+use kartik\grid\GridView;
+use app\models\Calendario;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -582,6 +584,57 @@ $this->registerJsFile(
 
     <?php ActiveForm::end(); ?>
 </div>
+
+<div class="panel">
+    <div class="panel-heading">
+        <h2 class="panel-title">  
+            Historial de cambios
+            <hr>
+        </h2>
+    </div>
+    <div class="panel-body">
+    <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' =>[
+                    [
+                        'attribute' => 'id_usuario',
+                        'value'=>'idUsuario.authItem.description',
+                        'label' => 'Tipo de usuario',
+                    ],
+                    [
+                        'attribute'=>'id_usuario',
+                        'value'=>'idUsuario.nombreCompleto'
+                    ],
+                   'txt_modificacion',
+                   [
+                        'attribute'=>'fch_modificacion',
+                        'format'=>'raw',
+                        'value'=>function($data){
+            
+                            return Calendario::getDateComplete($data->fch_modificacion);
+                        }
+                    ],
+                    
+                ],
+                'pjax'=>true,
+                //'pjaxSettings'=>,
+                'panelTemplate' => "{items}\n{summary}\n{pager}",
+                //"panelHeadingTemplate"=>"<div class='pull-right'>{export}</div>",
+                'responsive'=>true,
+                'hover'=>true,
+                'bordered'=>false,
+                'panel' => [
+                    'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i> Countries</h3>',
+                    'type'=>'success',
+                    'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Country', ['create'], ['class' => 'btn btn-success']),
+                    'after'=>Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+                    'footer'=>false
+                ],
+               
+            ]) ?>
+    </div>
+</div>
+
 <?php 
 Modal::begin([
     'header'=>'<h4>Motivo de rechazo</h4>',
