@@ -153,7 +153,7 @@ class EntCitas extends \yii\db\ActiveRecord
             'id_usuario' => 'Id Usuario',
             'id_status' => 'Estatus',
             'id_estado' => 'Estado',
-            'id_envio' => 'Id Envio',
+            'id_envio' => 'Clave de envio',
             'id_tipo_cliente' => 'Tipo de cliente',
             'id_condicion_plan' => 'Condición del plan',
             'id_tipo_plan_tarifario' => 'Plan tarifario',

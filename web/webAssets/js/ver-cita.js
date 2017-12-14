@@ -41,6 +41,7 @@ $(document).ready(function(){
             }).then(function (email) {
                 console.log(email);
                 swal("Autorizada", "Cita ha sido autorizada.", "success");
+                window.location.href = "index";
             })
 
     });

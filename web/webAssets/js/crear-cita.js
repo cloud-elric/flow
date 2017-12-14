@@ -124,9 +124,16 @@ $(document).ready(function(){
             
         }else{
             var fechaEntrega = getFechaEntrega();
-            $('#entcitas-fch_cita').kvDatepicker({"autoclose":true,"format":"dd-mm-yyyy","startDate":fechaEntrega,"language":"es",  daysOfWeekDisabled: "0"});
+            $("#entcitas-fch_cita").val(fechaEntrega);
+            $('#entcitas-fch_cita').kvDatepicker(
+                {"autoclose":true,
+                "format":"dd-mm-yyyy",
+                "startDate":fechaEntrega,
+                "language":"es",  
+                daysOfWeekDisabled: "0"
+            });
             $('#entcitas-fch_cita').attr("readonly", false);
-            $("#entcitas-fch_cita").val("");
+            
                 
         }
 
@@ -308,8 +315,32 @@ function buscarEquipo(id){
         url: baseUrl+"equipos/get-equipo?id="+id,
         success:function(resp){
             var descripcion = '';
+            var inputImei = '<div class="col-md-3">'+
+            '<div class="form-group field-entcitas-txt_imei required">'+
+            '<label class="control-label" for="entcitas-txt_imei">IMEI</label>'+
+            '<input type="text" id="entcitas-txt_imei" class="form-control" name="EntCitas[txt_imei]" maxlength="150" aria-required="true"'+ 
+            'aria-invalid="true">'+
+            '<div class="help-block"></div>'+
+            '</div></div>';
             if(resp.txt_descripcion){
                 descripcion = resp.txt_descripcion;
+            }
+
+            if(resp.b_inventario_virtual=="1"){
+                $(".contenedor-imei").html(inputImei);
+               formCita.yiiActiveForm('add', {
+                    id: 'entcitas-txt_imei',
+                    name: 'EntCitas[txt_imei]',
+                    container: '.field-entcitas-txt_imei',
+                    input: '#entcitas-txt_imei',
+                    error: '.help-block',
+                    validate:  function (attribute, value, messages, deferred, $form) {
+                        yii.validation.required(value, messages, {message: "IMEI es requerido"});
+                    }
+                });
+            }else{
+                $(".contenedor-imei").html("");
+                $('#contact-form').yiiActiveForm('remove','entcitas-txt_imei');
             }
 
             $("#descripcion_equipo").val(descripcion);

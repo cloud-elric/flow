@@ -338,6 +338,7 @@ class CitasController extends Controller
         }
 
         return ['status'=>'error'];
+        
     }
 
     public function actionRechazar($token=null)

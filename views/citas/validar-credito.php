@@ -62,7 +62,7 @@ $this->registerJsFile(
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
-                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
+                <?= $form->field($model, 'txt_telefono')->textInput(['maxlength' => true,'disabled'=>true, 'class'=>'form-control input-number']) ?>
             </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_nombre')->textInput(['maxlength' => true, 'disabled'=>true]) ?>
@@ -190,7 +190,7 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?php
                     require(__DIR__ . '/../components/scriptSelect2.php');
-                    $url = Url::to(['equipos/buscar-equipo']);
+                    $url = Url::to(['equipos/buscar-equipo?equipo='.$model->id_equipo]);
                     $valEquipo = empty($model->id_equipo) ? '' : $equipo->txt_nombre;                    
                     //$equipo = empty($model->id_equipo) ? '' : CatEquipos::findOne($model->id_equipo)->txt_nombre;
                     // render your widget
@@ -275,16 +275,18 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_telefonico_nuevo')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
             </div>
-            <?php
-            if(!$equipo->b_inventario_virtual){
-            ?>
-            <div class="col-md-3">
-                <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
-            </div>
+            <div class="contenedor-imei">
+                <?php
+                if(!$equipo->b_inventario_virtual){
+                ?>
+                <div class="col-md-3 ">
+                    <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
+                </div>
 
-            <?php
-            }
-            ?>
+                <?php
+                }
+                ?>
+            </div>
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
             </div>
@@ -459,8 +461,8 @@ $this->registerJsFile(
             <div class="col-md-4">
                 
                 <?php
-                $startDate = $model->fch_cita;
-                $model->fch_cita = null;
+                 $startDate = $model->fch_cita;
+                 //$model->fch_cita = null;
                 echo $form->field($model, 'fch_cita')->widget(DatePicker::classname(), [
                     //'options' => ['placeholder' => '16/12/1990'],
                     'pickerButton'=>false,

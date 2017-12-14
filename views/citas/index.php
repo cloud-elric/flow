@@ -137,6 +137,21 @@ $this->registerJsFile(
                 return Calendario::getDateComplete($data->fch_creacion);
             }
         ],
+        [
+            'attribute'=>'fch_cita',
+            'format'=>'raw',
+            'value'=>function($data){
+                if(!$data->fch_cita){
+                    return "(no definido)";
+                }
+                return Calendario::getDateComplete($data->fch_cita);
+            }
+        ],
+        [
+            'attribute'=>'id_envio',
+            'value'=>'idEnvio.txt_token'
+        ],
+
         
     ] ;           
 
@@ -220,6 +235,20 @@ $this->registerJsFile(
             
                             return Calendario::getDateComplete($data->fch_creacion);
                         }
+                    ],
+                    [
+                        'attribute'=>'fch_cita',
+                        'format'=>'raw',
+                        'value'=>function($data){
+                            if(!$data->fch_cita){
+                                return "(no definido)";
+                            }
+                            return Calendario::getDateComplete($data->fch_cita);
+                        }
+                    ],
+                    [
+                        'attribute'=>'id_envio',
+                        'value'=>'idEnvio.txt_token'
                     ],
                     
                 ],

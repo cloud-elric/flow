@@ -138,7 +138,13 @@ footer img{
 .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
     background: none;
     color: #777777;
+    opacity: 0.3;
     cursor: not-allowed;
+}
+
+.datepicker table tr td.old, .datepicker table tr td.new {
+    color: #a3afb7;
+    opacity: 0.3;
 }
 
 .select2-dropdown {

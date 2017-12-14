@@ -20,6 +20,7 @@ use app\models\CatTiposPlanesTarifarios;
 use app\models\RelEquipoPlazoCosto;
 use app\models\RelCondicionPlanTarifario;
 use app\models\CatColonias;
+use app\modules\ModUsuarios\models\Utils;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -52,10 +53,11 @@ $this->registerJsFile(
         <div class="panel-title">
             <h4>
                 Estatus de cita: <span class="js-status-cita"><?=$status->txt_nombre?></span>
+               
                 <div class="pull-right">
 
                     <?php
-                    if($usuario->txt_auth_item=="call-center"){
+                    if($usuario->txt_auth_item=="call-center" && ($model->id_status==2 || $model->id_status==3 )){
                     ?>
                     <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
@@ -69,7 +71,7 @@ $this->registerJsFile(
                     ?>
 
                         <?php
-                        if(!$equipo->b_inventario_virtual){
+                        if(!$equipo->b_inventario_virtual && ($model->id_status==2 || $model->id_status==3 )){
                         ?>
                             <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
                                 <i class="icon fa-check"></i> Autorizar
@@ -86,20 +88,40 @@ $this->registerJsFile(
                     <?php
                     if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
                     ?>
-                    <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
-                        <i class="icon fa-check"></i> Autorizar
-                    </a>
 
-                    <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
-                        <i class="icon fa-times"></i> Rechazar
-                    </a>
-                    <a id="js-btn-cancelar" class="btn btn-danger" data-token="<?=$model->txt_token?>"> 
-                        <i class="icon fa-trash"></i> Cancelar
-                    </a>
+                        <?php
+                        if ($model->id_status==2 || $model->id_status==3 ){
+                        ?>
+
+                        <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
+                            <i class="icon fa-check"></i> Autorizar
+                        </a>
+
+                        <?php
+                        }
+                        if ($model->id_status==2 || $model->id_status==3 ){
+                        ?>
+
+                        <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
+                            <i class="icon fa-times"></i> Rechazar
+                        </a>
+
+                        <?php
+                        }
+                        if ($model->id_status==2 || $model->id_status==3 ){
+                        ?>
+                        <a id="js-btn-cancelar" class="btn btn-danger" data-token="<?=$model->txt_token?>"> 
+                            <i class="icon fa-trash"></i> Cancelar
+                        </a>
+
+                        <?php
+                        }
+                        ?>
                     <?php
                     }
                     ?>
                 </div>
+
             </h4>
             <?php
             if($model->txt_motivo_cancelacion){
@@ -492,20 +514,30 @@ $this->registerJsFile(
         </div>
         <div class="row">
             <div class="col-md-4">
-                <?php
-                    $hoy = date("d-m-Y");
-                    $tresDias = date("d-m-Y", strtotime($hoy . '+4 day'));
-                ?>
-                <?= $form->field($model, 'fch_cita')->widget(\yii\jui\DatePicker::classname(), [
-                    'language' => 'es',
-                    'options'=>['class'=>'form-control'],
-                    'dateFormat' => 'dd-MM-yyyy', 
-                    'clientOptions' => [
-                        'minDate' => $tresDias, //date("d-m-Y")
-                        'dayNamesShort' => ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
-                        'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-                        'beforeShowDay' => false             
-                    ],    
+            <?php
+                $model->fch_cita = Utils::changeFormatDate($model->fch_cita);
+                $startDate = $model->fch_cita;
+                
+                echo $form->field($model, 'fch_cita')->widget(DatePicker::classname(), [
+                    //'options' => ['placeholder' => '16/12/1990'],
+                    'pickerButton'=>false,
+                    'removeButton'=>false,
+                    'type' => DatePicker::TYPE_INPUT,
+                    'pluginOptions' => [
+                        'autoclose'=>true,
+                        'format' => 'dd-mm-yyyy',
+                        'daysOfWeekDisabled'=> "0",
+                        'startDate' => $startDate, //date("d-m-Y")
+                    ]
+                    // 'language' => 'es',
+                    // 'options'=>['class'=>'form-control'],
+                    // 'dateFormat' => 'dd-MM-yyyy',
+                    // 'clientOptions' => [
+                    //     'minDate' => $tresDias, //date("d-m-Y")
+                    //     'dayNamesShort' => ['Dom', 'Lun', 'Mar', 'Mié;', 'Juv', 'Vie', 'Sáb'],
+                    //     'dayNamesMin' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                    //     'beforeShowDay' => false             
+                    // ],
                 ])
                 ?>
             </div>
