@@ -143,16 +143,6 @@ $(document).ready(function(){
 
     
 
-    $("#entcitas-id_tipo_entrega").on("change", function(){
-        var tipoEntrega = $(this).val();
-
-        if(tipoEntrega==1){
-
-        }else if(tipoEntrega==2){
-
-        }
-    });
-
     
     formCita.on('beforeSubmit', function(e) {
         var form = $(this);

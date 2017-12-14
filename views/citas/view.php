@@ -21,6 +21,7 @@ use app\models\RelEquipoPlazoCosto;
 use app\models\RelCondicionPlanTarifario;
 use app\models\CatColonias;
 use app\modules\ModUsuarios\models\Utils;
+use app\models\CatTiposEntrega;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntCitas */
@@ -508,8 +509,16 @@ $this->registerJsFile(
                 <?= $form->field($model, 'num_dias_servicio')->textInput(['maxlength' => true, "disabled"=>true]) ?>
             </div>
             <div class="col-md-4">
-                <?=Html::label("Tipo de entrega", "txt_tipo_entrega")?>
-                <?=Html::textInput("txt_tipo_entrega", $model->idTipoEntrega->txt_nombre, ['class'=>'form-control', 'disabled'=>'disabled', 'id'=>'txt_tipo_entrega' ])?>
+                <?php
+                 echo $form->field($model, 'id_tipo_entrega')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(CatTiposEntrega::find("b_habilitado=1")->orderBy('txt_nombre')->all(), 'id_tipo_entrega', 'txt_nombre'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Seleccionar tipo de entrega'],
+                    'pluginOptions' => [
+                        'allowClear' => false
+                    ],
+                ]);
+                ?>
             </div>
         </div>
         <div class="row">
@@ -557,9 +566,13 @@ $this->registerJsFile(
                         ],
                     ],
                     'pluginOptions'=>[
-                        'depends'=>['entcitas-id_area'],
-                        'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area?fecha='.$model->fch_hora_cita]),
-                        'loadingText' => 'Cargando horarios ...',  
+                        'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area?horario='.$model->id_horario]),
+                        'depends'=>['entcitas-fch_cita', 'entcitas-id_area'],
+                        'params'=>[
+                            'entcitas-id_area',
+                            'entcitas-id_tipo_entrega'
+                        ],  
+                        'loadingText' => 'Cargando horarios ...',
                     ]
                 ]);
                 ?>
@@ -611,3 +624,24 @@ $model->scenario = 'cancelacion';
 ActiveForm::end();
 Modal::end();
 ?>
+
+
+<?php
+// Using a select2 widget inside a modal dialog
+Modal::begin([
+    'options' => [
+        'id' => 'modal-express-autorizar',
+        'tabindex' => false // important for Select2 to work properly
+    ],
+    'clientOptions'=>[
+        'backdrop'=>"static"
+    ],
+    
+    'header' => '<h4 style="margin:0; padding:0">Autorizar envio express</h4>',
+]);
+?>
+<div class="contenedor-modal">
+Cargando.....
+</div>
+<?php
+Modal::end();

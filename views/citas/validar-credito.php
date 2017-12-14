@@ -504,8 +504,8 @@ $this->registerJsFile(
                     ],
                     ],
                 'pluginOptions'=>[
-                    'depends'=>['entcitas-fch_cita', 'entcitas-id_area'],
                     'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area']),
+                    'depends'=>['entcitas-fch_cita', 'entcitas-id_area'],
                     'params'=>[
                         'entcitas-id_area',
                         'entcitas-id_tipo_entrega'

@@ -129,7 +129,7 @@ class HorariosAreasController extends Controller
         }
     }
 
-    public function actionGetHorariosDisponibilidadByArea($fecha = null){
+    public function actionGetHorariosDisponibilidadByArea($horario = null){
         $out = [];
 
         if (isset($_POST['depdrop_all_params']['entcitas-id_area']) &&
@@ -180,7 +180,7 @@ class HorariosAreasController extends Controller
                     }    
 
                     if ($i == 0) {
-                        $selected = $fecha;
+                        $selected = $horario;
                     }
 
                     

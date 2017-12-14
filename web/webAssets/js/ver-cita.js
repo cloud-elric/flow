@@ -1,4 +1,91 @@
+var buttonSubmit = '<button type="submit" '+
+'id="submit-button-ladda" '+
+'class="btn btn-success ladda-button pull-right" '+
+'data-style="zoom-in">'+
+'<span class="ladda-label">'+
+'Validar crédito'+
+'</span>'+
+'<span class="ladda-spinner"></span>'+
+'</button>';
+var inputNombre = $("#entcitas-txt_nombre");
+var inputApellidoPaterno = $("#entcitas-txt_apellido_paterno");
+var inputApelllidoMaterno = $("#entcitas-txt_apellido_materno");
+var inputFchNacimiento = $("#entcitas-fch_nacimiento");
+var inputRFC = $("#entcitas-txt_rfc");
+var cargarSupervisores = false;
+var formCita = $("#form-cita");
+var botonEnviar = "submit-button-ladda";
+
 $(document).ready(function(){
+
+    $("#entcitas-id_tipo_entrega").on("change", function(){
+        
+                           
+        if($(this).val()==2){
+            $('#entcitas-fch_cita').kvDatepicker('destroy');
+            $('#entcitas-fch_cita').attr("readonly", true);
+            $("#entcitas-fch_cita").val(getTomorrow());
+            
+        }else{
+            var fechaEntrega = getFechaEntrega();
+            $("#entcitas-fch_cita").val(fechaEntrega);
+            $('#entcitas-fch_cita').kvDatepicker(
+                {"autoclose":true,
+                "format":"dd-mm-yyyy",
+                "startDate":fechaEntrega,
+                "language":"es",  
+                daysOfWeekDisabled: "0"
+            });
+            $('#entcitas-fch_cita').attr("readonly", false);
+            
+                
+        }
+
+        $("#entcitas-fch_cita").trigger("change");
+
+    });
+
+    formCita.on('beforeSubmit', function(e) {
+        var form = $(this);
+        var button = document.getElementById(botonEnviar);
+        var l = Ladda.create(button);
+    
+        if (form.find('.has-error').length) {
+            
+            l.stop();
+            return false;
+        }
+
+        if(($("#entcitas-id_tipo_entrega").val()==2)){
+            l.stop();
+            
+            
+            if(!cargarSupervisores && !$("#express-autorizado").val()){
+                $("#modal-express-autorizar").modal("show");
+                cargarSupervisoresPeticion();
+                //cargarSupervisores = true;
+                return false;
+            }
+            
+        }
+
+    });
+    
+    formCita.on('afterValidate', function (e, messages, errorAttributes) {
+        
+        if(errorAttributes.length > 0){
+            
+            var button = document.getElementById(botonEnviar);
+            var l = Ladda.create(button);
+            l.stop();
+            return false;
+        }
+        
+    });
+
+    
+
+
     $("#js-btn-autorizar").on("click", function(e){
       e.preventDefault();
         var token = $(this).data("token");
@@ -285,6 +372,41 @@ function getCostodiferidoEquipo(){
                 $("#txt_municipio").val(resp.municipio.txt_nombre);
                 $("#entcitas-id_estado").val(resp.estado.id_estado);
                 $("#txt_estado").val(resp.estado.txt_nombre);
+            }
+        });
+    }
+
+    function getTomorrow(){
+        var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+        var day = ("0" + currentDate.getDate()).slice(-2)
+        var month = ("0" + (currentDate.getMonth() + 1)).slice(-2)
+        var year = currentDate.getFullYear()
+      
+        return day+"-"+month+"-"+year;
+    }
+    
+    function getFechaEntrega(){
+        var currentDate = new Date(new Date().getTime() + 48 * 60 * 60 * 1000);
+        if(currentDate==7){
+            var currentDate = new Date(new Date().getTime() + 72 * 60 * 60 * 1000);
+        }
+        var day = ("0" + currentDate.getDate()).slice(-2)
+        var month = ("0" + (currentDate.getMonth() + 1)).slice(-2)
+        var year = currentDate.getFullYear()
+      
+        return day+"-"+month+"-"+year;
+    }
+
+    function cargarSupervisoresPeticion(){
+        $.ajax({
+            url:baseUrl +"citas/form-pass-supervisor",
+            success:function(resp){
+                $(".contenedor-modal").html(resp);
+                $("#express-autorizado").val("");
+                $("#btn-autorizar-envio-express").show();
+                $("#btn-success-autorizacion").hide();
+               
+                $("#alert-autorizacion").hide();
             }
         });
     }
