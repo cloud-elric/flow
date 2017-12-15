@@ -468,7 +468,7 @@ class CitasController extends Controller
 
 
         if(!$cita->save()){
-            // print_r($cita->errors);
+            print_r($cita->errors);
             // return;
         }else{
             $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita creada");
