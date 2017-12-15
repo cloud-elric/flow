@@ -2,12 +2,13 @@ $(document).on({
     'click': function(e){
         e.preventDefault();
         $("#alert-autorizacion").hide();
+                var token = $("#entcitas-txt_token").val();
                 var button = document.getElementById("btn-autorizar-envio-express");
                 var l = Ladda.create(button);
                 var data = $("#form-autorizar-supervisor").serialize();
                 l.start();
                 $.ajax({
-                    url:baseUrl+"citas/validar-pass-supervisor",
+                    url:baseUrl+"citas/validar-pass-supervisor?token="+token,
                     data:data,
                     method: "POST",
                     success:function(resp){

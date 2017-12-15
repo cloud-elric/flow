@@ -398,6 +398,7 @@ function getCostodiferidoEquipo(){
     }
 
     function cargarSupervisoresPeticion(){
+        
         $.ajax({
             url:baseUrl +"citas/form-pass-supervisor",
             success:function(resp){

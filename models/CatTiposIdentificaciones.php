@@ -11,6 +11,8 @@ use Yii;
  * @property string $txt_nombre
  * @property string $txt_descripcion
  * @property string $b_habilitado
+ *
+ * @property EntCitas[] $entCitas
  */
 class CatTiposIdentificaciones extends \yii\db\ActiveRecord
 {
@@ -46,5 +48,13 @@ class CatTiposIdentificaciones extends \yii\db\ActiveRecord
             'txt_descripcion' => 'Txt Descripcion',
             'b_habilitado' => 'B Habilitado',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEntCitas()
+    {
+        return $this->hasMany(EntCitas::className(), ['id_tipo_identificacion' => 'id_tipo_identificacion']);
     }
 }

@@ -141,6 +141,7 @@ $this->registerJsFile(
 
 <div class="panel">
     <?php $form = ActiveForm::begin(['action' =>['update?token=' . $model->txt_token]]); ?>
+    <?= $form->field($model, 'txt_token')->hiddenInput()->label(false) ?>
     <div class="panel-heading">
     <h2 class="panel-title">
         Equipo y tipo de trámite
@@ -331,20 +332,15 @@ $this->registerJsFile(
         <div class="col-md-3">
             <?= $form->field($model, 'txt_numero_telefonico_nuevo')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
         </div>
-        <?php
-         if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
-        ?>
+        
         <div class="col-md-3">
-            <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true, 
+            "disabled"=>!(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual)]) ?>
         </div>
 
-        <?php
-        }
-        ?>
-
-            <div class="col-md-3">
-                <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
-            </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'txt_iccid')->textInput(['maxlength' => true, "class"=>'form-control']) ?>
+        </div>
 
         <div class="col-md-3">
                 <?= $form->field($model, 'txt_sisacd')->textInput(['maxlength' => true]) ?>
@@ -554,7 +550,9 @@ $this->registerJsFile(
             </div>
             <div class="col-md-4">
                 <?php
-                echo $form->field($model, 'fch_hora_cita')->widget(DepDrop::classname(), [
+
+                echo $form->field($model, 'id_horario')->widget(DepDrop::classname(), [
+                    
                     'options' => ['placeholder' => 'Seleccionar ...'],
                     'type' => DepDrop::TYPE_SELECT2,
                     'select2Options'=>[
@@ -562,11 +560,11 @@ $this->registerJsFile(
                             
                             'allowClear'=>true,
                             'escapeMarkup' => new JsExpression('function (markup) { 
-                                return markup; }'
-                            ),
+                                
+                                return markup; }'),
                             'templateResult' => new JsExpression('formatRepo'),
                         ],
-                    ],
+                        ],
                     'pluginOptions'=>[
                         'url' => Url::to(['/horarios-areas/get-horarios-disponibilidad-by-area?horario='.$model->id_horario]),
                         'depends'=>['entcitas-fch_cita', 'entcitas-id_area'],
@@ -575,11 +573,29 @@ $this->registerJsFile(
                             'entcitas-id_tipo_entrega'
                         ],  
                         'loadingText' => 'Cargando horarios ...',
+                    
                     ]
+                    
                 ]);
                 ?>
             </div>
         </div>
+
+        <div class="row pull-right">
+            <div class="col-md-12">
+                
+            <?php
+                    if($usuario->txt_auth_item=="call-center" && ($model->id_status==2 || $model->id_status==3 )){
+                    ?>
+                    <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
+                        <i class="icon fa-refresh"></i> Actualizar
+                    </a>
+                    <?php
+                    }
+                    ?>
+            </div>
+        </div>                
+
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -634,6 +650,7 @@ $this->registerJsFile(
             ]) ?>
     </div>
 </div>
+
 
 <?php 
 Modal::begin([

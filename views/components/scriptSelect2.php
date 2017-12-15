@@ -17,6 +17,7 @@ JS;
 $formatJs = <<< 'JS'
 var formatRepo = function (repo) {
     var ajaxResults = $('#entcitas-id_horario').depdrop('getAjaxResults');
+    console.log(ajaxResults);
     var cantidadDisponible = 0;
    
     if (repo.loading) {
@@ -84,6 +85,7 @@ var formatSelectionSupervisor = function (repo){
 
 var formatRepoPlan = function (repo) {
     var ajaxResults = $('#entcitas-id_tipo_plan_tarifario').depdrop('getAjaxResults');
+    console.log(ajaxResults);
     var cantidadDisponible = 0;
    
     if (repo.loading) {

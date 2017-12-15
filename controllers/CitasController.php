@@ -137,9 +137,9 @@ class CitasController extends Controller
             $model->scenario = "create";
         }else if(isset($_POST['EntCitas']["id_cita"])){
 
-            $idCita = $_POST['EntCitas']["id_cita"];
-            
-            $model = EntCitas::find($idCita)->one();
+            $idCita = $_POST['EntCitas']["id_cita"];            
+            $model = EntCitas::findOne($idCita);
+
             $model->scenario = "create";
         }
 
@@ -195,7 +195,10 @@ class CitasController extends Controller
         return $this->renderAjax('form-pass-supervisor', ['supervisores'=>$data]);
     }
 
-    public function actionValidarPassSupervisor(){
+    public function actionValidarPassSupervisor($token=null){
+
+        $cita = EntCitas::find()->where(['txt_token'=>$token])->one();
+
         \Yii::$app->response->format = Response::FORMAT_JSON;
         $respuesta['status'] = 'error';
         $respuesta['mensaje'] = 'Usuario y/o contraseña incorrecto';
@@ -215,6 +218,13 @@ class CitasController extends Controller
                     ->andWhere(['id_usuario'=>$supervisor->id_usuario])->count();
 
                     if(($cantidadEnviosExpress - $horariosOcupados)>0){
+
+                         $registroSupervisor = new RelSupervisorCitaExpress();
+                         $registroSupervisor->id_usuario = $supervisor->id_usuario;
+                         $registroSupervisor->id_cita = $cita->id_cita;
+                         $registroSupervisor->fch_autorizacion = Utils::getFechaActual();
+                         $registroSupervisor->save();
+
                         $respuesta['status'] = 'success';
                         $respuesta['mensaje'] = $supervisor->txt_token;    
                     }else{
@@ -254,6 +264,10 @@ class CitasController extends Controller
                 $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO;
             }else{
                 $citaAValidar->id_status = Constantes::CONTRATO_AUTORIZADO_SIN_IMEI;
+            }
+
+            if($citaAValidar->id_tipo_entrega==1){
+                RelSupervisorCitaExpress::deleteAll('id_cita = :cita', [':cita' => $citaAValidar->id_cita]);
             }
             
             if($citaAValidar->save()){
@@ -378,7 +392,7 @@ class CitasController extends Controller
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita rechazada ".$usuario->txt_auth_item);
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita rechazada ".$usuario->authItem->description);
                 return $this->redirect( ['index']);
             }
         }
@@ -395,7 +409,7 @@ class CitasController extends Controller
             $cita->txt_motivo_cancelacion = $_POST['EntCitas']['txt_motivo_cancelacion'];
             $cita->id_status = $statusRechazar;
             if ($cita->save()) {
-                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita cancelada por ".$usuario->txt_auth_item);
+                $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita cancelada por ".$usuario->authItem->description);
                 return $this->redirect( ['index']);
             }
         }
@@ -457,7 +471,7 @@ class CitasController extends Controller
             // print_r($cita->errors);
             // return;
         }else{
-            $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Registro guardado");
+            $this->guardarHistorial($usuario->id_usuario, $cita->id_cita, "Cita creada");
             $respuesta['status'] = 'success';
             $respuesta['mensaje']= 'Registro guardado';
             $respuesta['identificador'] = $cita->id_cita;

@@ -160,21 +160,31 @@ class EquiposController extends Controller
         foreach ($resultados as $model) {
             $cantidadStock = EntEntradas::find()->where(['id_equipo'=>$model->id_equipo])->sum('num_unidades');
 
-            $countCitasEquipo = EntCitas::find()
-                ->where(['id_equipo'=>$model->id_equipo])
-                ->andWhere(['in', 'id_status', [2,3,6,7,8]])
-                ->orWhere(['and',['id_equipo'=>$model->id_equipo], ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /3600))'), 2] ])
-                ->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
+            if(!$model->b_inventario_virtual){
 
-            if(($cantidadStock - $countCitasEquipo) == 0 && $equipo==$model->id_equipo){
-                $cantidadStock++;
-            }
-            if($cantidadStock && ($cantidadStock - $countCitasEquipo) > 0 ){
+                $countCitasEquipo = EntCitas::find()
+                    ->where(['id_equipo'=>$model->id_equipo])
+                    ->andWhere(['in', 'id_status', [2,3,6,7,8]])
+                    ->orWhere(['and',['id_equipo'=>$model->id_equipo], ['id_status'=>1], ['<',new Expression('(time_to_sec(timediff(now(),fch_creacion) /3600))'), 2] ])
+                    ->count();//new Expression('DATE_ADD(NOW(), INTERVAL 2 HOUR)')
+                
+                    if(($cantidadStock - $countCitasEquipo) == 0 && $equipo==$model->id_equipo){
+                        $cantidadStock++;
+                    }
+                    if($cantidadStock && ($cantidadStock - $countCitasEquipo) > 0 ){
+                        $response['results'][] = [
+                            'id' => $model->id_equipo, 
+                            "txt_nombre" => $model->txt_nombre, 
+                            "cantidad" => $cantidadStock - $countCitasEquipo];            
+                    }
+            }else{
                 $response['results'][] = [
                     'id' => $model->id_equipo, 
                     "txt_nombre" => $model->txt_nombre, 
-                    "cantidad" => $cantidadStock - $countCitasEquipo];            
-            }
+                    "cantidad" => 'Inventario virtual'];    
+            }    
+
+           
             // else{
             //     $response['results'][] = ['id' => $model->id_equipo, "txt_nombre" => $model->txt_nombre, "cantidad" => 0];
             // }    

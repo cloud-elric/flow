@@ -53,6 +53,7 @@ $this->registerJsFile(
 
 <div class="panel">
     <?php $form = ActiveForm::begin(['id'=>'form-cita']); ?>
+    <?= $form->field($model, 'txt_token')->hiddenInput()->label(false) ?>
     <div class="panel-heading">
         <h2 class="panel-title">
             Equipo y tipo de trámite

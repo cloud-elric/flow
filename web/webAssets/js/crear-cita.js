@@ -8,6 +8,8 @@ var formCita = $("#form-cita");
 var botonEnviar = "submit-button-ladda";
 
 $(document).ready(function(){
+
+
     inputNombre.on("change", function(){
         calculaRFC();
     });
@@ -183,14 +185,12 @@ $(document).ready(function(){
     });
 
      formCita.on('afterValidateAttribute', function (e, attribute, messages) {
-
+        
          if(attribute.name=="txt_telefono"){
              if(messages.length==0){
                  generarRegistro();
              }
          }
-        
-        
         
      });
 
@@ -216,6 +216,7 @@ function generarRegistro(){
 }
 
 function cargarSupervisoresPeticion(){
+
     $.ajax({
         url:baseUrl +"citas/form-pass-supervisor",
         success:function(resp){
