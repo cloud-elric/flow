@@ -107,16 +107,16 @@ class EntCitas extends \yii\db\ActiveRecord
                      return $('#entcitas-num_costo_equipo').val()>0;
                  }"
             ],
-            [
-                ['txt_imei'], 'required',
-                'when' => function ($model) {
-                    return $model->idEquipo->b_inventario_virtual==0;
-                },
-			 	'whenClient' => "function (attribute, value) {
+   //          [
+   //              ['txt_imei'], 'required',
+   //              'when' => function ($model) {
+   //                  return $model->idEquipo->b_inventario_virtual==0;
+   //              },
+			//  	'whenClient' => "function (attribute, value) {
                     
-                     return $('#entcitas-txt_imei').val()=='';
-                 }"
-			],
+   //                   return $('#entcitas-txt_imei').val()=='';
+   //               }"
+			// ],
             [['txt_telefono'] , 'unique', 'message'=>'Número teléfonico ya se encuentra utilizado', 'on'=>[ 'createRegistro']],
             [['id_usuario', 'id_status', 'txt_token', 'txt_nombre', 'txt_apellido_paterno', 'txt_apellido_materno', 'txt_telefono', 'txt_email', 
                 'fch_nacimiento', 'txt_rfc', 'id_tipo_tramite', 'id_tipo_cliente', 'id_condicion_plan', 'id_tipo_plan_tarifario', 
