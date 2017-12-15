@@ -130,7 +130,7 @@ window.fbAsyncInit = function() {
 		<div class="panel">
         	<div class="panel-body">
           		<div class="brand">
-            		<!-- <img class="brand-img" src="../../assets//images/logo-blue.png" alt="..."> -->
+            		<img class="brand-img" src="<?=URL::base()?>/webAssets/images/brightstarlogo.png" alt="...">
             		<h2 class="brand-text font-size-18 text-center"><?= Html::encode($this->title) ?></h2>
           		</div>
 				<?php 
