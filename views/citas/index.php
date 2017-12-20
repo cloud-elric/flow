@@ -34,38 +34,7 @@ $this->registerJsFile(
         <div class="list-group bg-blue-grey-100">
             <?php
             foreach($status as $statu){
-                switch ($statu->id_statu_cita) {
-                    case '1':
-                        $statusColor = 'warning';
-                        break;
-                    case '2':
-                        $statusColor = ' bg-brown-800';
-                        break;
-                    case '3':
-                        $statusColor = ' bg-blue-800';
-                        break;    
-                    case '4':
-                        $statusColor = 'danger';
-                        break;
-                    case '5':
-                        $statusColor = 'danger';
-                    break;  
-                    case '6':
-                        $statusColor = ' bg-blue-800';
-                    break;  
-                    case '7':
-                        $statusColor = 'success';
-                    break;   
-                    case '8':
-                        $statusColor = 'success';
-                    break;      
-                    case '9':
-                        $statusColor = ' bg-brown-800';
-                    break;  
-                    default:
-                        # code...
-                        break;
-                }
+                $statusColor = switchStatusColor($statu->id_statu_cita);
             ?>
 
             <a class="list-group-item blue-grey-500" href="<?=Url::base()?>/citas/index?EntCitasSearch[id_status]=<?=$statu->id_statu_cita?>">
@@ -118,49 +87,26 @@ $this->registerJsFile(
                         'attribute' => 'id_status',
                         'format'=>'raw',
                         'value'=>function($data){
-                            switch ($data->id_status) {
-                                case '1':
-                                    $statusColor = 'warning';
-                                    break;
-                                case '2':
-                                    $statusColor = ' bg-brown-800';
-                                    break;
-                                case '3':
-                                    $statusColor = ' bg-blue-800';
-                                    break;    
-                                case '4':
-                                    $statusColor = 'danger';
-                                    break;
-                                case '5':
-                                    $statusColor = 'danger';
-                                break;  
-                                case '6':
-                                    $statusColor = ' bg-blue-800';
-                                break;  
-                                case '7':
-                                    $statusColor = 'success';
-                                break;   
-                                case '8':
-                                    $statusColor = 'success';
-                                break;
-                                case '9':
-                                    $statusColor = ' bg-brown-800';
-                                break;        
-                                default:
-                                    # code...
-                                    break;
-                            }
+                            $statusColor = switchStatusColor($data->id_status);
 
                             return Html::a(
                                 $data->idStatus->txt_nombre,
                                 Url::to(['citas/ver-cita', 'token' => $data->txt_token]), 
                                 [
                                     'class'=>'btn label label-'.$statusColor.'',
+                                    'data-status'=>'status'
                                 ]
                             );
                         }
                     ],
-                    'txt_telefono',
+                    [
+                        'attribute'=>'txt_telefono',
+                        'format'=>'raw',
+                        'value'=>function ($data){
+                            $tag = '<button type="button" class="btn btn-icon btn-info btn-outline"><i class="icon wb-wrench" aria-hidden="true"></i></button>'.$data->txt_telefono;    
+                            return $tag;
+                        }
+                    ],
                     [
                         'attribute'=>'id_tipo_tramite',
                         'value'=>'idTipoTramite.txt_nombre'
@@ -173,11 +119,24 @@ $this->registerJsFile(
                             return Calendario::getDateComplete($data->fch_creacion);
                         }
                     ],
+                    [
+                        'header'=>'Opciones',
+                        'format'=>'raw',
+                        'value'=>function ($data){
+                            $tag = '<div class="btn-group" role="group">
+                            <button type="button" class="btn btn-icon btn-default btn-outline"><i class="icon wb-file" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-default btn-outline"><i class="icon wb-pencil" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-default btn-outline"><i class="icon wb-folder" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-default btn-outline"><i class="icon wb-trash" aria-hidden="true"></i></button>
+                          </div>';    
+                            return $tag;
+                        }
+                    ]
                     
                 ],
                 'layout' => "{items}\n{summary}\n{pager}",
                 'tableOptions'=>[
-                    'class'=>'table table-hover table-striped'
+                    'class'=>'table table-hover dataTable table-striped w-full dtr-inline'
                 ]
             ]) ?>
  
@@ -192,3 +151,41 @@ $this->registerJsFile(
 <?php Pjax::end() ?>
 
    
+<?php 
+
+function switchStatusColor($status){
+    switch ($status) {
+        case '1':
+            $statusColor = 'warning';
+            break;
+        case '2':
+            $statusColor = ' bg-brown-800';
+            break;
+        case '3':
+            $statusColor = ' bg-blue-800';
+            break;    
+        case '4':
+            $statusColor = 'danger';
+            break;
+        case '5':
+            $statusColor = 'danger';
+        break;  
+        case '6':
+            $statusColor = ' bg-blue-800';
+        break;  
+        case '7':
+            $statusColor = 'success';
+        break;   
+        case '8':
+            $statusColor = 'success';
+        break;
+        case '9':
+            $statusColor = ' bg-brown-800';
+        break;        
+        default:
+            # code...
+            break;
+    }
+
+    return $statusColor;
+}

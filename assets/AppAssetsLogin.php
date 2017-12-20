@@ -21,6 +21,7 @@ class AppAssetsLogin extends AssetBundle
     	//Core
     	'webAssets/css/core/bootstrap.min.css',
         'webAssets/css/core/bootstrap-extend.min.css',
+        'webAssets/plugins/ladda/ladda.css',
         'webAssets/css/core/site.min.css',
         'http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic',
 
@@ -31,7 +32,10 @@ class AppAssetsLogin extends AssetBundle
     	//Core
     	'webAssets/js/plugins/jquery.min.js',
     	'webAssets/js/plugins/tether.min.js',
-    	'webAssets/js/plugins/bootstrap.min.js'
+        'webAssets/js/plugins/bootstrap.min.js',
+        'webAssets/plugins/ladda/spin.js',
+        'webAssets/plugins/ladda/ladda.js',
+        'webAssets/js/geeks.js'
 
     ];
     public $depends = [

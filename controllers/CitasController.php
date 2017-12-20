@@ -29,6 +29,7 @@ use yii\db\Expression;
  */
 class CitasController extends Controller
 {
+    public $layout="mainTopBar";
     /**
      * @inheritdoc
      */

@@ -20,7 +20,8 @@ class AppAssetsCore extends AssetBundle
     public $css = [
     	//Core
     	'webAssets/css/core/bootstrap.min.css',
-        'webAssets/css/core/bootstrap-extend.min.css',
+		'webAssets/css/core/bootstrap-extend.min.css',
+		'webAssets/plugins/ladda/ladda.css',
         'webAssets/css/core/site.min.css',
 		'webAssets/css/core/animsition.min.css',
 	    'webAssets/css/core/asScrollable.min.css',
@@ -45,7 +46,9 @@ class AppAssetsCore extends AssetBundle
         'webAssets/js/core/breakpoints.min.js',
     	'webAssets/js/core/jquery.min.js',
     	'webAssets/js/core/tether.min.js',
-    	'webAssets/js/core/bootstrap.min.js',
+		'webAssets/js/core/bootstrap.min.js',
+		'webAssets/plugins/ladda/spin.js',
+        'webAssets/plugins/ladda/ladda.js',
     	'webAssets/js/plugins/animsition.min.js',
     	'webAssets/js/plugins/jquery.mousewheel.js',
     	'webAssets/js/plugins/jquery-asScrollbar.min.js',
