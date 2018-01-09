@@ -19,19 +19,13 @@ use app\models\CatTiposDepositosGarantia;
 /* @var $model app\models\EntCitas */
 
 $this->title = 'Captura de cita';
+$this->params['classBody'] = "site-navbar-small site-menubar-hide";
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'url' => ['index'], 'encode' => false];
-$this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Agregar cita', 'encode' => false];
-
-$this->registerCssFile(
-    '@web/webAssets/plugins/select2/select2.css',
-    ['depends' => [kartik\select2\Select2Asset::className()]]
-);
-
-$this->registerCssFile(
-    '@web/webAssets/plugins/date-picker/date-picker.css',
-    ['depends' => [kartik\date\DatePickerAsset::className()]]
-);
-
+$this->params['breadcrumbs'][] = [
+    'label' => '<i class="icon fa-plus"></i>Agregar cita', 
+    'encode' => false,
+    'template'=>'<li class="breadcrumb-item">{link}</li>', 
+];
 
 $this->registerJsFile(
     '@web/webAssets/js/crear-cita.js',
@@ -251,7 +245,7 @@ $this->registerJsFile(
 
         <div class="row">
             <div class="col-md-12 container-submit-button">
-                <?= Html::submitButton('<span class="ladda-label">Crear registro</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
+                <?= Html::submitButton('<span class="ladda-label">Crear registro</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button float-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

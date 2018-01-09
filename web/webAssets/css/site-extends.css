@@ -1,0 +1,71 @@
+.footer-logo {
+    height: 24px;
+    margin-right: 24px;
+}
+
+.site-footer {
+    background-color: rgb(61, 141, 208);
+    color: rgb(251, 245, 243);
+    font-size: 0.7em;
+}
+
+.site-footer .site-footer-legal a {
+    color: rgb(251, 245, 243);
+    line-height: 2.5em;
+    display: inline-block;
+    height: 100%;
+    margin: 0px 8px;
+}
+
+.js-ms-loading {
+    display: none;
+    position: absolute;
+    padding: 20px;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+
+table a.btn {
+    text-decoration: none;
+}
+
+.panel-body.fade-out {
+    animation-duration: 1500ms;
+    opacity: 0;
+}
+
+.panel-body.fade-out {
+    animation-duration: 1500ms;
+    opacity: 0;
+}
+
+.js-ms-loading.fade-in {
+    animation-duration: 1500ms;
+    display: block;
+    -webkit-animation-name: fade-in-loading;
+    animation-name: fade-in-loading;
+}
+
+.has-error .checkbox, .has-error .checkbox-inline, .has-error .control-label, .has-error .help-block, .has-error .radio, .has-error .radio-inline, .has-error.checkbox label, .has-error.checkbox-inline label, .has-error.radio label, .has-error.radio-inline label {
+    color: #f96868;
+}
+
+.has-error .form-control {
+    border-color: #f96868;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+
+.datepicker table tr td.old, .datepicker table tr td.new {
+    color: #a3afb7;
+    opacity: 0.3;
+}
+
+.js-pago-contraentrega {
+    display: none;
+}
+
+.container-monto {
+    display: none;
+}

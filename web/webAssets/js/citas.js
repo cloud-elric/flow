@@ -44,7 +44,7 @@ $(document).on({
 $(document).on({
     'click': function(){
         resetForm($("#form-search").get(0));
-        
+        $('#entcitassearch-id_status').val(null).trigger("change");
     }
 }, ".js-limpiar-campos");
 
@@ -76,4 +76,5 @@ function clearInput(elemento){
     var padre = elemento.parents(".form-group");
     var input = padre.find(".form-control");
     input.val("");
+    
 }

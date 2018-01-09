@@ -47,7 +47,7 @@ class ManagerController extends Controller {
         ];
     }
 
-	public $layout = "@app/views/layouts/mainBlank";
+	public $layout = "@app/views/layouts/classic/topBar/mainBlank";
 	
 	/**
 	 * Registrar usuario en la base de datos
@@ -218,6 +218,8 @@ class ManagerController extends Controller {
 	public function actionProfile(){
 		$this->layout = "@app/views/layouts/main";
 		$usuario = Yii::$app->user->identity;
+
+		return $this->redirect(["//site/construccion"]);
 
 		return $this->render('profile', ['model'=>$usuario]);
 	}

@@ -26,8 +26,12 @@ use yii\bootstrap\Modal;
 /* @var $model app\models\EntCitas */
 
 $this->title = 'Autorizar crédito';
+$this->params['classBody'] = "site-navbar-small site-menubar-hide";
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'url' => ['index'], 'encode' => false];
-$this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Autorizar crédito', 'encode' => false];
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon fa-plus"></i>Autorizar crédito', 
+    'encode' => false,
+    'template'=>'<li class="breadcrumb-item">{link}</li>', 
+];
 
 $tramite = $model->idTipoTramite;
 $equipo = $model->idEquipo;
@@ -35,10 +39,6 @@ $status = $model->idStatus;
 $estado = $model->idEstado;
 
 
-$this->registerCssFile(
-    '@web/webAssets/plugins/select2/select2.css',
-    ['depends' => [kartik\select2\Select2Asset::className()]]
-);
 
 $this->registerCssFile(
     '@web/webAssets/plugins/date-picker/date-picker.css',
@@ -276,11 +276,11 @@ $this->registerJsFile(
             <div class="col-md-3">
                 <?= $form->field($model, 'txt_numero_telefonico_nuevo')->textInput(['maxlength' => true, 'class'=>'form-control input-number']) ?>
             </div>
-            <div class="contenedor-imei">
+            <div class="contenedor-imei col-md-3">
                 <?php
                 if(!$equipo->b_inventario_virtual){
                 ?>
-                <div class="col-md-3 ">
+                <div class=" ">
                     <?= $form->field($model, 'txt_imei')->textInput(['maxlength' => true]) ?>
                 </div>
 
@@ -522,7 +522,7 @@ $this->registerJsFile(
 
         <div class="row">
             <div class="col-md-12 container-submit-button">
-                <?= Html::submitButton('<span class="ladda-label">Programar cita</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button pull-right", 'id'=>'submit-button-ladda']) ?>
+                <?= Html::submitButton('<span class="ladda-label">Programar cita</span>', ["data-style"=>"zoom-in" ,'class' => "btn btn-success ladda-button float-right", 'id'=>'submit-button-ladda']) ?>
             </div>
         </div>
     </div>

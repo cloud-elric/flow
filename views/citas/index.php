@@ -13,8 +13,12 @@ use kartik\export\ExportMenu;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Citas';
-Yii::$app->view->params['btnAcciones'] = '<a class="btn btn-success" href="'.Url::base().'/citas/create"><i class="icon wb-plus"></i>Agregar</a>';
-$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'encode' => false];
+$this->params['classBody'] = "site-navbar-small site-menubar-hide";
+$this->params['headerActions'] = '<a class="btn btn-success" href="'.Url::base().'/citas/create"><i class="icon wb-plus"></i>Agregar</a>';
+$this->params['breadcrumbs'][] = [
+    'label' => '<i class="icon wb-calendar"></i>Citas',
+    'template'=>'<li class="breadcrumb-item">{link}</li>', 
+    'encode' => false];
 
 $this->registerCssFile(
     '@web/webAssets/css/citas.css',
@@ -29,6 +33,9 @@ $this->registerJsFile(
 
 
 <?php Pjax::begin(['id' => 'citas', 'timeout'=>'0', 'linkSelector'=>'table thead a, a.list-group-item']) ?>
+
+
+
 
 <div class="row">
     <div class="col-md-3">
@@ -71,7 +78,7 @@ $this->registerJsFile(
 
             <a class="list-group-item blue-grey-500" href="<?=Url::base()?>/citas/index?EntCitasSearch[id_status]=<?=$statu->id_statu_cita?>">
                 <i class="icon wb-calendar" aria-hidden="true"></i>  
-                <span class="badge badge-<?=$statusColor?> text-white">
+                <span class="float-right badge badge-<?=$statusColor?> badge-pill text-white">
                     <?=count($statu->entCitas)?>
                 </span>
                 <?=$statu->txt_nombre?>
@@ -94,7 +101,7 @@ $this->registerJsFile(
                         Buscar cita
                     </a>
                 </div>
-                <div class="panel-collapse collapse in" id="exampleCollapseDefaultOne" aria-labelledby="exampleHeadingDefaultOne" role="tabpanel" aria-expanded="true">
+                <div class="panel-collapse collapse in show" id="exampleCollapseDefaultOne" aria-labelledby="exampleHeadingDefaultOne" role="tabpanel" aria-expanded="true">
                     <div class="panel-body">
                         <?php echo $this->render('_search', ['model' => $searchModel]); ?>
                     </div>
@@ -218,7 +225,7 @@ $this->registerJsFile(
                                 $data->idStatus->txt_nombre,
                                 Url::to(['citas/ver-cita', 'token' => $data->txt_token]), 
                                 [
-                                    'class'=>'btn label label-'.$statusColor.'',
+                                    'class'=>'btn badge badge-'.$statusColor.'',
                                 ]
                             );
                         }
@@ -253,7 +260,7 @@ $this->registerJsFile(
                     
                 ],
                 'panelTemplate' => "{panelHeading}\n{items}\n{summary}\n{pager}",
-                "panelHeadingTemplate"=>"<div class='pull-right'>{export}</div>",
+                "panelHeadingTemplate"=>"<div class='float-right'>{export}</div>",
                 'responsive'=>true,
                 'hover'=>true,
                 'bordered'=>false,
