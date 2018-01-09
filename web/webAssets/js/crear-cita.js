@@ -9,6 +9,10 @@ var botonEnviar = "submit-button-ladda";
 
 $(document).ready(function(){
 
+    $("#"+botonEnviar).on("click", function(){
+        
+        formCita.submit();
+    });
 
     inputNombre.on("change", function(){
         calculaRFC();

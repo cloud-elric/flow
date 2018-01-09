@@ -1,23 +1,26 @@
 <?php
 
 use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\EntUsuarios */
 
 $this->title = 'Registrarse';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['classBody'] = "page-login-v3 layout-full";
+
 $this->registerCssFile(
-  '@web/webassets/css/signUp.css',
+  '@web/webAssets/css/signUp.css',
   ['depends' => [\yii\web\JqueryAsset::className()]]
 );
 
 $this->registerJsFile(
-  '@web/webassets/js/sign-up.js',
+  '@web/webAssets/js/sign-up.js',
   ['depends' => [\yii\web\JqueryAsset::className()]]
 );
 ?>
+
 <div class="row">
   <div class="col-md-4 col-md-offset-4">
     <div class="panel">
@@ -31,7 +34,7 @@ $this->registerJsFile(
           <?= $this->render('_form', [
             'model' => $model,
           ]) ?>
-          <p class="text-center">¿Tienes una cuenta? <a href="login-v3.html">Ingresa</a></p>
+          <p class="text-center">¿Tienes una cuenta? <a href="<?=Url::base()?>/login">Ingresa</a></p>
       </div>
     </div>
   </div>

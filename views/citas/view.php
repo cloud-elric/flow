@@ -29,8 +29,12 @@ use app\models\Calendario;
 /* @var $model app\models\EntCitas */
 
 $this->title = "Revisión de cita";
+$this->params['classBody'] = "site-navbar-small site-menubar-hide";
 $this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-calendar"></i>Citas', 'url' => ['index'], 'encode' => false];
-$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-mobile"></i> '.$this->title, 'encode' => false];
+$this->params['breadcrumbs'][] = ['label' => '<i class="icon wb-mobile"></i> '.$this->title, 
+    'encode' => false,
+    'template'=>'<li class="breadcrumb-item">{link}</li>',
+];
 
 $usuario = Yii::$app->user->identity;
 $tramite = $model->idTipoTramite;
@@ -39,10 +43,6 @@ $status = $model->idStatus;
 
 $estado = $model->idEstado;
 
-$this->registerCssFile(
-    '@web/webAssets/plugins/select2/select2.css',
-    ['depends' => [kartik\select2\Select2Asset::className()]]
-);
 
 
 $this->registerJsFile(
@@ -57,14 +57,14 @@ $this->registerJsFile(
             <h4>
                 Estatus de cita: <span class="js-status-cita"><?=$status->txt_nombre?></span>
                
-                <div class="pull-right">
+                <div class="float-right">
 
                     <?php
                     if($usuario->txt_auth_item=="call-center" && ($model->id_status==2 || $model->id_status==3 )){
                     ?>
-                    <a id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
+                    <button id="js-btn-update" class="btn btn-primary" data-token="<?=$model->txt_token?>"> 
                         <i class="icon fa-refresh"></i> Actualizar
-                    </a>
+                    </button>
                     <?php
                     }
                     ?>
@@ -89,33 +89,25 @@ $this->registerJsFile(
                     ?>
 
                     <?php
-                    if(\Yii::$app->user->can('mesa-control') && $equipo->b_inventario_virtual){
+                    if(\Yii::$app->user->can('mesa-control')){
                     ?>
 
                         <?php
-                        if ($model->id_status==2 || $model->id_status==3 ){
+                        
+                        if ($model->id_status==2 || $model->id_status==3  ){
                         ?>
 
-                        <a id="js-btn-autorizar" class="btn btn-success" href="#" data-token="<?=$model->txt_token?>"> 
-                            <i class="icon fa-check"></i> Autorizar
-                        </a>
-
-                        <?php
-                        }
-                        if ($model->id_status==2 || $model->id_status==3 ){
-                        ?>
-
-                        <a id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
+                        <button id="js-btn-rechazar" class="btn btn-warning" data-token="<?=$model->txt_token?>"> 
                             <i class="icon fa-times"></i> Rechazar
-                        </a>
+                        </button>
 
                         <?php
                         }
                         if ($model->id_status==2 || $model->id_status==3 ){
                         ?>
-                        <a id="js-btn-cancelar" class="btn btn-danger" data-token="<?=$model->txt_token?>"> 
+                        <button id="js-btn-cancelar" class="btn btn-danger" data-token="<?=$model->txt_token?>"> 
                             <i class="icon fa-trash"></i> Cancelar
-                        </a>
+                        </button>
 
                         <?php
                         }
